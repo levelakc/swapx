@@ -1,0 +1,47 @@
+{
+  "name": "swapx-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8000",
+  "dependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "autoprefixer": "^10.4.14",
+    "date-fns": "^2.30.0",
+    "lucide-react": "^0.284.0",
+    "postcss": "^8.4.23",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.47.0",
+    "react-router-dom": "^6.17.0",
+    "react-scripts": "5.0.1",
+    "sonner": "^1.0.3",
+    "tailwindcss": "^3.3.3",
+    "web-vitals": "^2.1.4",
+    "framer-motion": "^10.16.4",
+    "socket.io-client": "^4.7.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

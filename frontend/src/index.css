@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --primary-focus: 222.2 47.4% 21.2%;
+  --primary-content: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-focus: 210 40% 86.1%;
+  --secondary-content: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-focus: 210 40% 86.1%;
+  --accent-content: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-focus: 0 84.2% 50.2%;
+  --destructive-content: 210 40% 98%;
+  --input: 214.3 31.8% 91.4%;
+  --border: 214.3 31.8% 91.4%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --primary-focus: 210 40% 88%;
+  --primary-content: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-focus: 217.2 32.6% 27.5%;
+  --secondary-content: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-focus: 217.2 32.6% 27.5%;
+  --accent-content: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-focus: 0 62.8% 20.6%;
+  --destructive-content: 210 40% 98%;
+  --input: 217.2 32.6% 17.5%;
+  --border: 217.2 32.6% 17.5%;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(255, 255, 255, 0.2);
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.notification.success {
+  background-color: #4caf50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}

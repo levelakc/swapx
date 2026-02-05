@@ -1,0 +1,7 @@
+The Gemini agent is currently blocked.
+
+I am unable to resolve the 'Module not found' error for 'socket.io-client' because I cannot run 'npm install'. The execution environment has security restrictions that prevent me from running 'npm' commands.
+
+To fix the application, please run 'npm install' in the 'SwapX/frontend' directory.
+
+Once the dependencies are installed, I can continue with fixing the messaging functionality and other issues.
