@@ -129,7 +129,8 @@ const getMe = asyncHandler(async (req, res) => {
 // @access  Public
 const googleCallback = asyncHandler(async (req, res) => {
   const token = req.user.getSignedJwtToken();
-  res.redirect(`http://localhost:3000/login?token=${token}`);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  res.redirect(`${frontendUrl}/login?token=${token}`);
 });
 
 // @desc    Handle Facebook OAuth callback
@@ -137,7 +138,28 @@ const googleCallback = asyncHandler(async (req, res) => {
 // @access  Public
 const facebookCallback = asyncHandler(async (req, res) => {
   const token = req.user.getSignedJwtToken();
-  res.redirect(`http://localhost:3000/login?token=${token}`);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  res.redirect(`${frontendUrl}/login?token=${token}`);
+});
+
+// @desc    Claim daily reward manually
+// @route   POST /api/auth/claim-daily
+// @access  Private
+const claimDailyReward = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const now = new Date();
+  const lastClaimed = user.lastLoginRewardClaimed;
+
+  if (lastClaimed && lastClaimed.toDateString() === now.toDateString()) {
+    res.status(400);
+    throw new Error('Reward already claimed today');
+  }
+
+  user.coins += 5;
+  user.lastLoginRewardClaimed = now;
+  await user.save();
+
+  res.json({ message: 'Daily reward claimed!', coins: user.coins, lastLoginRewardClaimed: now });
 });
 
 module.exports = {
@@ -146,4 +168,5 @@ module.exports = {
   getMe,
   googleCallback,
   facebookCallback,
+  claimDailyReward,
 };
