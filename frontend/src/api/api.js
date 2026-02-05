@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const getToken = () => {
   const user = JSON.parse(localStorage.getItem('base44_user'));
@@ -42,6 +42,10 @@ export const register = (userData) => request('/auth/register', {
 });
 
 export const getMe = () => request('/auth/me');
+
+export const claimDailyReward = () => request('/auth/claim-daily', {
+    method: 'POST',
+});
 
 export const updateMe = (data) => request('/auth/me', {
     method: 'PUT',
@@ -131,6 +135,10 @@ export const sendMessage = (conversationId, messageData) => request(`/conversati
 export const createConversation = (conversationData) => request('/conversations', {
     method: 'POST',
     body: JSON.stringify(conversationData),
+});
+
+export const startSupportChat = () => request('/conversations/support', {
+    method: 'POST',
 });
 
 export const createTrade = (tradeData) => request('/trades', {
