@@ -129,14 +129,14 @@ const createItem = asyncHandler(async (req, res) => {
     listing_type,
   } = req.body;
 
-  // Validate category
-  const categoryExists = await Category.findOne({ name: category });
+  // Validate category by ID
+  const categoryExists = await Category.findById(category);
   if (!categoryExists) {
     res.status(400);
     throw new Error('Invalid category specified');
   }
 
-  const images = req.files.map((file) => `/uploads/${file.filename}`);
+  const images = req.files ? req.files.map((file) => `/uploads/${file.filename}`) : [];
 
   // Advanced Translation Tech: Automatically translate to EN and HE
   const title_en = await translateText(title, 'en');
@@ -149,17 +149,21 @@ const createItem = asyncHandler(async (req, res) => {
     title_translations: new Map([['en', title_en], ['he', title_he]]),
     description,
     description_translations: new Map([['en', desc_en], ['he', desc_he]]),
-    category,
+    category: categoryExists.name, // Store the name for reference if schema expects String
     subcategory,
     estimated_value,
     condition,
     images: images || [],
-    location,
+    location: location || req.user.location,
     attributes,
     looking_for,
     cash_flexibility,
     listing_type: listing_type || 'item',
     created_by: req.user._id, // User is attached via protect middleware
+    seller_full_name: req.user.full_name,
+    seller_avatar: req.user.avatar,
+    seller_bio: req.user.bio,
+    seller_location: req.user.location,
   });
 
   const createdItem = await item.save();
