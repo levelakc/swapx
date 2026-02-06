@@ -6,11 +6,11 @@ const LanguageContext = createContext();
 const translations = {
   en: {
     brand: "SwapX",
-    tagline: "Trade Up. Cash Out. SwapX.",
-    heroTitle: "Smart Trading for Smart People",
-    heroSubtitle: "From vintage cars to high-end tech—discover a world of value waiting to be unlocked.",
-    explore: "Explore Trades",
-    listItem: "List Item",
+    tagline: "Connect. Trade. Swap.",
+    heroTitle: "The Modern Way to Trade and Swap",
+    heroSubtitle: "Join our community to trade items, services, and discover new opportunities every day.",
+    explore: "Explore the Marketplace",
+    listItem: "List an Item",
     listYourItem: 'List Your Item',
     cards: 'Cards',
     electronics: 'Electronics',
