@@ -18,7 +18,10 @@ const getChatbotForLanguage = (language) => {
 
 const handleIncomingMessage = async (message) => {
   const io = getIO();
+  // Ensure we query with string ID if needed, but findById takes ID/String.
   const conversation = await Conversation.findById(message.conversation_id);
+
+  if (!conversation) return;
 
   const recipientEmail = conversation.participants.find(email => CHATBOT_USERS.includes(email));
 
@@ -37,64 +40,43 @@ const handleIncomingMessage = async (message) => {
   let responseContent = '';
 
   const lowerCaseContent = message.content.toLowerCase();
+  const lang = senderUser.language || 'en';
 
-  const responses = {
-    en: {
-      greeting: `Hello, I'm ${chatbot.name}. How can I help you today?`,
-      howAreYou: `I'm a bot, so I'm always feeling great! How about you?`,
-      whatIsYourName: `My name is ${chatbot.name}.`,
-      default: `You said: "${message.content}". I'm still learning, so I might not understand.`,
-    },
-    he: {
-      greeting: `שלום, אני ${chatbot.name}. איך אוכל לעזור לך היום?`,
-      howAreYou: `אני בוט, אז אני תמיד מרגיש טוב! מה איתך?`,
-      whatIsYourName: `שמי ${chatbot.name}.`,
-      default: `אמרת: "${message.content}". אני עדיין לומדת, אז אולי לא הבנתי.`,
-    },
-    ar: {
-      greeting: `مرحباً، أنا ${chatbot.name}. كيف يمكنني مساعدتك اليوم؟`,
-      howAreYou: `أنا بوت، لذا أنا دائمًا بحالة رائعة! ماذا عنك؟`,
-      whatIsYourName: `اسمي ${chatbot.name}.`,
-      default: `لقد قلت: "${message.content}". ما زلت أتعلم، لذلك قد لا أفهم.`,
-    },
-    ru: {
-      greeting: `Здравствуйте, я ${chatbot.name}. Чем я могу вам помочь сегодня?`,
-      howAreYou: `Я бот, поэтому у меня всегда все отлично! А у вас?`,
-      whatIsYourName: `Меня зовут ${chatbot.name}.`,
-      default: `Вы сказали: "${message.content}". Я все еще учусь, поэтому могу не понять.`,
-    },
-  };
+  // --- Logic ---
+  const isHebrew = lang === 'he';
 
-  const currentResponses = responses[senderUser.language] || responses.en;
-
-  if (lowerCaseContent.includes('hello') || lowerCaseContent.includes('hi') || lowerCaseContent.includes('hey') || lowerCaseContent.includes('shalom') || lowerCaseContent.includes('שלום')) {
-    responseContent = currentResponses.greeting;
-  } else if (lowerCaseContent.includes('how are you') || lowerCaseContent.includes('מה שלומך')) {
-    responseContent = currentResponses.howAreYou;
-  } else if (lowerCaseContent.includes('name') || lowerCaseContent.includes('שם')) {
-    responseContent = currentResponses.whatIsYourName;
-  } else if (lowerCaseContent.includes('help') || lowerCaseContent.includes('support') || lowerCaseContent.includes('עזרה') || lowerCaseContent.includes('תמיכה')) {
-      responseContent = senderUser.language === 'he' 
-          ? "אני כאן כדי לעזור! ניתן לשאול אותי על 'איך סוחרים', 'בטיחות', או 'החשבון שלי'."
-          : "I'm here to help! You can ask me about 'how to trade', 'safety', or 'my account'.";
-  } else if (lowerCaseContent.includes('trade') || lowerCaseContent.includes('swap') || lowerCaseContent.includes('סחר') || lowerCaseContent.includes('החלפה')) {
-      responseContent = senderUser.language === 'he'
-          ? "כדי לבצע החלפה, הכנס לדף של פריט שאהבת ולחץ על 'הצע הצעה'. תוכל להציע פריטים משלך או להוסיף מזומן."
-          : "To make a trade, go to an item's page and click 'Make Offer'. You can offer your own items or add cash.";
-  } else if (lowerCaseContent.includes('scam') || lowerCaseContent.includes('safe') || lowerCaseContent.includes('בטוח') || lowerCaseContent.includes('הונאה')) {
-      responseContent = senderUser.language === 'he'
-          ? "הבטיחות שלך חשובה לנו. לעולם אל תעביר כסף מחוץ לפלטפורמה ואל תמסור פרטים אישיים רגישים. אם נתקלת במשהו חשוד, דווח למנהל."
-          : "Your safety is important. Never transfer money outside the platform and don't share sensitive personal details. Report suspicious activity to an admin.";
+  if (lowerCaseContent.includes('admin') || lowerCaseContent.includes('support') || lowerCaseContent.includes('human') || lowerCaseContent.includes('מנהל') || lowerCaseContent.includes('תמיכה') || lowerCaseContent.includes('נציג') || lowerCaseContent.includes('contact')) {
+      responseContent = isHebrew
+          ? "רשמתי לפניי שאתה זקוק לעזרה אנושית. מנהל עודכן ויבדוק את השיחה בקרוב. ניתן גם לשלוח מייל ל-support@swapx.com."
+          : "I have noted that you need human assistance. An admin has been notified and will review your conversation shortly. You can also email us at support@swapx.com.";
+  } else if (lowerCaseContent.includes('how') || lowerCaseContent.includes('work') || lowerCaseContent.includes('start') || lowerCaseContent.includes('איך') || lowerCaseContent.includes('עובד') || lowerCaseContent.includes('להתחיל')) {
+      responseContent = isHebrew
+          ? "SwapX זה פשוט! 1. פרסם פריט משלך (לחץ על 'הוסף פריט'). 2. דפדף ומצא פריטים מעניינים. 3. הצע החלפה (עם או בלי תוספת מזומן). כשהצד השני מסכים - מחליפים!"
+          : "SwapX is easy! 1. List your own item (click 'List Item'). 2. Browse for items you like. 3. Click 'Make Offer' to propose a trade (you can add cash too!). Once accepted, you swap!";
+  } else if (lowerCaseContent.includes('hello') || lowerCaseContent.includes('hi') || lowerCaseContent.includes('hey') || lowerCaseContent.includes('shalom') || lowerCaseContent.includes('שלום')) {
+      responseContent = isHebrew
+          ? `שלום, אני ${chatbot.name}. איך אוכל לעזור לך היום? נסה לשאול 'איך זה עובד' או בקש 'תמיכה'.`
+          : `Hello, I'm ${chatbot.name}. How can I help you? Try asking 'how it works' or say 'admin' for support.`;
+  } else if (lowerCaseContent.includes('safe') || lowerCaseContent.includes('scam') || lowerCaseContent.includes('money') || lowerCaseContent.includes('בטוח') || lowerCaseContent.includes('כסף')) {
+      responseContent = isHebrew
+          ? "בטיחות היא מעל הכל. לעולם אל תעביר כסף מחוץ לאתר. כל השיחות והעסקאות מתועדות כאן להגנתך."
+          : "Safety is key. Never transfer money outside the platform. All chats and trades are recorded here for your protection.";
   } else {
-    responseContent = currentResponses.default;
+      // Default Fallback
+      responseContent = isHebrew
+          ? `אני עדיין לומדת. נסה לשאול על 'איך זה עובד', 'בטיחות', או בקש 'מנהל' אם אתה צריך עזרה.`
+          : `I'm still learning. Try asking about 'how it works', 'safety', or ask for an 'admin' if you need help.`;
   }
   
-  await sendMessage(conversation._id, responseContent, chatbot.email, io);
+  // Simulate typing delay naturally
+  setTimeout(async () => {
+      await sendMessage(conversation._id, responseContent, chatbot.email, io);
+  }, 1000);
 };
 
 const sendMessage = async (conversationId, content, senderEmail, io) => {
   const message = new Message({
-    conversation_id: conversationId,
+    conversation_id: conversationId.toString(),
     sender_email: senderEmail,
     content,
     type: 'text',

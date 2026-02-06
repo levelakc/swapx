@@ -42,6 +42,19 @@ const CATEGORY_PRICE_RANGES_USD = {
   pets: { min: 20, max: 800 },
   services: { min: 50, max: 3000 },
   other: { min: 20, max: 500 },
+  // New Categories
+  tablets: { min: 100, max: 1500 },
+  drones: { min: 200, max: 3000 },
+  audio: { min: 50, max: 5000 },
+  tv: { min: 200, max: 4000 },
+  scooters: { min: 300, max: 2000 },
+  bicycles: { min: 100, max: 5000 },
+  camping: { min: 20, max: 1000 },
+  books: { min: 5, max: 100 },
+  music: { min: 10, max: 500 },
+  tools: { min: 20, max: 2000 },
+  garden: { min: 20, max: 1500 },
+  kitchen: { min: 30, max: 2000 },
 };
 
 // --- 1. REAL IMAGE DICTIONARY ---
@@ -131,8 +144,41 @@ const CATEGORY_IMAGES = {
   other: [
     { url: 'https://images.unsplash.com/photo-1512418490979-92798cec1380?auto=format&fit=crop&w=800&q=80', title: 'Rare Books', title_he: 'ספרים נדירים' },
     { url: 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=800&q=80', title: 'Classic Guitar', title_he: 'גיטרה קלאסית' }
+  ],
+  tablets: [
+      { url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80', title: 'iPad Pro', title_he: 'אייפד פרו' },
+      { url: 'https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=800&q=80', title: 'Android Tablet', title_he: 'טאבלט אנדרואיד' }
+  ],
+  drones: [
+      { url: 'https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?auto=format&fit=crop&w=800&q=80', title: 'Camera Drone', title_he: 'רחפן צילום' },
+      { url: 'https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&w=800&q=80', title: 'FPV Drone', title_he: 'רחפן מירוץ' }
+  ],
+  audio: [
+      { url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80', title: 'Headphones', title_he: 'אוזניות סטודיו' },
+      { url: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80', title: 'Speaker', title_he: 'רמקול בלוטות\'' }
+  ],
+  tv: [
+      { url: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=800&q=80', title: 'Smart TV', title_he: 'טלוויזיה חכמה' }
+  ],
+  scooters: [
+      { url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80', title: 'Electric Scooter', title_he: 'קורקינט חשמלי' }
+  ],
+  bicycles: [
+      { url: 'https://images.unsplash.com/photo-1485965120184-e224f723d621?auto=format&fit=crop&w=800&q=80', title: 'Mountain Bike', title_he: 'אופני הרים' },
+      { url: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=800&q=80', title: 'Road Bike', title_he: 'אופני כביש' }
+  ],
+  tools: [
+      { url: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?auto=format&fit=crop&w=800&q=80', title: 'Power Drill', title_he: 'מקדחה נטענת' }
+  ],
+  garden: [
+      { url: 'https://images.unsplash.com/photo-1416879741262-12854f213d69?auto=format&fit=crop&w=800&q=80', title: 'Garden Plants', title_he: 'צמחי גינה' }
+  ],
+  kitchen: [
+      { url: 'https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&w=800&q=80', title: 'Coffee Machine', title_he: 'מכונת קפה' },
+      { url: 'https://images.unsplash.com/photo-1584269600519-112d071b35e6?auto=format&fit=crop&w=800&q=80', title: 'Mixer', title_he: 'מיקסר מקצועי' }
   ]
 };
+
 
 async function generateRandomItem(category, user, itemIndex, allCategories) {
   const conditions = ['new', 'like_new', 'excellent', 'good', 'fair'];
@@ -244,20 +290,29 @@ const seedData = async () => {
       { name: 'motorcycles', label_en: 'Motorcycles', icon: 'motorcycle', label_he: 'אופנועים', order: 2 },
       { name: 'boats', label_en: 'Boats', icon: 'boat', label_he: 'סירות', order: 3 },
       { name: 'real_estate', label_en: 'Real Estate', icon: 'building', label_he: 'נדל"ן', order: 4 },
-      { name: 'phones', label_en: 'Phones', icon: 'mobile-alt', label_he: 'טלפונים', order: 5 },
-      { name: 'computers', label_en: 'Computers', icon: 'laptop', label_he: 'מחשבים', order: 6 },
-      { name: 'gaming', label_en: 'Gaming', icon: 'gamepad', label_he: 'גיימינג', order: 7 },
-      { name: 'cameras', label_en: 'Cameras', icon: 'camera-retro', label_he: 'מצלמות', order: 8 },
-      { name: 'watches', label_en: 'Watches', icon: 'watch', label_he: 'שעונים', order: 9 },
-      { name: 'jewelry', label_en: 'Jewelry', icon: 'gem', label_he: 'תכשיטים', order: 10 },
-      { name: 'handbags', label_en: 'Handbags', icon: 'shopping-bag', label_he: 'תיקים', order: 11 },
-      { name: 'sneakers', label_en: 'Sneakers', icon: 'shoe-prints', label_he: 'נעלי ספורט', order: 12 },
-      { name: 'fashion', label_en: 'Fashion', icon: 'tshirt', label_he: 'אופנה', order: 13 },
-      { name: 'furniture', label_en: 'Furniture', icon: 'couch', label_he: 'רהיטים', order: 14 },
-      { name: 'art', label_en: 'Art', icon: 'palette', label_he: 'אמנות', order: 15 },
-      { name: 'pets', label_en: 'Pets', icon: 'paw', label_he: 'חיות מחמד', order: 16 },
-      { name: 'services', label_en: 'Services', icon: 'tools', label_he: 'שירותים', order: 17 },
-      { name: 'other', label_en: 'Other', icon: 'ellipsis-h', label_he: 'אחר', order: 18 },
+      { name: 'phones', label_en: 'Cell Phones', icon: 'mobile-alt', label_he: 'סלולר', order: 5 },
+      { name: 'tablets', label_en: 'Tablets', icon: 'tablet-alt', label_he: 'טאבלטים', order: 6 },
+      { name: 'computers', label_en: 'Computers', icon: 'laptop', label_he: 'מחשבים', order: 7 },
+      { name: 'gaming', label_en: 'Gaming', icon: 'gamepad', label_he: 'גיימינג', order: 8 },
+      { name: 'cameras', label_en: 'Cameras', icon: 'camera-retro', label_he: 'מצלמות', order: 9 },
+      { name: 'drones', label_en: 'Drones', icon: 'plane', label_he: 'רחפנים', order: 10 },
+      { name: 'audio', label_en: 'Audio', icon: 'headphones', label_he: 'אודיו', order: 11 },
+      { name: 'tv', label_en: 'TV & Screens', icon: 'tv', label_he: 'טלוויזיות', order: 12 },
+      { name: 'scooters', label_en: 'Scooters', icon: 'bolt', label_he: 'קורקינטים', order: 13 },
+      { name: 'bicycles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים', order: 14 },
+      { name: 'watches', label_en: 'Watches', icon: 'watch', label_he: 'שעונים', order: 15 },
+      { name: 'jewelry', label_en: 'Jewelry', icon: 'gem', label_he: 'תכשיטים', order: 16 },
+      { name: 'handbags', label_en: 'Handbags', icon: 'shopping-bag', label_he: 'תיקים', order: 17 },
+      { name: 'sneakers', label_en: 'Sneakers', icon: 'shoe-prints', label_he: 'נעלי ספורט', order: 18 },
+      { name: 'fashion', label_en: 'Fashion', icon: 'tshirt', label_he: 'אופנה', order: 19 },
+      { name: 'furniture', label_en: 'Furniture', icon: 'couch', label_he: 'רהיטים', order: 20 },
+      { name: 'kitchen', label_en: 'Kitchen', icon: 'utensils', label_he: 'מטבח', order: 21 },
+      { name: 'garden', label_en: 'Garden', icon: 'leaf', label_he: 'גינה', order: 22 },
+      { name: 'tools', label_en: 'Tools', icon: 'tools', label_he: 'כלי עבודה', order: 23 },
+      { name: 'art', label_en: 'Art', icon: 'palette', label_he: 'אמנות', order: 24 },
+      { name: 'pets', label_en: 'Pets', icon: 'paw', label_he: 'חיות מחמד', order: 25 },
+      { name: 'services', label_en: 'Services', icon: 'briefcase', label_he: 'שירותים', order: 26 },
+      { name: 'other', label_en: 'Other', icon: 'ellipsis-h', label_he: 'אחר', order: 27 },
     ];
     const createdCategories = await Category.insertMany(categoriesToCreate);
     console.log('Categories seeded.');
