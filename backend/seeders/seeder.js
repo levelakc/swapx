@@ -285,36 +285,78 @@ const seedData = async () => {
     console.log('Data cleared successfully.');
 
     // --- CATEGORIES ---
-    const categoriesToCreate = [
-      { name: 'cars', label_en: 'Cars', icon: 'car', label_he: 'מכוניות', order: 1 },
-      { name: 'motorcycles', label_en: 'Motorcycles', icon: 'motorcycle', label_he: 'אופנועים', order: 2 },
-      { name: 'boats', label_en: 'Boats', icon: 'boat', label_he: 'סירות', order: 3 },
-      { name: 'real_estate', label_en: 'Real Estate', icon: 'building', label_he: 'נדל"ן', order: 4 },
-      { name: 'phones', label_en: 'Cell Phones', icon: 'mobile-alt', label_he: 'סלולר', order: 5 },
-      { name: 'tablets', label_en: 'Tablets', icon: 'tablet-alt', label_he: 'טאבלטים', order: 6 },
-      { name: 'computers', label_en: 'Computers', icon: 'laptop', label_he: 'מחשבים', order: 7 },
-      { name: 'gaming', label_en: 'Gaming', icon: 'gamepad', label_he: 'גיימינג', order: 8 },
-      { name: 'cameras', label_en: 'Cameras', icon: 'camera-retro', label_he: 'מצלמות', order: 9 },
-      { name: 'drones', label_en: 'Drones', icon: 'plane', label_he: 'רחפנים', order: 10 },
-      { name: 'audio', label_en: 'Audio', icon: 'headphones', label_he: 'אודיו', order: 11 },
-      { name: 'tv', label_en: 'TV & Screens', icon: 'tv', label_he: 'טלוויזיות', order: 12 },
-      { name: 'scooters', label_en: 'Scooters', icon: 'bolt', label_he: 'קורקינטים', order: 13 },
-      { name: 'bicycles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים', order: 14 },
-      { name: 'watches', label_en: 'Watches', icon: 'watch', label_he: 'שעונים', order: 15 },
-      { name: 'jewelry', label_en: 'Jewelry', icon: 'gem', label_he: 'תכשיטים', order: 16 },
-      { name: 'handbags', label_en: 'Handbags', icon: 'shopping-bag', label_he: 'תיקים', order: 17 },
-      { name: 'sneakers', label_en: 'Sneakers', icon: 'shoe-prints', label_he: 'נעלי ספורט', order: 18 },
-      { name: 'fashion', label_en: 'Fashion', icon: 'tshirt', label_he: 'אופנה', order: 19 },
-      { name: 'furniture', label_en: 'Furniture', icon: 'couch', label_he: 'רהיטים', order: 20 },
-      { name: 'kitchen', label_en: 'Kitchen', icon: 'utensils', label_he: 'מטבח', order: 21 },
-      { name: 'garden', label_en: 'Garden', icon: 'leaf', label_he: 'גינה', order: 22 },
-      { name: 'tools', label_en: 'Tools', icon: 'tools', label_he: 'כלי עבודה', order: 23 },
-      { name: 'art', label_en: 'Art', icon: 'palette', label_he: 'אמנות', order: 24 },
-      { name: 'pets', label_en: 'Pets', icon: 'paw', label_he: 'חיות מחמד', order: 25 },
-      { name: 'services', label_en: 'Services', icon: 'briefcase', label_he: 'שירותים', order: 26 },
-      { name: 'other', label_en: 'Other', icon: 'ellipsis-h', label_he: 'אחר', order: 27 },
+    const mainCategoriesData = [
+      { name: 'electronics', label_en: 'Electronics', label_he: 'אלקטרוניקה', icon: 'zap' },
+      { name: 'vehicles', label_en: 'Vehicles', label_he: 'רכב', icon: 'car' },
+      { name: 'fashion_main', label_en: 'Fashion', label_he: 'אופנה', icon: 'shirt' },
+      { name: 'home', label_en: 'Home & Garden', label_he: 'בית וגן', icon: 'home' },
+      { name: 'real_estate_main', label_en: 'Real Estate', label_he: 'נדל"ן', icon: 'building' },
+      { name: 'lifestyle', label_en: 'Lifestyle', label_he: 'פנאי', icon: 'smile' },
+      { name: 'services_main', label_en: 'Services', label_he: 'שירותים', icon: 'briefcase' },
+      { name: 'other_main', label_en: 'Other', label_he: 'אחר', icon: 'circle' }
     ];
-    const createdCategories = await Category.insertMany(categoriesToCreate);
+    
+    const mainCategories = {};
+    const createdCategories = [];
+
+    for (const cat of mainCategoriesData) {
+        const newCat = await Category.create({ ...cat, parent: null });
+        mainCategories[cat.name] = newCat;
+        // We DON'T add parents to createdCategories for item seeding, we want specific items
+    }
+
+    const subCategoriesData = [
+        // Electronics
+        { name: 'phones', parent: 'electronics', label_en: 'Cell Phones', icon: 'smartphone', label_he: 'סלולר' },
+        { name: 'tablets', parent: 'electronics', label_en: 'Tablets', icon: 'tablet', label_he: 'טאבלטים' },
+        { name: 'computers', parent: 'electronics', label_en: 'Computers', icon: 'monitor', label_he: 'מחשבים' },
+        { name: 'gaming', parent: 'electronics', label_en: 'Gaming', icon: 'gamepad', label_he: 'גיימינג' },
+        { name: 'cameras', parent: 'electronics', label_en: 'Cameras', icon: 'camera', label_he: 'מצלמות' },
+        { name: 'audio', parent: 'electronics', label_en: 'Audio', icon: 'headphones', label_he: 'אודיו' },
+        { name: 'tv', parent: 'electronics', label_en: 'TV & Screens', icon: 'tv', label_he: 'טלוויזיות' },
+        { name: 'drones', parent: 'electronics', label_en: 'Drones', icon: 'send', label_he: 'רחפנים' },
+
+        // Vehicles
+        { name: 'cars', parent: 'vehicles', label_en: 'Cars', icon: 'car', label_he: 'מכוניות' },
+        { name: 'motorcycles', parent: 'vehicles', label_en: 'Motorcycles', icon: 'bike', label_he: 'אופנועים' },
+        { name: 'boats', parent: 'vehicles', label_en: 'Boats', icon: 'anchor', label_he: 'סירות' },
+        { name: 'scooters', parent: 'vehicles', label_en: 'Scooters', icon: 'wind', label_he: 'קורקינטים' },
+        { name: 'bicycles', parent: 'vehicles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים' },
+
+        // Fashion
+        { name: 'fashion', parent: 'fashion_main', label_en: 'Clothing', icon: 'shirt', label_he: 'ביגוד' },
+        { name: 'sneakers', parent: 'fashion_main', label_en: 'Sneakers', icon: 'footprints', label_he: 'נעליים' },
+        { name: 'watches', parent: 'fashion_main', label_en: 'Watches', icon: 'watch', label_he: 'שעונים' },
+        { name: 'jewelry', parent: 'fashion_main', label_en: 'Jewelry', icon: 'diamond', label_he: 'תכשיטים' },
+        { name: 'handbags', parent: 'fashion_main', label_en: 'Handbags', icon: 'shopping-bag', label_he: 'תיקים' },
+
+        // Home
+        { name: 'furniture', parent: 'home', label_en: 'Furniture', icon: 'sofa', label_he: 'רהיטים' },
+        { name: 'kitchen', parent: 'home', label_en: 'Kitchen', icon: 'coffee', label_he: 'מטבח' },
+        { name: 'garden', parent: 'home', label_en: 'Garden', icon: 'flower', label_he: 'גינה' },
+        { name: 'tools', parent: 'home', label_en: 'Tools', icon: 'tool', label_he: 'כלי עבודה' },
+
+        // Real Estate
+        { name: 'real_estate', parent: 'real_estate_main', label_en: 'Properties', icon: 'home', label_he: 'נכסים' },
+
+        // Lifestyle
+        { name: 'art', parent: 'lifestyle', label_en: 'Art', icon: 'palette', label_he: 'אמנות' },
+        { name: 'pets', parent: 'lifestyle', label_en: 'Pets', icon: 'dog', label_he: 'חיות מחמד' },
+        { name: 'books', parent: 'lifestyle', label_en: 'Books', icon: 'book', label_he: 'ספרים' },
+        { name: 'music', parent: 'lifestyle', label_en: 'Musical Instruments', icon: 'music', label_he: 'כלי נגינה' },
+
+        // Services
+        { name: 'services', parent: 'services_main', label_en: 'General Services', icon: 'briefcase', label_he: 'שירותים כלליים' },
+
+        // Other
+        { name: 'other', parent: 'other_main', label_en: 'Other', icon: 'box', label_he: 'אחר' }
+    ];
+
+    for (const sub of subCategoriesData) {
+        const parentCat = mainCategories[sub.parent];
+        const newCat = await Category.create({ ...sub, parent: parentCat._id });
+        createdCategories.push(newCat);
+    }
     console.log('Categories seeded.');
 
     // --- USERS ---

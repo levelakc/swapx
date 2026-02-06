@@ -5,8 +5,11 @@ const {
   createConversation,
   getConversationMessages,
   sendMessage,
+  startSupportChat,
 } = require('../controllers/conversationController');
 const { protect } = require('../middleware/authMiddleware');
+
+router.post('/support', protect, startSupportChat);
 
 router.route('/')
   .get(protect, getUserConversations)

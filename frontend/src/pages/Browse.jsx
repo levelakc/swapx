@@ -75,6 +75,13 @@ export default function Browse({ listingType = 'item' }) {
 
       {/* Main Content */}
       <div className="flex-1 w-full min-w-0">
+        <div className="mb-6">
+            <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                {t('browseItems')}
+            </h1>
+            <p className="text-muted-foreground mt-1">{t('browseItemsSubtitle', 'Discover unique items to trade')}</p>
+        </div>
+
         <CategoryFilter selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
         
         <div className="flex flex-wrap gap-4 justify-between items-center mb-6 bg-card p-4 rounded-xl shadow-sm border">
@@ -84,7 +91,7 @@ export default function Browse({ listingType = 'item' }) {
                 className="lg:hidden flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-content rounded-lg font-medium hover:bg-secondary/90 transition-colors"
              >
                 <Filter size={18} />
-                Filters
+                {t('filters', 'Filters')}
              </button>
              <p className="text-sm font-medium text-muted-foreground hidden sm:block">{items.length} {t('itemsFoundSuffix', 'items found')}</p>
           </div>
@@ -111,7 +118,7 @@ export default function Browse({ listingType = 'item' }) {
         {error && <p className="text-red-500 text-center mt-20">{t('errorLoadingItems', 'Error loading items')}: {error.message}</p>}
         {!isLoading && !error && items.length === 0 && (
             <div className="text-center mt-20 text-muted-foreground">
-                <p>No items found matching your criteria.</p>
+                <p>{t('noItemsFoundMatching', 'No items found matching your criteria.')}</p>
             </div>
         )}
 

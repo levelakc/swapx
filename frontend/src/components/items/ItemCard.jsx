@@ -41,7 +41,7 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete }
           </div>
           <div className="flex items-center text-sm text-muted-foreground mt-1">
             <MapPin className="w-4 h-4 mr-1" />
-            <span>{t(item.location) || t('notSpecified')}</span>
+            <span>{item.location || t('notSpecified', 'Not specified')}</span>
           </div>
           {showActions && (
             <div className="flex justify-end space-x-2 mt-4">

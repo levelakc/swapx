@@ -2,16 +2,40 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
+const Conversation = require('../models/Conversation');
+const Message = require('../models/Message');
+const { getChatbotForLanguage } = require('../services/chatbotService');
 const dotenv = require('dotenv');
 
 dotenv.config();
+
+const initChatbot = async (user) => {
+    const chatbot = getChatbotForLanguage(user.language || 'en');
+    const welcomeMessage = {
+      en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
+      he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+    };
+    const content = welcomeMessage[user.language] || welcomeMessage.en;
+
+    const conversation = await Conversation.create({
+      participants: [user.email, chatbot.email],
+      last_message: content,
+      last_message_at: Date.now(),
+    });
+
+    await Message.create({
+      conversation_id: conversation._id,
+      sender_email: chatbot.email,
+      content: content,
+    });
+};
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || 'PLACEHOLDER_ID',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'PLACEHOLDER_SECRET',
-      callbackURL: 'http://localhost:8000/api/auth/google/callback',
+      callbackURL: `${process.env.BASE_URL || 'http://localhost:8000'}/api/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -29,6 +53,8 @@ passport.use(
           verification_status: 'verified',
         });
 
+        await initChatbot(user);
+
         done(null, user);
       } catch (error) {
         done(error, null);
@@ -42,7 +68,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID || 'PLACEHOLDER_ID',
       clientSecret: process.env.FACEBOOK_APP_SECRET || 'PLACEHOLDER_SECRET',
-      callbackURL: 'http://localhost:8000/api/auth/facebook/callback',
+      callbackURL: `${process.env.BASE_URL || 'http://localhost:8000'}/api/auth/facebook/callback`,
       profileFields: ['id', 'displayName', 'photos', 'email'],
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -61,6 +87,8 @@ passport.use(
           avatar: profile.photos ? profile.photos[0].value : `https://avatar.vercel.sh/${profile.displayName}.svg`,
           verification_status: 'verified',
         });
+
+        await initChatbot(user);
 
         done(null, user);
       } catch (error) {

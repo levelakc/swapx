@@ -1,15 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getMe, updateMe, getMyItems, deleteItem } from '../api/api';
+import { getMe, updateMe, getMyItems, deleteItem, startSupportChat } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus } from 'lucide-react';
+import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import ItemCard from '../components/items/ItemCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm();
   
   const { data: user, isLoading, error } = useQuery({
@@ -61,15 +62,16 @@ export default function Profile() {
   };
 
   const handleEditItem = (id) => {
-      // Navigate to edit page (create one if needed, or reuse CreateItem with ID)
-      // For now, assume /create?edit=id or similar, or just toast "Edit coming soon"
-      // Or simply navigate to /item/:id which has edit button if owner?
-      // Let's assume we want to route to /create/${id} or similar.
-      // But CreateItem is /create.
-      // I'll leave it as a toast for now or basic link.
-      // Actually, standard is /item/:id/edit.
       window.location.href = `/create?edit=${id}`; // Simple query param
   };
+
+  const supportMutation = useMutation({
+      mutationFn: startSupportChat,
+      onSuccess: () => {
+          navigate('/messages');
+      },
+      onError: (err) => toast.error(err.message)
+  });
 
   if (isLoading) return <div className="flex justify-center mt-8"><Loader2 className="w-10 h-10 animate-spin"/></div>
   if (error) return <p className="text-red-500 text-center mt-8">Please log in to view your profile.</p>
@@ -92,9 +94,19 @@ export default function Profile() {
                 <Mail className="w-4 h-4 mr-2" />{user.email}
               </p>
               <textarea {...register('bio')} rows="3" className="w-full text-lg text-muted-foreground mt-2 bg-transparent focus:bg-input rounded-md p-2" placeholder="Your bio..."/>
-              <button type="submit" className="mt-2 bg-secondary text-secondary-content px-4 py-2 rounded-md text-sm">
-                {updateMutation.isLoading ? <Loader2 className="animate-spin" /> : 'Save Changes'}
-              </button>
+              <div className="flex gap-2 mt-2 justify-center md:justify-start">
+                <button type="submit" className="bg-secondary text-secondary-content px-4 py-2 rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors">
+                    {updateMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : 'Save Changes'}
+                </button>
+                <button 
+                    type="button" 
+                    onClick={() => supportMutation.mutate()} 
+                    disabled={supportMutation.isLoading}
+                    className="bg-blue-100 text-blue-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-200 transition-colors flex items-center"
+                >
+                    {supportMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <><MessageCircle className="w-4 h-4 mr-2"/> {t('contactSupport')}</>}
+                </button>
+              </div>
             </form>
           </div>
         </div>

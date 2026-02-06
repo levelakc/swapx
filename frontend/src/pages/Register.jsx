@@ -31,11 +31,11 @@ export default function Register() {
   };
 
   const handleGoogleLogin = () => {
-      window.location.href = 'http://localhost:8000/api/auth/google';
+      window.location.href = `${process.env.REACT_APP_API_URL || 'http://localhost:8000/api'}/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-      window.location.href = 'http://localhost:8000/api/auth/facebook';
+      window.location.href = `${process.env.REACT_APP_API_URL || 'http://localhost:8000/api'}/auth/facebook`;
   };
 
   return (

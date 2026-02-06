@@ -4,7 +4,7 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const Item = require('../models/Item');
 const { getIO } = require('../socket'); // Corrected import
-const { handleIncomingMessage } = require('../services/chatbotService');
+const { handleIncomingMessage, getChatbotForLanguage } = require('../services/chatbotService');
 
 // @desc    Get user's conversations
 // @route   GET /api/conversations
@@ -163,7 +163,7 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 
   const message = new Message({
-    conversation_id: conversationId,
+    conversation_id: conversationId.toString(),
     sender_email: current_user_email,
     content,
     type: type || 'text',
@@ -194,9 +194,46 @@ const sendMessage = asyncHandler(async (req, res) => {
   res.status(201).json(messages);
 });
 
+// @desc    Start or get support chat
+// @route   POST /api/conversations/support
+// @access  Private
+const startSupportChat = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const chatbot = getChatbotForLanguage(user.language || 'en');
+
+  // Check if conversation exists
+  let conversation = await Conversation.findOne({
+    participants: { $all: [user.email, chatbot.email] },
+  });
+
+  if (!conversation) {
+    const welcomeMessage = {
+      en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
+      he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+    };
+    const content = welcomeMessage[user.language] || welcomeMessage.en;
+
+    conversation = await Conversation.create({
+      participants: [user.email, chatbot.email],
+      last_message: content,
+      last_message_at: Date.now(),
+      unread_count: { [user.email]: 1 },
+    });
+
+    await Message.create({
+      conversation_id: conversation._id.toString(),
+      sender_email: chatbot.email,
+      content: content,
+    });
+  }
+
+  res.json(conversation);
+});
+
 module.exports = {
   getUserConversations,
   createConversation,
   getConversationMessages,
   sendMessage,
+  startSupportChat,
 };

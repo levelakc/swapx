@@ -21,7 +21,7 @@ export default function ServiceCard({ service }) {
             className="w-full h-48 object-cover rounded-t-lg"
           />
           <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-bold flex items-center shadow-lg">
-            {currencySymbol}{displayRate.toLocaleString()}/hr
+            {currencySymbol}{displayRate.toLocaleString()}{t('perHour', '/hr')}
           </div>
         </div>
         <div className="p-4">
@@ -39,7 +39,7 @@ export default function ServiceCard({ service }) {
           </div>
           <div className="flex items-center text-sm text-muted-foreground mt-1">
             <Clock className="w-4 h-4 mr-1 text-primary" />
-            <span>{service.availability || 'Flexible'}</span>
+            <span>{service.availability || t('flexible', 'Flexible')}</span>
           </div>
         </div>
       </FuturisticCard>

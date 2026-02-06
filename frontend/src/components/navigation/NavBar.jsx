@@ -97,7 +97,7 @@ export default function NavBar() {
                         </button>
                     </>
                 ) : (
-                    <button onClick={() => setIsSearchOpen(true)} className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground">
+                    <button onClick={() => setIsSearchOpen(true)} className="hidden md:block p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground">
                         <Search className="h-5 w-5"/>
                     </button>
                 )}
@@ -128,7 +128,7 @@ export default function NavBar() {
 
             {/* User Profile / Auth */}
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2">
                 {/* Coins Badge */}
                 <Link to="/coins" className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-yellow-500/10 text-yellow-600 rounded-full text-sm font-bold hover:bg-yellow-500/20 transition-colors">
                     <Coins size={14} />
@@ -151,7 +151,7 @@ export default function NavBar() {
                   </Link>
                   
                   {/* Dropdown */}
-                  <div className="absolute right-0 mt-2 w-56 bg-background rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right border border-border">
+                  <div className="hidden md:block absolute right-0 mt-2 w-56 bg-background rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right border border-border">
                     <div className="px-4 py-2 border-b border-border mb-2">
                         <p className="font-semibold text-sm truncate">{user.full_name}</p>
                         <p className="text-xs text-muted-foreground truncate">{user.email}</p>
@@ -192,14 +192,44 @@ export default function NavBar() {
               </div>
             )}
             
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
+            {/* Mobile Menu Button & Icons */}
+            <div className="md:hidden flex items-center gap-2 sm:gap-4">
               <button 
-                onClick={() => setIsOpen(!isOpen)} 
-                className="p-2 rounded-lg text-muted-foreground hover:bg-muted focus:outline-none"
+                onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none"
               >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                <Search className="h-5 w-5" />
               </button>
+
+              <NavLink to="/browse" className={({ isActive }) => `p-2 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
+                <Compass className="h-5 w-5" />
+              </NavLink>
+
+              <NavLink to="/services" className={({ isActive }) => `p-2 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
+                <Briefcase className="h-5 w-5" />
+              </NavLink>
+
+              {user ? (
+                <>
+                    <NavLink to="/messages" className={({ isActive }) => `p-2 transition-colors relative ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
+                        <MessageCircle className="h-5 w-5" />
+                    </NavLink>
+                    <Link to="/coins" className="p-2 text-yellow-600">
+                        <Coins className="h-5 w-5" />
+                    </Link>
+                    <Link to="/profile" className="p-1">
+                        <img 
+                            src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
+                            alt="Avatar" 
+                            className="h-7 w-7 rounded-full object-cover ring-2 ring-transparent active:ring-primary transition-all"
+                        />
+                    </Link>
+                </>
+              ) : (
+                  <Link to="/login" className="p-2 text-muted-foreground hover:text-foreground">
+                    <User className="h-6 w-6" />
+                  </Link>
+              )}
             </div>
           </div>
         </div>
@@ -221,6 +251,13 @@ export default function NavBar() {
                     className={({ isActive }) => `block px-4 py-3 rounded-lg text-base font-medium ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`}
                 >
                     {t('browseItems', 'Browse')}
+                </NavLink>
+                <NavLink 
+                    to="/services" 
+                    onClick={() => setIsOpen(false)}
+                    className={({ isActive }) => `block px-4 py-3 rounded-lg text-base font-medium ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`}
+                >
+                    {t('browseServices', 'Services')}
                 </NavLink>
                 
                 <div className="border-t border-border my-2 pt-2 grid grid-cols-2 gap-2">
