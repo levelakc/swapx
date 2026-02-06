@@ -179,38 +179,47 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                         </h3>
                         
                         <div className="flex p-1 bg-muted rounded-lg mb-4">
-                            <button onClick={() => setCashMode('none')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'none' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>None</button>
-                            <button onClick={() => setCashMode('add')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'add' ? 'bg-background shadow-sm text-green-600' : 'text-muted-foreground hover:text-foreground'}`}>I Add Cash 💸</button>
-                            <button onClick={() => setCashMode('request')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'request' ? 'bg-background shadow-sm text-blue-600' : 'text-muted-foreground hover:text-foreground'}`}>I Request Cash 🤲</button>
+                            <button onClick={() => setCashMode('none')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'none' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{t('none', 'None')}</button>
+                            <button onClick={() => setCashMode('add')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'add' ? 'bg-background shadow-sm text-green-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iAddCash', 'I Add Cash')}</button>
+                            <button onClick={() => setCashMode('request')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'request' ? 'bg-background shadow-sm text-blue-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iRequestCash', 'I Request Cash')}</button>
                         </div>
 
-                        {cashMode !== 'none' && (
-                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xl font-bold text-foreground">{currencySymbol}</span>
-                                    <input 
-                                        type="number" 
-                                        value={cashAmount} 
-                                        onChange={(e) => setCashAmount(Number(e.target.value))}
-                                        className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1"
-                                        placeholder="0"
-                                        autoFocus
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    {quickCashOptions.map(amount => (
-                                        <button 
-                                            key={amount} 
-                                            onClick={() => setCashAmount(prev => prev + amount)}
-                                            className="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-full font-medium transition-colors"
-                                        >
-                                            +{currencySymbol}{amount}
-                                        </button>
-                                    ))}
-                                    <button onClick={() => setCashAmount(0)} className="px-3 py-1 text-xs bg-red-100 text-red-600 hover:bg-red-200 rounded-full font-medium transition-colors ml-auto">Clear</button>
-                                </div>
-                            </motion.div>
-                        )}
+                        <div className="min-h-[80px]">
+                            <AnimatePresence mode="wait">
+                                {cashMode !== 'none' && (
+                                    <motion.div 
+                                        key={cashMode}
+                                        initial={{ opacity: 0, y: 10 }} 
+                                        animate={{ opacity: 1, y: 0 }} 
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="space-y-3"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xl font-bold text-foreground">{currencySymbol}</span>
+                                            <input 
+                                                type="number" 
+                                                value={cashAmount} 
+                                                onChange={(e) => setCashAmount(Number(e.target.value))}
+                                                className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors"
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {quickCashOptions.map(amount => (
+                                                <button 
+                                                    key={amount} 
+                                                    onClick={() => setCashAmount(prev => prev + amount)}
+                                                    className="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-full font-medium transition-colors"
+                                                >
+                                                    +{currencySymbol}{amount}
+                                                </button>
+                                            ))}
+                                            <button onClick={() => setCashAmount(0)} className="px-3 py-1 text-xs bg-red-100 text-red-600 hover:bg-red-200 rounded-full font-medium transition-colors ml-auto">{t('clear', 'Clear')}</button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </section>
 
                     {/* Section 3: Message */}
