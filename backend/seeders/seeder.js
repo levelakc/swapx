@@ -45,21 +45,43 @@ const CATEGORY_PRICE_RANGES_USD = {
 };
 
 const CATEGORY_IMAGES = {
-  cars: [
-    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=1000&auto=format&fit=crop', title: 'Luxury Sport Car', title_he: 'מכונית ספורט יוקרתית' },
-    { url: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1000&auto=format&fit=crop', title: 'Classic Red Car', title_he: 'מכונית קלאסית אדומה' }
-  ],
   phones: [
-    { url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1000&auto=format&fit=crop', title: 'Modern Smartphone', title_he: 'טלפון חכם חדיש' }
+    { url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800&auto=format&fit=crop', title: 'iPhone 15 Pro', title_he: 'אייפון 15 פרו' },
+    { url: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800&auto=format&fit=crop', title: 'Samsung Galaxy S23', title_he: 'סמסונג גלקסי S23' },
+    { url: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=800&auto=format&fit=crop', title: 'Google Pixel 8', title_he: 'גוגל פיקסל 8' }
   ],
   computers: [
-    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=1000&auto=format&fit=crop', title: 'High-end Laptop', title_he: 'מחשב נייד עוצמתי' }
+    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop', title: 'MacBook Air M2', title_he: 'מקבוק אייר M2' },
+    { url: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=800&auto=format&fit=crop', title: 'Dell XPS 15', title_he: 'דל XPS 15' },
+    { url: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=800&auto=format&fit=crop', title: 'Gaming PC Setup', title_he: 'מחשב גיימינג עוצמתי' }
+  ],
+  cars: [
+    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=800&auto=format&fit=crop', title: 'Porsche 911', title_he: 'פורשה 911' },
+    { url: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=800&auto=format&fit=crop', title: 'Tesla Model 3', title_he: 'טסלה מודל 3' },
+    { url: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=800&auto=format&fit=crop', title: 'Range Rover Sport', title_he: 'ריינג׳ רובר ספורט' }
   ],
   watches: [
-    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop', title: 'Luxury Watch', title_he: 'שעון יוקרה' }
+    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', title: 'Rolex Submariner', title_he: 'רולקס סאבמרינר' },
+    { url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop', title: 'Apple Watch Ultra', title_he: 'אפל ווטש אולטרה' }
+  ],
+  furniture: [
+    { url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop', title: 'Modern Velvet Sofa', title_he: 'ספת קטיפה מודרנית' },
+    { url: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800&auto=format&fit=crop', title: 'Designer Lounge Chair', title_he: 'כסא מעצבים' }
+  ],
+  gaming: [
+    { url: 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=800&auto=format&fit=crop', title: 'PlayStation 5', title_he: 'פלייסטיישן 5' },
+    { url: 'https://images.unsplash.com/photo-1621259182903-06dc1c460599?q=80&w=800&auto=format&fit=crop', title: 'Xbox Series X', title_he: 'אקסבוקס Series X' }
+  ],
+  cameras: [
+    { url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop', title: 'Sony A7 IV', title_he: 'סוני A7 IV' },
+    { url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=800&auto=format&fit=crop', title: 'Fujifilm X-T5', title_he: 'פוג׳יפילם X-T5' }
+  ],
+  sneakers: [
+    { url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop', title: 'Air Jordan 1', title_he: 'אייר ג׳ורדן 1' },
+    { url: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?q=80&w=800&auto=format&fit=crop', title: 'Yeezy Boost 350', title_he: 'איזי בוסט 350' }
   ],
   other: [
-    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop', title: 'Quality Item', title_he: 'פריט איכותי' }
+    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', title: 'Premium Item', title_he: 'פריט איכותי' }
   ]
 };
 
@@ -68,66 +90,51 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   const conditions = ['new', 'like_new', 'excellent', 'good', 'fair'];
   const cashFlexibilities = ['willing_to_add', 'willing_to_receive', 'both', 'trade_only'];
   
-  // Weights for condition: more likely to be excellent/good than fair
-  const conditionWeights = [0.1, 0.3, 0.3, 0.2, 0.1];
-  const randomCondition = conditions[
-      conditionWeights.reduce((acc, weight, i) => {
-          const r = Math.random();
-          return r < weight + (acc.sum || 0) && !acc.found ? { sum: acc.sum + weight, found: true, index: i } : { sum: acc.sum + weight, found: acc.found, index: acc.index };
-      }, { sum: 0, found: false, index: 0 }).index
-  ];
-  
+  const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
 
-  // Select a real image and title
+  // Select unique image from dictionary based on itemIndex
   const categoryAssets = CATEGORY_IMAGES[category.name] || CATEGORY_IMAGES['other'];
-  const randomAsset = categoryAssets[Math.floor(Math.random() * categoryAssets.length)];
+  const assetIndex = itemIndex % categoryAssets.length;
+  const randomAsset = categoryAssets[assetIndex];
 
-  let title;
-  // Always favor Hebrew title if user is in Israel (for main title field)
-  if (randomAsset.title_he) {
-    title = randomAsset.title_he;
-  } else {
-    title = randomAsset.title;
-  }
+  let title = randomAsset.title_he || randomAsset.title;
 
-  // Adding the user name to description to help identify ownership easily in UI
   let description;
   let description_en;
-  const itemType = category.label_he || category.label_en;
-  const itemTypeEn = category.label_en || category.label_he;
+  const itemTypeHe = category.label_he || 'פריט';
+  const itemTypeEn = category.label_en || 'Item';
   
   const hebrewDescriptions = [
-      `פריט ${itemType} במצב מעולה, נמכר עקב מעבר דירה.`, 
-      `שמרתי על ה${itemType} הזה בקנאות. מוכן להחלפה על משהו מעניין.`, 
-      `הזדמנות חד פעמית להשיג ${itemType} איכותי מבית טוב.`, 
-      `מוצר כמעט חדש לחלוטין, בקושי היה בשימוש. גמיש במחיר לרציניים.`, 
-      `מחפש להחליף את ה${itemType} הזה בציוד ספורט או אלקטרוניקה.`, 
+      `פריט ${itemTypeHe} במצב מעולה, כמעט לא היה בשימוש.`, 
+      `שמרתי על ה${itemTypeHe} הזה בקנאות. מוכן להחלפה מעניינת.`, 
+      `הזדמנות להשיג ${itemTypeHe} איכותי במחיר הוגן.`, 
+      `מוצר שמור מאוד, מגיע עם כל האביזרים.`, 
+      `מחפש לשדרג את ה${itemTypeHe} שלי למשהו חדש.`, 
   ];
 
   const englishDescriptions = [
-      `${itemTypeEn} item in excellent condition, sold due to moving.`,
-      `I kept this ${itemTypeEn} in great shape. Ready to trade for something interesting.`,
-      `One-time opportunity to get a high-quality ${itemTypeEn} from a good home.`,
-      `Almost completely new product, barely used. Flexible on price for serious buyers.`,
-      `Looking to swap this ${itemTypeEn} for sports equipment or electronics.`
+      `${itemTypeEn} in excellent condition, barely used.`,
+      `I kept this ${itemTypeEn} in great shape. Open to trades.`,
+      `Opportunity to get a high-quality ${itemTypeEn} at a fair price.`,
+      `Very well maintained, comes with all original accessories.`,
+      `Looking to upgrade my ${itemTypeEn} to something newer.`
   ];
   
-  const descIndex = Math.floor(Math.random() * hebrewDescriptions.length);
+  const descIndex = (itemIndex + Math.floor(Math.random() * 5)) % hebrewDescriptions.length;
   description = hebrewDescriptions[descIndex];
   description_en = englishDescriptions[descIndex];
 
-  const priceRange = CATEGORY_PRICE_RANGES_USD[category.name] || { min: 30, max: 300 };
+  const priceRange = CATEGORY_PRICE_RANGES_USD[category.name] || { min: 50, max: 500 };
   const estimated_value = Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
 
-  // Realistic looking for
-  const numLookingFor = Math.floor(Math.random() * 3) + 1; // 1 to 3 categories
+  const numLookingFor = Math.floor(Math.random() * 2) + 1;
   const lookingFor = [];
   if (allCategories && allCategories.length > 0) {
     for (let i = 0; i < numLookingFor; i++) {
-      const randomCategory = allCategories[Math.floor(Math.random() * allCategories.length)];
-      if (!lookingFor.includes(randomCategory._id)) {
-        lookingFor.push(randomCategory._id);
+      const randomCat = allCategories[Math.floor(Math.random() * allCategories.length)];
+      if (!lookingFor.includes(randomCat._id)) {
+        lookingFor.push(randomCat._id);
       }
     }
   }
@@ -138,11 +145,11 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     description: description,
     description_translations: { en: description_en, he: description },
     category: category._id,
-    listing_type: category.name === 'services' ? 'service' : 'item',
+    listing_type: 'item',
     estimated_value: estimated_value,
     condition: randomCondition,
     images: [randomAsset.url],
-    location: user.location,
+    location: user.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],
     attributes: {}, 
     looking_for: lookingFor, 
     cash_flexibility: randomCashFlexibility,
@@ -150,7 +157,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     seller_full_name: user.full_name,
     seller_avatar: user.avatar,
     seller_bio: user.bio,
-    seller_location: user.location
+    seller_location: user.location || 'Israel'
   };
 }
 
