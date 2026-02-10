@@ -20,12 +20,14 @@ export default function MyItems() {
     retry: false,
   });
 
-  const { data: items = [], isLoading, error } = useQuery({
+  const { data: myItemsData, isLoading, error } = useQuery({
     queryKey: ['items', 'my'],
     queryFn: getMyItems,
     enabled: !!user,
   });
   
+  const items = myItemsData?.items || [];
+
   const deleteMutation = useMutation({
     mutationFn: (itemId) => deleteItem(itemId),
     onSuccess: () => {
@@ -76,9 +78,9 @@ export default function MyItems() {
 
 
   const groupedItems = {
-    active: items.filter(i => i.status === 'active'),
-    pending: items.filter(i => i.status === 'pending'),
-    traded: items.filter(i => i.status === 'traded'),
+    active: Array.isArray(items) ? items.filter(i => i.status === 'active') : [],
+    pending: Array.isArray(items) ? items.filter(i => i.status === 'pending') : [],
+    traded: Array.isArray(items) ? items.filter(i => i.status === 'traded') : [],
   };
   
   const tabs = ['active', 'pending', 'traded'];

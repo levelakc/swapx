@@ -160,10 +160,10 @@ const createItem = asyncHandler(async (req, res) => {
     cash_flexibility,
     listing_type: listing_type || 'item',
     created_by: req.user._id,
-    seller_full_name: req.user.full_name || 'Anonymous',
-    seller_avatar: req.user.avatar || '',
-    seller_bio: req.user.bio || '',
-    seller_location: req.user.location || 'Not Specified',
+    seller_full_name: req.user.full_name || 'SwapX User',
+    seller_avatar: req.user.avatar || `https://placehold.co/100x100/6366f1/white?text=${encodeURIComponent(req.user.full_name || 'U')}`,
+    seller_bio: req.user.bio || 'Professional trader on SwapX',
+    seller_location: req.user.location || location || 'Israel',
   });
 
   const createdItem = await item.save();
@@ -270,8 +270,8 @@ const deleteItem = asyncHandler(async (req, res) => {
 // @route   GET /api/items/my
 // @access  Private
 const getMyItems = asyncHandler(async (req, res) => {
-  const items = await Item.find({ created_by: req.user._id });
-  res.json(items);
+  const items = await Item.find({ created_by: req.user._id }).sort({ createdAt: -1 });
+  res.json({ items }); // Return as object with items array
 });
 
 // @desc    Feature an item

@@ -217,11 +217,18 @@ export default function Messages() {
     }, 2000);
   };
 
+  const isInitialLoad = useRef(true);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+        const behavior = isInitialLoad.current ? 'auto' : 'smooth';
+        messagesEndRef.current.scrollIntoView({ behavior });
+        isInitialLoad.current = false;
+    }
   }, [messages, isTyping]);
 
   const handleSelectConversation = (id) => {
+      isInitialLoad.current = true; // Reset for new conversation
       setSelectedConversationId(id);
       setShowList(false);
   };

@@ -26,7 +26,7 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete }
       <FuturisticCard className="h-full">
         <div className="relative">
           <img
-            src={item.images?.[0] || `https://picsum.photos/seed/${item._id}/300/200`}
+            src={item.images?.[0] || `https://placehold.co/400x300/6366f1/white?text=${encodeURIComponent(item.title)}`}
             alt={t(item.title)}
             className="w-full h-48 object-cover rounded-t-lg"
           />

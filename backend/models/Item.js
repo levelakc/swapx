@@ -75,7 +75,6 @@ const itemSchema = mongoose.Schema(
     },
     seller_full_name: {
       type: String,
-      required: true,
     },
     seller_avatar: {
       type: String,

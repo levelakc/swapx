@@ -24,158 +24,42 @@ const ISRAELI_CITIES = [
 ];
 
 const CATEGORY_PRICE_RANGES_USD = {
-  cars: { min: 8000, max: 65000 },
-  motorcycles: { min: 3000, max: 22000 },
-  boats: { min: 5000, max: 80000 },
-  real_estate: { min: 150000, max: 1500000 },
-  phones: { min: 150, max: 1600 },
-  computers: { min: 400, max: 4000 },
-  gaming: { min: 150, max: 2000 },
-  cameras: { min: 300, max: 7000 },
-  watches: { min: 150, max: 25000 },
-  jewelry: { min: 100, max: 15000 },
-  handbags: { min: 50, max: 2000 },
-  sneakers: { min: 50, max: 800 },
-  fashion: { min: 30, max: 500 },
-  furniture: { min: 100, max: 4000 },
-  art: { min: 50, max: 20000 },
-  pets: { min: 20, max: 800 },
-  services: { min: 50, max: 3000 },
-  other: { min: 20, max: 500 },
-  // New Categories
-  tablets: { min: 100, max: 1500 },
-  drones: { min: 200, max: 3000 },
-  audio: { min: 50, max: 5000 },
-  tv: { min: 200, max: 4000 },
-  scooters: { min: 300, max: 2000 },
-  bicycles: { min: 100, max: 5000 },
-  camping: { min: 20, max: 1000 },
-  books: { min: 5, max: 100 },
-  music: { min: 10, max: 500 },
-  tools: { min: 20, max: 2000 },
-  garden: { min: 20, max: 1500 },
-  kitchen: { min: 30, max: 2000 },
+  cars: { min: 5000, max: 150000 },
+  motorcycles: { min: 2000, max: 30000 },
+  boats: { min: 10000, max: 200000 },
+  real_estate: { min: 200000, max: 5000000 },
+  phones: { min: 100, max: 1500 },
+  computers: { min: 300, max: 5000 },
+  gaming: { min: 50, max: 1000 },
+  cameras: { min: 200, max: 8000 },
+  watches: { min: 100, max: 50000 },
+  jewelry: { min: 50, max: 20000 },
+  handbags: { min: 100, max: 10000 },
+  sneakers: { min: 50, max: 2000 },
+  fashion: { min: 20, max: 1000 },
+  furniture: { min: 50, max: 5000 },
+  art: { min: 100, max: 100000 },
+  pets: { min: 0, max: 5000 },
+  services: { min: 20, max: 500 },
+  other: { min: 10, max: 1000 },
 };
 
-// --- 1. REAL IMAGE DICTIONARY ---
 const CATEGORY_IMAGES = {
   cars: [
-    { url: 'https://images.unsplash.com/photo-1494905992931-131494053d02?auto=format&fit=crop&w=800&q=80', title: 'Red Sports Car', title_he: 'מכונית ספורט אדומה' },
-    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?auto=format&fit=crop&w=800&q=80', title: 'Luxury Sedan', title_he: 'רכב מנהלים יוקרתי' },
-    { url: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80', title: 'Off-Road SUV', title_he: 'ג\'יפ שטח עוצמתי' },
-    { url: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80', title: 'Classic Blue Coupe', title_he: 'רכב אספנות כחול' },
-    { url: 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=800&q=80', title: 'Silver Sports Car', title_he: 'מכונית ספורט כסופה' }
-  ],
-  motorcycles: [
-    { url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80', title: 'Cruiser Motorcycle', title_he: 'אופנוע קרוזר כבד' },
-    { url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80', title: 'Red Sport Bike', title_he: 'אופנוע ספורט אדום' },
-    { url: 'https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80', title: 'Custom Cafe Racer', title_he: 'קפה רייסר מעוצב' },
-    { url: 'https://images.unsplash.com/photo-1609630856954-5e380f9ae111?auto=format&fit=crop&w=800&q=80', title: 'City Scooter', title_he: 'קטנוע עירוני חדש' }
-  ],
-  boats: [
-    { url: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=800&q=80', title: 'Luxury Yacht', title_he: 'יאכטה מפוארת' },
-    { url: 'https://images.unsplash.com/photo-1544169562-b9a67a07f30e?auto=format&fit=crop&w=800&q=80', title: 'Fishing Boat', title_he: 'סירת דיג מקצועית' }
-  ],
-  real_estate: [
-    { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80', title: 'Modern Villa', title_he: 'וילה מודרנית עם בריכה' },
-    { url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80', title: 'City Apartment', title_he: 'דירה במרכז העיר' },
-    { url: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80', title: 'Suburban House', title_he: 'בית פרטי בפרברים' }
+    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=1000&auto=format&fit=crop', title: 'Luxury Sport Car', title_he: 'מכונית ספורט יוקרתית' },
+    { url: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1000&auto=format&fit=crop', title: 'Classic Red Car', title_he: 'מכונית קלאסית אדומה' }
   ],
   phones: [
-    { url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80', title: 'Smartphone with Dual Camera', title_he: 'סמארטפון מתקדם' },
-    { url: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80', title: 'Modern Smartphone', title_he: 'טלפון חכם דור חדש' },
-    { url: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=800&q=80', title: 'Premium Phone', title_he: 'מכשיר פרימיום שמור' }
+    { url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1000&auto=format&fit=crop', title: 'Modern Smartphone', title_he: 'טלפון חכם חדיש' }
   ],
   computers: [
-    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80', title: 'Pro Laptop', title_he: 'מחשב נייד מקצועי' },
-    { url: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=800&q=80', title: 'Workstation Laptop', title_he: 'תחנת עבודה ניידת' },
-    { url: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=800&q=80', title: 'Desktop Setup', title_he: 'מחשב נייח גיימינג' }
-  ],
-  gaming: [
-    { url: 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800&q=80', title: 'Gaming Console', title_he: 'קונסולת משחק חדשה' },
-    { url: 'https://images.unsplash.com/photo-1621259182903-06dc1c460599?auto=format&fit=crop&w=800&q=80', title: 'Next-Gen Console', title_he: 'קונסולה דור הבא' },
-    { url: 'https://images.unsplash.com/photo-1592840496011-a38a97d1819f?auto=format&fit=crop&w=800&q=80', title: 'RGB Keyboard', title_he: 'מקלדת גיימינג RGB' }
-  ],
-  cameras: [
-    { url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80', title: 'DSLR Camera', title_he: 'מצלמת רפלקס מקצועית' },
-    { url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80', title: 'Vintage Camera', title_he: 'מצלמת וינטג\' נדירה' },
-    { url: 'https://images.unsplash.com/photo-1624138784181-dc7f5b759b2d?auto=format&fit=crop&w=800&q=80', title: 'Mirrorless Camera', title_he: 'מצלמת מירורלס' }
+    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=1000&auto=format&fit=crop', title: 'High-end Laptop', title_he: 'מחשב נייד עוצמתי' }
   ],
   watches: [
-    { url: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=800&q=80', title: 'Gold Watch', title_he: 'שעון זהב יוקרתי' },
-    { url: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80', title: 'Diver Watch', title_he: 'שעון צלילה ספורטיבי' },
-    { url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80', title: 'Smart Watch', title_he: 'שעון חכם מתקדם' }
-  ],
-  jewelry: [
-    { url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80', title: 'Gold Necklace', title_he: 'שרשרת זהב עדינה' },
-    { url: 'https://images.unsplash.com/photo-1605100804763-eb2fc9f2c0a9?auto=format&fit=crop&w=800&q=80', title: 'Diamond Ring', title_he: 'טבעת יהלום' },
-    { url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80', title: 'Pearl Earrings', title_he: 'עגילי פנינה' }
-  ],
-  handbags: [
-    { url: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80', title: 'Leather Tote', title_he: 'תיק צד מעור' },
-    { url: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=800&q=80', title: 'Designer Clutch', title_he: 'תיק ערב מעצבים' },
-    { url: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=800&q=80', title: 'Crossbody Bag', title_he: 'תיק כתף אופנתי' }
-  ],
-  sneakers: [
-    { url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80', title: 'High-Top Sneakers', title_he: 'נעלי סניקרס גבוהות' },
-    { url: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?auto=format&fit=crop&w=800&q=80', title: 'Running Shoes', title_he: 'נעלי ריצה מקצועיות' },
-    { url: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80', title: 'Classic Canvas', title_he: 'נעלי בד קלאסיות' }
-  ],
-  fashion: [
-    { url: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80', title: 'Denim Jacket', title_he: 'ג\'קט ג\'ינס' },
-    { url: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80', title: 'Graphic Tee', title_he: 'חולצת טי מודפסת' }
-  ],
-  furniture: [
-    { url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80', title: 'Velvet Sofa', title_he: 'ספת קטיפה יוקרתית' },
-    { url: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80', title: 'Wooden Chair', title_he: 'כסא עץ מעוצב' }
-  ],
-  art: [
-    { url: 'https://images.unsplash.com/photo-1579783902614-a3fb39279c0f?auto=format&fit=crop&w=800&q=80', title: 'Abstract Painting', title_he: 'ציור אבסטרקטי' },
-    { url: 'https://images.unsplash.com/photo-1580136579312-94651dfd596d?auto=format&fit=crop&w=800&q=80', title: 'Modern Sculpture', title_he: 'פסל מודרני' }
-  ],
-  pets: [
-    { url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80', title: 'Golden Retriever', title_he: 'גולדן רטריבר גזעי' },
-    { url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80', title: 'Persian Cat', title_he: 'חתול פרסי' }
-  ],
-  services: [
-    { url: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80', title: 'Plumbing Service', title_he: 'שירותי אינסטלציה' },
-    { url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80', title: 'Web Design', title_he: 'עיצוב ובניית אתרים' }
+    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop', title: 'Luxury Watch', title_he: 'שעון יוקרה' }
   ],
   other: [
-    { url: 'https://images.unsplash.com/photo-1512418490979-92798cec1380?auto=format&fit=crop&w=800&q=80', title: 'Rare Books', title_he: 'ספרים נדירים' },
-    { url: 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=800&q=80', title: 'Classic Guitar', title_he: 'גיטרה קלאסית' }
-  ],
-  tablets: [
-      { url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80', title: 'iPad Pro', title_he: 'אייפד פרו' },
-      { url: 'https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=800&q=80', title: 'Android Tablet', title_he: 'טאבלט אנדרואיד' }
-  ],
-  drones: [
-      { url: 'https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?auto=format&fit=crop&w=800&q=80', title: 'Camera Drone', title_he: 'רחפן צילום' },
-      { url: 'https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&w=800&q=80', title: 'FPV Drone', title_he: 'רחפן מירוץ' }
-  ],
-  audio: [
-      { url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80', title: 'Headphones', title_he: 'אוזניות סטודיו' },
-      { url: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80', title: 'Speaker', title_he: 'רמקול בלוטות\'' }
-  ],
-  tv: [
-      { url: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=800&q=80', title: 'Smart TV', title_he: 'טלוויזיה חכמה' }
-  ],
-  scooters: [
-      { url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80', title: 'Electric Scooter', title_he: 'קורקינט חשמלי' }
-  ],
-  bicycles: [
-      { url: 'https://images.unsplash.com/photo-1485965120184-e224f723d621?auto=format&fit=crop&w=800&q=80', title: 'Mountain Bike', title_he: 'אופני הרים' },
-      { url: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=800&q=80', title: 'Road Bike', title_he: 'אופני כביש' }
-  ],
-  tools: [
-      { url: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?auto=format&fit=crop&w=800&q=80', title: 'Power Drill', title_he: 'מקדחה נטענת' }
-  ],
-  garden: [
-      { url: 'https://images.unsplash.com/photo-1416879741262-12854f213d69?auto=format&fit=crop&w=800&q=80', title: 'Garden Plants', title_he: 'צמחי גינה' }
-  ],
-  kitchen: [
-      { url: 'https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&w=800&q=80', title: 'Coffee Machine', title_he: 'מכונת קפה' },
-      { url: 'https://images.unsplash.com/photo-1584269600519-112d071b35e6?auto=format&fit=crop&w=800&q=80', title: 'Mixer', title_he: 'מיקסר מקצועי' }
+    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop', title: 'Quality Item', title_he: 'פריט איכותי' }
   ]
 };
 
