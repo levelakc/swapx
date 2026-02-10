@@ -39,10 +39,12 @@ export default function Messages() {
   const { data: messagesData, isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedConversationId],
     queryFn: () => getMessages(selectedConversationId),
-    enabled: !!selectedConversationId,
+    enabled: !!selectedConversationId && !!me,
+    staleTime: 0,
+    refetchOnWindowFocus: true
   });
 
-  const messages = Array.isArray(messagesData) ? messagesData : [];
+  const messages = useMemo(() => Array.isArray(messagesData) ? messagesData : [], [messagesData]);
 
   const filteredConversations = useMemo(() => {
     if (!searchQuery) return conversations;
@@ -50,7 +52,7 @@ export default function Messages() {
         const otherParticipant = convo.participants.find(p => p !== me?.email) || '';
         return otherParticipant.toLowerCase().includes(searchQuery.toLowerCase());
     });
-  }, [conversations, searchQuery, me]);
+  }, [conversations, searchQuery, me?.email]);
 
   const sendMessageMutation = useMutation({
     mutationFn: (newMessage) => sendMessage(newMessage.conversation_id, newMessage),
@@ -58,9 +60,8 @@ export default function Messages() {
         await queryClient.cancelQueries(['messages', selectedConversationId]);
         const previousMessages = queryClient.getQueryData(['messages', selectedConversationId]);
         
-        // Optimistic update
         const optimisticMsg = {
-            _id: Date.now().toString(),
+            _id: 'temp-' + Date.now(),
             ...newMessage,
             sender_email: me?.email,
             createdAt: new Date().toISOString(),
@@ -72,15 +73,11 @@ export default function Messages() {
     },
     onError: (err, newMessage, context) => {
         queryClient.setQueryData(['messages', selectedConversationId], context.previousMessages);
-        toast.error('Failed to send message');
+        toast.error(t('failedToSendChatMessage'));
     },
     onSuccess: (data) => {
         setMessageContent('');
-        if (Array.isArray(data)) {
-            queryClient.setQueryData(['messages', selectedConversationId], data);
-        } else {
-            queryClient.invalidateQueries(['messages', selectedConversationId]);
-        }
+        queryClient.invalidateQueries(['messages', selectedConversationId]);
         queryClient.invalidateQueries(['conversations']);
     }
   });

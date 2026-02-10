@@ -149,21 +149,21 @@ const createItem = asyncHandler(async (req, res) => {
     title_translations: new Map([['en', title_en], ['he', title_he]]),
     description,
     description_translations: new Map([['en', desc_en], ['he', desc_he]]),
-    category: categoryExists.name, // Store the name for reference if schema expects String
+    category: categoryExists.name,
     subcategory,
     estimated_value,
     condition,
     images: images || [],
-    location: location || req.user.location,
+    location: location || req.user.location || 'Not Specified',
     attributes,
     looking_for,
     cash_flexibility,
     listing_type: listing_type || 'item',
-    created_by: req.user._id, // User is attached via protect middleware
-    seller_full_name: req.user.full_name,
-    seller_avatar: req.user.avatar,
-    seller_bio: req.user.bio,
-    seller_location: req.user.location,
+    created_by: req.user._id,
+    seller_full_name: req.user.full_name || 'Anonymous',
+    seller_avatar: req.user.avatar || '',
+    seller_bio: req.user.bio || '',
+    seller_location: req.user.location || 'Not Specified',
   });
 
   const createdItem = await item.save();
