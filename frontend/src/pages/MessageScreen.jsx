@@ -41,8 +41,14 @@ export default function MessageScreen() {
 
   const messageMutation = useMutation({
     mutationFn: (messageData) => sendMessage(conversationId, messageData),
-    onSuccess: () => {
+    onSuccess: (newMessage) => {
       setMessage('');
+      // Manually update the query cache to include the new message
+      queryClient.setQueryData(['messages', conversationId], (oldMessages = []) => {
+          // If the server returns all messages, use them, otherwise append
+          if (Array.isArray(newMessage)) return newMessage;
+          return [...oldMessages, newMessage];
+      });
       queryClient.invalidateQueries(['messages', conversationId]);
     },
     onError: (error) => {

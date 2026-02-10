@@ -4,7 +4,7 @@ import { getItem, getCategories, getMe } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext'; // Updated import path
 import { useCurrency } from '../contexts/CurrencyContext';
 import { Loader2, Tag, MapPin, Repeat, CircleDollarSign } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
 
@@ -15,6 +15,10 @@ export default function ItemDetail() {
   const { t, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   const { data: user } = useQuery({
     queryKey: ['user', 'me'],

@@ -3,7 +3,7 @@ const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Item = require('../models/Item');
-const { getIO } = require('../socket'); // Corrected import
+const { getIO } = require('../socket');
 const { handleIncomingMessage, getChatbotForLanguage } = require('../services/chatbotService');
 
 // @desc    Get user's conversations
@@ -11,8 +11,8 @@ const { handleIncomingMessage, getChatbotForLanguage } = require('../services/ch
 // @access  Private
 const getUserConversations = asyncHandler(async (req, res) => {
   const conversations = await Conversation.find({ participants: req.user.email })
-    .populate('related_item_id') // Populate related item details
-    .populate('related_trade_id') // Populate related trade details
+    .populate('related_item_id')
+    .populate('related_trade_id')
     .sort({ last_message_at: -1 });
 
   res.json(conversations);
@@ -25,20 +25,17 @@ const createConversation = asyncHandler(async (req, res) => {
   const { participant_email, related_item_id, related_trade_id, initial_message } = req.body;
   const current_user_email = req.user.email;
 
-  // Ensure both participants exist
   const otherParticipant = await User.findOne({ email: participant_email });
   if (!otherParticipant) {
     res.status(404);
     throw new Error('Other participant not found');
   }
 
-  // Prevent creating conversation with self
   if (current_user_email === participant_email) {
     res.status(400);
     throw new Error('Cannot create conversation with yourself');
   }
 
-  // if related_item_id is provided, check if it exists
   let item = null;
   if (related_item_id) {
     item = await Item.findById(related_item_id);
@@ -48,7 +45,6 @@ const createConversation = asyncHandler(async (req, res) => {
     }
   }
 
-  // Check if conversation already exists between these participants, possibly for the same item/trade
   let conversation = await Conversation.findOne({
     participants: { $all: [current_user_email, participant_email] },
     related_item_id: related_item_id,
@@ -56,12 +52,10 @@ const createConversation = asyncHandler(async (req, res) => {
   });
 
   if (conversation) {
-    // If conversation exists, just return it
     res.json(conversation);
     return;
   }
 
-  // Create new conversation
   conversation = new Conversation({
     participants: [current_user_email, participant_email],
     related_item_id: related_item_id,
@@ -70,32 +64,35 @@ const createConversation = asyncHandler(async (req, res) => {
     last_message_at: Date.now(),
     unread_count: {
       [current_user_email]: 0,
-      [participant_email]: initial_message ? 1 : 0, // Mark initial message as unread for the other participant
+      [participant_email]: initial_message ? 1 : 0,
     },
   });
 
   const createdConversation = await conversation.save();
 
-  // If initial message is provided, save it
   if (initial_message) {
     const message = await Message.create({
       conversation_id: createdConversation._id.toString(),
       sender_email: current_user_email,
       content: initial_message,
     });
-    // Emit new message event to conversation participants
-    getIO().to(createdConversation._id.toString()).emit('newMessage', message);
+    try {
+        getIO().to(createdConversation._id.toString()).emit('newMessage', message);
+    } catch (err) {
+        console.error('Socket emit error:', err.message);
+    }
     createdConversation.last_message = initial_message;
     createdConversation.last_message_at = message.createdAt;
     await createdConversation.save();
   }
 
-  // Emit conversationCreated event to participants
-  createdConversation.participants.forEach(email => {
-    // This assumes some mapping of user email to socket ID or a way to target specific users
-    // For now, we'll just emit to the conversation room.
-    getIO().to(createdConversation._id.toString()).emit('conversationCreated', createdConversation);
-  });
+  try {
+      createdConversation.participants.forEach(email => {
+        getIO().to(createdConversation._id.toString()).emit('conversationCreated', createdConversation);
+      });
+  } catch (err) {
+      console.error('Socket emit error:', err.message);
+  }
   
   res.status(201).json(createdConversation);
 });
@@ -114,7 +111,6 @@ const getConversationMessages = asyncHandler(async (req, res) => {
     throw new Error('Conversation not found');
   }
 
-  // Ensure current user is a participant
   if (!conversation.participants.includes(current_user_email)) {
     res.status(403);
     throw new Error('Not authorized to view this conversation');
@@ -122,17 +118,17 @@ const getConversationMessages = asyncHandler(async (req, res) => {
 
   const messages = await Message.find({ conversation_id: conversationId }).sort({ createdAt: 1 });
 
-  // Mark messages as read for the current user
   await Message.updateMany(
     { conversation_id: conversationId, sender_email: { $ne: current_user_email }, read: false },
     { read: true }
   );
 
-  // Reset unread count for the current user in the conversation
-  conversation.unread_count.set(current_user_email, 0);
+  conversation.unread_count = {
+      ...conversation.unread_count,
+      [current_user_email]: 0
+  };
   await conversation.save();
 
-  console.log('getConversationMessages messages:', messages);
   res.json(messages);
 });
 
@@ -151,7 +147,6 @@ const sendMessage = asyncHandler(async (req, res) => {
     throw new Error('Conversation not found');
   }
 
-  // Ensure current user is a participant
   if (!conversation.participants.includes(current_user_email)) {
     res.status(403);
     throw new Error('Not authorized to send message in this conversation');
@@ -172,26 +167,29 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   const createdMessage = await message.save();
 
-  // Update last message and last message at in conversation
   conversation.last_message = content;
   conversation.last_message_at = Date.now();
 
-  // Increment unread count for other participants
+  const newUnreadCount = { ...conversation.unread_count };
   conversation.participants.forEach(participant => {
     if (participant !== current_user_email) {
-      conversation.unread_count.set(participant, (conversation.unread_count.get(participant) || 0) + 1);
+      newUnreadCount[participant] = (newUnreadCount[participant] || 0) + 1;
     }
   });
+  conversation.unread_count = newUnreadCount;
   await conversation.save();
 
-  // Emit new message event to conversation participants
-  getIO().to(conversationId.toString()).emit('newMessage', createdMessage);
+  try {
+      getIO().to(conversationId.toString()).emit('newMessage', createdMessage);
+  } catch (err) {
+      console.error('Socket emit error:', err.message);
+  }
 
-  // Handle chatbot logic
-  handleIncomingMessage(createdMessage);
+  // Handle chatbot logic safely (don't await or block response)
+  handleIncomingMessage(createdMessage).catch(err => console.error('Chatbot error:', err.message));
 
-  const messages = await Message.find({ conversation_id: conversationId }).sort({ createdAt: 1 });
-  res.status(201).json(messages);
+  // Return the created message directly
+  res.status(201).json(createdMessage);
 });
 
 // @desc    Start or get support chat
@@ -201,7 +199,6 @@ const startSupportChat = asyncHandler(async (req, res) => {
   const user = req.user;
   const chatbot = getChatbotForLanguage(user.language || 'en');
 
-  // Check if conversation exists
   let conversation = await Conversation.findOne({
     participants: { $all: [user.email, chatbot.email] },
   });
