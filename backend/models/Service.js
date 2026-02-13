@@ -50,6 +50,10 @@ const serviceSchema = mongoose.Schema(
     social_instagram: { type: String },
     social_facebook: { type: String },
     google_reviews_link: { type: String },
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

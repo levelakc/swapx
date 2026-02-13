@@ -122,6 +122,7 @@ export const deleteItem = (id) => request(`/items/${id}`, {
 
 export const getMyItems = () => request('/items/my');
 export const getPopularItems = (limit) => request(`/items/popular?limit=${limit}`);
+export const getPopularServices = (limit) => request(`/services/popular?limit=${limit}`);
 
 export const getConversations = () => request('/conversations');
 

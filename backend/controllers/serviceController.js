@@ -39,6 +39,8 @@ const getServices = asyncHandler(async (req, res) => {
 const getServiceById = asyncHandler(async (req, res) => {
   const service = await Service.findById(req.params.id).populate('provider', 'name email');
   if (service) {
+    service.views = (service.views || 0) + 1;
+    await service.save();
     res.json(service);
   } else {
     res.status(404);
@@ -71,8 +73,20 @@ const createService = asyncHandler(async (req, res) => {
   res.status(201).json(createdService);
 });
 
+// @desc    Get popular services
+// @route   GET /api/services/popular
+// @access  Public
+const getPopularServices = asyncHandler(async (req, res) => {
+  const limit = req.query.limit ? parseInt(req.query.limit) : 8;
+  const services = await Service.find({ status: 'active' })
+    .sort({ views: -1 })
+    .limit(limit);
+  res.json({ services });
+});
+
 module.exports = {
   getServices,
   getServiceById,
   createService,
+  getPopularServices,
 };

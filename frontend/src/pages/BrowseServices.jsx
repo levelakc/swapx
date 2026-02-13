@@ -33,6 +33,9 @@ export default function BrowseServices() {
   const handleSearch = (e) => {
       e.preventDefault();
       setSearchParams({ keyword });
+      if (keyword) {
+        document.cookie = `last_service_search=${encodeURIComponent(keyword)}; path=/; max-age=604800`; // 7 days
+      }
   };
 
   const containerVariants = {
