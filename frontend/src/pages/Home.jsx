@@ -19,11 +19,6 @@ export default function Home() {
   const [itemSearch, setItemSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
 
-  const { data: featuredItems, isLoading: isLoadingFeatured, error: errorFeatured } = useQuery({
-    queryKey: ['items', 'featured'],
-    queryFn: () => getItems({ status: 'active', limit: 8, featured: true })
-  });
-
   const { data: popularItems, isLoading: isLoadingPopular, error: errorPopular } = useQuery({
     queryKey: ['items', 'popular'],
     queryFn: () => getPopularItems(8)
@@ -71,7 +66,7 @@ export default function Home() {
 
   return (
     <motion.div 
-      className="space-y-16"
+      className="space-y-24 pb-20"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -80,56 +75,54 @@ export default function Home() {
         <HeroSection />
       </motion.div>
       
-      {(isLoadingFeatured || isLoadingPopular || isLoadingPopularServices) && (
+      {(isLoadingPopular || isLoadingPopularServices) && (
         <div className="flex justify-center">
           <Loader2 className="w-8 h-8 animate-spin" />
         </div>
       )}
 
-      {featuredItems && featuredItems.items && (
-        <motion.div variants={itemVariants}>
-          <FeaturedItems items={featuredItems.items} />
-        </motion.div>
-      )}
-
-      <div className="space-y-24">
+      <div className="space-y-32">
         {/* Popular Items Section */}
-        <motion.div variants={itemVariants} className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PopularItems items={popularItems?.items || []} />
-          </div>
-          <div className="max-w-xl">
-             <form onSubmit={handleItemSearch} className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <input 
-                  type="text" 
-                  placeholder={t('searchItems', 'Search items to swap...')} 
-                  value={itemSearch}
-                  onChange={(e) => setItemSearch(e.target.value)}
-                  className="w-full bg-secondary/20 border border-secondary/30 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-lg shadow-sm"
-                />
-             </form>
-             <SuggestedSearch type="item" />
+        <motion.div variants={itemVariants} className="space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-6">
+            <div className="flex-1">
+                <PopularItems items={popularItems?.items || []} />
+            </div>
+            <div className="w-full md:w-96">
+                <form onSubmit={handleItemSearch} className="relative group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
+                    <input 
+                    type="text" 
+                    placeholder={t('searchItems', 'Search items to swap...')} 
+                    value={itemSearch}
+                    onChange={(e) => setItemSearch(e.target.value)}
+                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base shadow-sm"
+                    />
+                </form>
+                <SuggestedSearch type="item" />
+            </div>
           </div>
         </motion.div>
 
         {/* Popular Services Section */}
-        <motion.div variants={itemVariants} className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PopularServices services={popularServices?.services || []} />
-          </div>
-          <div className="max-w-xl">
-             <form onSubmit={handleServiceSearch} className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <input 
-                  type="text" 
-                  placeholder={t('searchServices', 'Search services...')} 
-                  value={serviceSearch}
-                  onChange={(e) => setServiceSearch(e.target.value)}
-                  className="w-full bg-secondary/20 border border-secondary/30 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-lg shadow-sm"
-                />
-             </form>
-             <SuggestedSearch type="service" />
+        <motion.div variants={itemVariants} className="space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-6">
+            <div className="flex-1">
+                <PopularServices services={popularServices?.services || []} />
+            </div>
+            <div className="w-full md:w-96">
+                <form onSubmit={handleServiceSearch} className="relative group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
+                    <input 
+                    type="text" 
+                    placeholder={t('searchServices', 'Search services...')} 
+                    value={serviceSearch}
+                    onChange={(e) => setServiceSearch(e.target.value)}
+                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base shadow-sm"
+                    />
+                </form>
+                <SuggestedSearch type="service" />
+            </div>
           </div>
         </motion.div>
       </div>
