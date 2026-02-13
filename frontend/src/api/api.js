@@ -122,7 +122,15 @@ export const deleteItem = (id) => request(`/items/${id}`, {
 
 export const getMyItems = () => request('/items/my');
 export const getPopularItems = (limit) => request(`/items/popular?limit=${limit}`);
+export const getSuggestedItems = (limit, lastCategory) => {
+    const query = new URLSearchParams({ limit, lastCategory }).toString();
+    return request(`/items/suggested?${query}`);
+};
 export const getPopularServices = (limit) => request(`/services/popular?limit=${limit}`);
+export const getSuggestedServices = (limit, lastCategory) => {
+    const query = new URLSearchParams({ limit, lastCategory }).toString();
+    return request(`/services/suggested?${query}`);
+};
 
 export const getConversations = () => request('/conversations');
 

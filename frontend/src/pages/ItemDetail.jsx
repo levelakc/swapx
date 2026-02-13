@@ -31,6 +31,12 @@ export default function ItemDetail() {
     queryFn: () => getItem(id),
   });
 
+  useEffect(() => {
+    if (item && item.category) {
+      document.cookie = `last_category_search=${item.category}; path=/; max-age=${60 * 60 * 24 * 7}`;
+    }
+  }, [item]);
+
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,

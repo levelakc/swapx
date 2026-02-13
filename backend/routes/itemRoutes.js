@@ -9,8 +9,9 @@ const {
   getMyItems,
   featureItem,
   getPopularItems,
+  getSuggestedItems,
 } = require('../controllers/itemController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const { protect, optionalProtect, authorize } = require('../middleware/authMiddleware');
 const upload = require('../utils/file-upload');
 
 // Routes
@@ -20,6 +21,8 @@ router.route('/')
 
 router.get('/my', protect, getMyItems);
 router.get('/popular', getPopularItems); // New route for popular items
+router.get('/suggested', optionalProtect, getSuggestedItems);
+
 router.route('/:id')
   .get(getItemById)
   .put(protect, upload.array('images', 5), updateItem) // Max 5 images per item

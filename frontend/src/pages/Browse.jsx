@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
@@ -44,6 +44,18 @@ export default function Browse({ listingType = 'item' }) {
     queryFn: () => getItems(queryFilters),
   });
   const items = queryResult?.items || [];
+
+  const setCategoryCookie = (category) => {
+    if (category && category !== 'all') {
+      document.cookie = `last_category_search=${category}; path=/; max-age=${60 * 60 * 24 * 7}`; // 1 week
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCategory !== 'all') {
+      setCategoryCookie(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   const containerVariants = {
     hidden: { opacity: 0 },

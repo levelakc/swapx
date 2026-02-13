@@ -1,54 +1,69 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { getItems, getPopularItems, getPopularServices } from '../api/api';
+import { getPopularItems, getSuggestedItems, getPopularServices, getSuggestedServices } from '../api/api';
 import HeroSection from '../components/home/HeroSection';
-import FeaturedItems from '../components/home/FeaturedItems';
 import PopularItems from '../components/home/PopularItems';
 import PopularServices from '../components/home/PopularServices';
-import SuggestedSearch from '../components/home/SuggestedSearch';
-import HowItWorks from '../components/home/HowItWorks';
-import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-
-import { Loader2, Search } from 'lucide-react';
 
 export default function Home() {
   const { t } = useLanguage();
-  const navigate = useNavigate();
-  const [itemSearch, setItemSearch] = useState('');
-  const [serviceSearch, setServiceSearch] = useState('');
 
-  const { data: popularItems, isLoading: isLoadingPopular, error: errorPopular } = useQuery({
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
+  const lastCategory = getCookie('last_category_search');
+
+  const { 
+    data: popularItems, 
+    isLoading: isLoadingPopular, 
+    refetch: refreshPopular 
+  } = useQuery({
     queryKey: ['items', 'popular'],
-    queryFn: () => getPopularItems(8)
+    queryFn: () => getPopularItems(8),
+    staleTime: 0,
   });
 
-  const { data: popularServices, isLoading: isLoadingPopularServices, error: errorPopularServices } = useQuery({
+  const { 
+    data: suggestedItems, 
+    isLoading: isLoadingSuggested, 
+    refetch: refreshSuggested 
+  } = useQuery({
+    queryKey: ['items', 'suggested', lastCategory],
+    queryFn: () => getSuggestedItems(8, lastCategory),
+    staleTime: 0,
+  });
+
+  const {
+    data: popularServices,
+    isLoading: isLoadingServices,
+    refetch: refreshServices
+  } = useQuery({
     queryKey: ['services', 'popular'],
-    queryFn: () => getPopularServices(8)
+    queryFn: () => getPopularServices(8),
+    staleTime: 0,
   });
 
-  const handleItemSearch = (e) => {
-    e.preventDefault();
-    if (itemSearch.trim()) {
-      navigate(`/browse?keyword=${encodeURIComponent(itemSearch)}`);
-    }
-  };
-
-  const handleServiceSearch = (e) => {
-    e.preventDefault();
-    if (serviceSearch.trim()) {
-      navigate(`/browse-services?keyword=${encodeURIComponent(serviceSearch)}`);
-    }
-  };
+  const {
+    data: suggestedServices,
+    isLoading: isLoadingSuggestedServices,
+    refetch: refreshSuggestedServices
+  } = useQuery({
+    queryKey: ['services', 'suggested', lastCategory],
+    queryFn: () => getSuggestedServices(8, lastCategory),
+    staleTime: 0,
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
+        staggerChildren: 0.15,
       },
     },
   };
@@ -60,13 +75,14 @@ export default function Home() {
       opacity: 1,
       transition: {
         duration: 0.5,
+        ease: "easeOut"
       },
     },
   };
 
   return (
     <motion.div 
-      className="space-y-24 pb-20"
+      className="space-y-16 pb-20"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -75,62 +91,47 @@ export default function Home() {
         <HeroSection />
       </motion.div>
       
-      {(isLoadingPopular || isLoadingPopularServices) && (
-        <div className="flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin" />
-        </div>
-      )}
-
-      <div className="space-y-32">
+      <div className="container mx-auto px-4 space-y-24">
         {/* Popular Items Section */}
-        <motion.div variants={itemVariants} className="space-y-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-6">
-            <div className="flex-1">
-                <PopularItems items={popularItems?.items || []} />
-            </div>
-            <div className="w-full md:w-96">
-                <form onSubmit={handleItemSearch} className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
-                    <input 
-                    type="text" 
-                    placeholder={t('searchItems', 'Search items to swap...')} 
-                    value={itemSearch}
-                    onChange={(e) => setItemSearch(e.target.value)}
-                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base shadow-sm"
-                    />
-                </form>
-                <SuggestedSearch type="item" />
-            </div>
-          </div>
+        <motion.div variants={itemVariants}>
+          <PopularItems 
+              items={popularItems?.items || []} 
+              title={t('popularItems')}
+              onRefresh={() => refreshPopular()}
+              isLoading={isLoadingPopular}
+          />
+        </motion.div>
+
+        {/* Suggested Items Section */}
+        <motion.div variants={itemVariants}>
+          <PopularItems 
+              items={suggestedItems?.items || []} 
+              title={t('suggestedItems')}
+              onRefresh={() => refreshSuggested()}
+              isLoading={isLoadingSuggested}
+          />
         </motion.div>
 
         {/* Popular Services Section */}
-        <motion.div variants={itemVariants} className="space-y-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-6">
-            <div className="flex-1">
-                <PopularServices services={popularServices?.services || []} />
-            </div>
-            <div className="w-full md:w-96">
-                <form onSubmit={handleServiceSearch} className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
-                    <input 
-                    type="text" 
-                    placeholder={t('searchServices', 'Search services...')} 
-                    value={serviceSearch}
-                    onChange={(e) => setServiceSearch(e.target.value)}
-                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-base shadow-sm"
-                    />
-                </form>
-                <SuggestedSearch type="service" />
-            </div>
-          </div>
+        <motion.div variants={itemVariants}>
+          <PopularServices 
+              services={popularServices?.services || []} 
+              title={t('popularServices')}
+              onRefresh={() => refreshServices()}
+              isLoading={isLoadingServices}
+          />
+        </motion.div>
+
+        {/* Suggested Services Section */}
+        <motion.div variants={itemVariants}>
+          <PopularServices 
+              services={suggestedServices?.services || []} 
+              title={t('suggestedServices')}
+              onRefresh={() => refreshSuggestedServices()}
+              isLoading={isLoadingSuggestedServices}
+          />
         </motion.div>
       </div>
-
-      <motion.div variants={itemVariants}>
-        <HowItWorks />
-      </motion.div>
-      
     </motion.div>
   );
 }

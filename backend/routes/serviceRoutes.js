@@ -5,8 +5,9 @@ const {
   getServiceById,
   createService,
   getPopularServices,
+  getSuggestedServices,
 } = require('../controllers/serviceController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, optionalProtect } = require('../middleware/authMiddleware');
 const upload = require('../utils/file-upload');
 
 router.route('/')
@@ -15,6 +16,9 @@ router.route('/')
 
 router.route('/popular')
   .get(getPopularServices);
+
+router.route('/suggested')
+  .get(optionalProtect, getSuggestedServices);
 
 router.route('/:id')
   .get(getServiceById);

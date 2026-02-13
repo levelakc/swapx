@@ -55,9 +55,15 @@ export default function CreateItem() {
 
   const createMutation = useMutation({
     mutationFn: (itemData) => apiCreateItem(itemData),
-    onSuccess: () => {
+    onSuccess: (newItem) => {
       toast.success(t('itemListedSuccess', 'Item listed successfully!'));
       queryClient.invalidateQueries(['items', 'my']);
+      
+      // Set cookie for suggestions
+      if (newItem && newItem.category) {
+        document.cookie = `last_category_search=${newItem.category}; path=/; max-age=${60 * 60 * 24 * 7}`;
+      }
+      
       navigate('/my-items');
     },
     onError: (error) => {

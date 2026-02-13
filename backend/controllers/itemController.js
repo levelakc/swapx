@@ -318,13 +318,80 @@ const featureItem = asyncHandler(async (req, res) => {
 // @route   GET /api/items/popular
 // @access  Public
 const getPopularItems = asyncHandler(async (req, res) => {
-  const limit = Number(req.query.limit) || 8; // Default to 8 popular items
+  const limit = Number(req.query.limit) || 8;
+  const poolSize = limit * 3;
 
   const popularItems = await Item.find({ status: 'active' })
-    .sort({ viewsCount: -1, createdAt: -1 }) // Sort by views count, then by recency
-    .limit(limit);
+    .sort({ viewsCount: -1, createdAt: -1 })
+    .limit(poolSize);
 
-  res.json({ items: popularItems });
+  // Randomly sample 'limit' items from the 'poolSize' popular ones
+  const shuffled = popularItems.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, limit);
+
+  res.json({ items: selected });
+});
+
+// @desc    Get suggested items based on user activity or preferences
+// @route   GET /api/items/suggested
+// @access  Public (Optional Protect)
+const getSuggestedItems = asyncHandler(async (req, res) => {
+  const limit = Number(req.query.limit) || 8;
+  const poolSize = limit * 3;
+  let preferredCategories = [];
+
+  // 1. If user is logged in, look at their items and looking_for
+  if (req.user) {
+    const userItems = await Item.find({ created_by: req.user._id });
+    userItems.forEach(item => {
+      if (item.category && !preferredCategories.includes(item.category)) {
+        preferredCategories.push(item.category);
+      }
+      if (item.looking_for) {
+        item.looking_for.forEach(cat => {
+          if (!preferredCategories.includes(cat)) preferredCategories.push(cat);
+        });
+      }
+    });
+  }
+
+  // 2. Check for category search in query (from frontend cookie or state)
+  if (req.query.lastCategory && !preferredCategories.includes(req.query.lastCategory)) {
+    preferredCategories.push(req.query.lastCategory);
+  }
+
+  let query = { status: 'active' };
+  if (preferredCategories.length > 0) {
+    query.category = { $in: preferredCategories };
+  }
+
+  // Exclude user's own items if logged in
+  if (req.user) {
+    query.created_by = { $ne: req.user._id };
+  }
+
+  let suggestedPool = await Item.find(query)
+    .sort({ createdAt: -1 })
+    .limit(poolSize);
+
+  // Fallback if not enough items found in preferred categories
+  if (suggestedPool.length < poolSize) {
+    const additionalItems = await Item.find({ 
+      status: 'active', 
+      _id: { $nin: suggestedPool.map(i => i._id) },
+      ...(req.user ? { created_by: { $ne: req.user._id } } : {})
+    })
+    .sort({ createdAt: -1 })
+    .limit(poolSize - suggestedPool.length);
+    
+    suggestedPool = [...suggestedPool, ...additionalItems];
+  }
+
+  // Randomly sample 'limit' items from the 'poolSize' suggested ones
+  const shuffled = suggestedPool.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, limit);
+
+  res.json({ items: selected });
 });
 
 
@@ -337,4 +404,5 @@ module.exports = {
   getMyItems,
   featureItem,
   getPopularItems,
+  getSuggestedItems,
 };

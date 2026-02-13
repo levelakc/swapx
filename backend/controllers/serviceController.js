@@ -78,10 +78,65 @@ const createService = asyncHandler(async (req, res) => {
 // @access  Public
 const getPopularServices = asyncHandler(async (req, res) => {
   const limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  const services = await Service.find({ status: 'active' })
+  // Fetch more than limit to allow for random sampling on refresh
+  const poolSize = limit * 3;
+  
+  const popularServices = await Service.find({ status: 'active' })
     .sort({ views: -1 })
-    .limit(limit);
-  res.json({ services });
+    .limit(poolSize);
+
+  // Randomly sample 'limit' services from the 'poolSize' popular ones
+  const shuffled = popularServices.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, limit);
+
+  res.json({ services: selected });
+});
+
+// @desc    Get suggested services based on user activity or preferences
+// @route   GET /api/services/suggested
+// @access  Public (Optional Protect)
+const getSuggestedServices = asyncHandler(async (req, res) => {
+  const limit = Number(req.query.limit) || 8;
+  const poolSize = limit * 3;
+  let preferredCategories = [];
+
+  // Check for category search in query (from frontend cookie or state)
+  if (req.query.lastCategory && !preferredCategories.includes(req.query.lastCategory)) {
+    preferredCategories.push(req.query.lastCategory);
+  }
+
+  let query = { status: 'active' };
+  if (preferredCategories.length > 0) {
+    query.category = { $in: preferredCategories };
+  }
+
+  // Exclude provider's own services if logged in
+  if (req.user) {
+    query.provider = { $ne: req.user._id };
+  }
+
+  let suggestedPool = await Service.find(query)
+    .sort({ createdAt: -1 })
+    .limit(poolSize);
+
+  // Fallback if not enough services found in preferred categories
+  if (suggestedPool.length < poolSize) {
+    const additionalServices = await Service.find({ 
+      status: 'active', 
+      _id: { $nin: suggestedPool.map(s => s._id) },
+      ...(req.user ? { provider: { $ne: req.user._id } } : {})
+    })
+    .sort({ createdAt: -1 })
+    .limit(poolSize - suggestedPool.length);
+    
+    suggestedPool = [...suggestedPool, ...additionalServices];
+  }
+
+  // Randomly sample 'limit' services from the 'poolSize' suggested ones
+  const shuffled = suggestedPool.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, limit);
+
+  res.json({ services: selected });
 });
 
 module.exports = {
@@ -89,4 +144,5 @@ module.exports = {
   getServiceById,
   createService,
   getPopularServices,
+  getSuggestedServices,
 };
