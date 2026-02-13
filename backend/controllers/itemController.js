@@ -44,11 +44,33 @@ const getItems = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const category = req.query.category
-    ? {
-        category: req.query.category,
+  let categoryQuery = {};
+  if (req.query.category) {
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(req.query.category);
+    
+    if (isObjectId) {
+      // Find the category and its children
+      const mainCat = await Category.findById(req.query.category);
+      if (mainCat) {
+        const childCats = await Category.find({ parent: mainCat._id });
+        const catNames = [mainCat.name, ...childCats.map(c => c.name)];
+        categoryQuery = { category: { $in: catNames } };
+      } else {
+        // Fallback to name if ID not found (unlikely but safe)
+        categoryQuery = { category: req.query.category };
       }
-    : {};
+    } else {
+      // It's a name
+      const mainCat = await Category.findOne({ name: req.query.category });
+      if (mainCat) {
+          const childCats = await Category.find({ parent: mainCat._id });
+          const catNames = [mainCat.name, ...childCats.map(c => c.name)];
+          categoryQuery = { category: { $in: catNames } };
+      } else {
+          categoryQuery = { category: req.query.category };
+      }
+    }
+  }
 
   const condition = req.query.condition
     ? {
@@ -64,13 +86,13 @@ const getItems = asyncHandler(async (req, res) => {
 
   const query = {
     ...keyword,
-    ...category,
+    ...categoryQuery,
     ...condition,
     ...listing_type,
     status: 'active', // Only show active items
   };
 
-  console.log('getItems query:', query);
+  console.log('getItems query:', JSON.stringify(query));
   const count = await Item.countDocuments(query);
   const items = await Item.find(query)
     .sort({ isFeatured: -1, featuredUntil: -1, createdAt: -1 }) // Sort featured items first, then by recency

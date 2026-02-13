@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Service = require('../models/Service');
+const Category = require('../models/Category');
 
 // @desc    Get all services
 // @route   GET /api/services
@@ -23,9 +24,35 @@ const getServices = asyncHandler(async (req, res) => {
       }
     : {};
 
+  let categoryQuery = {};
+  if (req.query.category) {
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(req.query.category);
+    
+    if (isObjectId) {
+      const mainCat = await Category.findById(req.query.category);
+      if (mainCat) {
+        const childCats = await Category.find({ parent: mainCat._id });
+        const catNames = [mainCat.name, ...childCats.map(c => c.name)];
+        categoryQuery = { category: { $in: catNames } };
+      } else {
+        categoryQuery = { category: req.query.category };
+      }
+    } else {
+      const mainCat = await Category.findOne({ name: req.query.category });
+      if (mainCat) {
+          const childCats = await Category.find({ parent: mainCat._id });
+          const catNames = [mainCat.name, ...childCats.map(c => c.name)];
+          categoryQuery = { category: { $in: catNames } };
+      } else {
+          categoryQuery = { category: req.query.category };
+      }
+    }
+  }
+
   const query = {
     ...keyword,
     ...location,
+    ...categoryQuery,
     status: 'active',
   };
 
