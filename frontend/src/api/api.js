@@ -177,6 +177,15 @@ export const updateUserCoins = (userId, coins) => request(`/admin/users/${userId
     method: 'PUT',
     body: JSON.stringify({ coins }),
 });
+export const updateUserRole = (userId, role) => request(`/admin/users/${userId}/role`, {
+    method: 'PUT',
+    body: JSON.stringify({ role }),
+});
+
+export const getSupportConversations = () => request('/admin/support');
+export const resolveSupportRequest = (conversationId) => request(`/admin/support/${conversationId}/resolve`, {
+    method: 'PUT',
+});
 
 export const featureItem = (itemId) => request(`/items/${itemId}/feature`, {
     method: 'POST',

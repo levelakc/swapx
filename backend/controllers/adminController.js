@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Item = require('../models/Item');
 const Trade = require('../models/Trade');
 const Category = require('../models/Category');
+const Conversation = require('../models/Conversation');
 const { getOnlineUsersList } = require('../socket'); // Import the new function
 
 // @desc    Get platform statistics
@@ -18,7 +19,6 @@ const getPlatformStats = asyncHandler(async (req, res) => {
 
   const now = new Date();
   const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
-  now.setDate(now.getDate() + 7); // Reset now for 30 days calculation
   const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
 
   const newUsersLast7Days = await User.countDocuments({ createdAt: { $gte: sevenDaysAgo } });
@@ -109,11 +109,71 @@ const updateUserCoins = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Update a user's role
+// @route   PUT /api/admin/users/:id/role
+// @access  Private/Admin
+const updateUserRole = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { role } = req.body;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  if (!['user', 'moderator', 'admin'].includes(role)) {
+    res.status(400);
+    throw new Error('Invalid role');
+  }
+
+  user.role = role;
+  await user.save();
+
+  res.json({
+    _id: user._id,
+    full_name: user.full_name,
+    email: user.email,
+    role: user.role,
+    message: 'User role updated successfully',
+  });
+});
+
+// @desc    Get conversations that need human support
+// @route   GET /api/admin/support
+// @access  Private/Admin/Moderator
+const getSupportConversations = asyncHandler(async (req, res) => {
+  const conversations = await Conversation.find({ is_support_needed: true })
+    .sort({ last_message_at: -1 });
+  res.json(conversations);
+});
+
+// @desc    Mark a support request as resolved
+// @route   PUT /api/admin/support/:id/resolve
+// @access  Private/Admin/Moderator
+const resolveSupportRequest = asyncHandler(async (req, res) => {
+  const conversation = await Conversation.findById(req.params.id);
+
+  if (!conversation) {
+    res.status(404);
+    throw new Error('Conversation not found');
+  }
+
+  conversation.is_support_needed = false;
+  await conversation.save();
+
+  res.json({ message: 'Support request resolved' });
+});
+
 module.exports = {
   getPlatformStats,
   getAllUsers,
   getAllItems,
   getAllTrades,
   getOnlineUsers,
-  updateUserCoins, // Export the new function
+  updateUserCoins,
+  updateUserRole,
+  getSupportConversations,
+  resolveSupportRequest,
 };

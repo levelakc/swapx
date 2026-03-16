@@ -59,34 +59,38 @@ export default function NavBar() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2">
              
-             {/* Browse Icon */}
-             <div className="hidden md:flex items-center gap-2">
+             {/* Browse Icons */}
+             <div className="flex items-center gap-1 sm:gap-2">
                 <NavLink 
                     to="/browse" 
-                    className={({ isActive }) => `p-2 rounded-full transition-all ${isActive ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
-                    title={t('browseItems')}
+                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Compass size={20} />
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                        Browse / עיון
+                    </span>
                 </NavLink>
                 <NavLink 
                     to="/services" 
-                    className={({ isActive }) => `p-2 rounded-full transition-all ${isActive ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
-                    title={t('browseServices', 'Services')}
+                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Briefcase size={20} />
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                        Services / שירותים
+                    </span>
                 </NavLink>
              </div>
 
-             {/* Search Bar - Expandable */}
+             {/* Search - Expandable for Desktop, Icon for Mobile */}
              <div className={`relative transition-all duration-300 ${isSearchOpen ? 'w-full md:w-64 absolute md:relative left-0 right-0 px-4 md:px-0 bg-background md:bg-transparent z-20 flex items-center' : 'w-auto'}`}>
                 {isSearchOpen ? (
                     <>
                         <Search className="absolute left-6 md:left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                         <input 
                             type="text" 
-                            placeholder={t('search')} 
+                            placeholder={`${t('search')} / חיפוש`} 
                             className="w-full bg-muted/50 rounded-full py-2 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                             autoFocus
                             onBlur={() => setIsSearchOpen(false)}
@@ -97,14 +101,17 @@ export default function NavBar() {
                         </button>
                     </>
                 ) : (
-                    <button onClick={() => setIsSearchOpen(true)} className="hidden md:block p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground">
-                        <Search className="h-5 w-5"/>
+                    <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <Search size={20}/>
+                        <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                            Search / חיפוש
+                        </span>
                     </button>
                 )}
             </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Desktop Only Actions */}
+            <div className="hidden lg:flex items-center gap-1">
                 <button onClick={handleThemeChange} className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
                 {theme === 'dark' ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
                 </button>
@@ -128,26 +135,30 @@ export default function NavBar() {
 
             {/* User Profile / Auth */}
             {user ? (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {/* Coins Badge */}
-                <Link to="/coins" className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-yellow-500/10 text-yellow-600 rounded-full text-sm font-bold hover:bg-yellow-500/20 transition-colors">
-                    <Coins size={14} />
-                    <span>{user.coins}</span>
+                <Link to="/coins" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors">
+                    <div className="flex items-center gap-1">
+                        <Coins size={18} />
+                        <span className="text-xs font-bold">{user.coins}</span>
+                    </div>
+                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
                 </Link>
 
                 {/* Messages Badge */}
-                <Link to="/messages" className="hidden md:flex p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-primary transition-colors relative">
+                <Link to="/messages" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative">
                     <MessageCircle size={20} />
-                    {/* Add notification dot logic here later */}
+                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('messages')}</span>
                 </Link>
 
                 <div className="relative group">
-                  <Link to="/profile">
+                  <Link to="/profile" className="flex flex-col items-center p-1.5 sm:p-2">
                     <img 
                         src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
                         alt="Avatar" 
-                        className="h-9 w-9 rounded-full object-cover ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer"
+                        className="h-6 w-6 sm:h-7 sm:w-7 rounded-full object-cover ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer"
                     />
+                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                   </Link>
                   
                   {/* Dropdown */}
@@ -159,12 +170,6 @@ export default function NavBar() {
                     
                     <Link to="/profile" className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors">
                       <User className="mr-2 h-4 w-4"/> {t('profile')}
-                    </Link>
-                    <Link to="/messages" className="md:hidden flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors">
-                      <MessageCircle className="mr-2 h-4 w-4"/> {t('messages')}
-                    </Link>
-                    <Link to="/coins" className="md:hidden flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors">
-                      <Coins className="mr-2 h-4 w-4"/> {t('myCoins')}
                     </Link>
                     
                     {user?.role === 'admin' && (
@@ -182,55 +187,23 @@ export default function NavBar() {
                 </div>
               </div>
             ) : (
-              <div className="hidden md:flex items-center gap-2">
-                <Link to="/login" className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <div className="flex items-center gap-1">
+                <Link to="/login" className="px-3 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors uppercase">
                   {t('signIn', 'Sign In')}
                 </Link>
-                <Link to="/register" className="px-5 py-2 rounded-full bg-primary text-primary-content text-sm font-bold hover:shadow-lg hover:shadow-primary/30 transition-all">
+                <Link to="/register" className="px-4 py-2 rounded-full bg-primary text-primary-content text-xs font-bold hover:shadow-lg hover:shadow-primary/30 transition-all uppercase">
                   {t('register', 'Register')}
                 </Link>
               </div>
             )}
             
-            {/* Mobile Menu Button & Icons */}
-            <div className="md:hidden flex items-center gap-2 sm:gap-4">
-              <button 
-                onClick={() => setIsSearchOpen(!isSearchOpen)} 
-                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none"
-              >
-                <Search className="h-5 w-5" />
-              </button>
-
-              <NavLink to="/browse" className={({ isActive }) => `p-2 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                <Compass className="h-5 w-5" />
-              </NavLink>
-
-              <NavLink to="/services" className={({ isActive }) => `p-2 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                <Briefcase className="h-5 w-5" />
-              </NavLink>
-
-              {user ? (
-                <>
-                    <NavLink to="/messages" className={({ isActive }) => `p-2 transition-colors relative ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                        <MessageCircle className="h-5 w-5" />
-                    </NavLink>
-                    <Link to="/coins" className="p-2 text-yellow-600">
-                        <Coins className="h-5 w-5" />
-                    </Link>
-                    <Link to="/profile" className="p-1">
-                        <img 
-                            src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
-                            alt="Avatar" 
-                            className="h-7 w-7 rounded-full object-cover ring-2 ring-transparent active:ring-primary transition-all"
-                        />
-                    </Link>
-                </>
-              ) : (
-                  <Link to="/login" className="p-2 text-muted-foreground hover:text-foreground">
-                    <User className="h-6 w-6" />
-                  </Link>
-              )}
-            </div>
+            {/* Mobile Menu Button - for Settings/Theme */}
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="lg:hidden p-2 text-muted-foreground hover:text-foreground focus:outline-none"
+            >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </div>
@@ -242,47 +215,37 @@ export default function NavBar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-border overflow-hidden"
+            className="lg:hidden bg-background border-b border-border overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
-                <NavLink 
-                    to="/browse" 
-                    onClick={() => setIsOpen(false)}
-                    className={({ isActive }) => `block px-4 py-3 rounded-lg text-base font-medium ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`}
-                >
-                    {t('browseItems', 'Browse')}
-                </NavLink>
-                <NavLink 
-                    to="/services" 
-                    onClick={() => setIsOpen(false)}
-                    className={({ isActive }) => `block px-4 py-3 rounded-lg text-base font-medium ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`}
-                >
-                    {t('browseServices', 'Services')}
-                </NavLink>
-                
-                <div className="border-t border-border my-2 pt-2 grid grid-cols-2 gap-2">
-                    <button onClick={handleThemeChange} className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted">
-                        {theme === 'dark' ? <><Sun className="mr-2 h-4 w-4"/> Light</> : <><Moon className="mr-2 h-4 w-4"/> Dark</>}
+                <div className="grid grid-cols-2 gap-2">
+                    <button onClick={handleThemeChange} className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted text-sm font-bold">
+                        {theme === 'dark' ? <><Sun className="mr-2 h-4 w-4"/> LIGHT</> : <><Moon className="mr-2 h-4 w-4"/> DARK</>}
                     </button>
                     <div className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted">
                         <CurrencySwitcher />
                     </div>
                 </div>
-
-                {!user && (
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                        <Link to="/login" onClick={() => setIsOpen(false)} className="block text-center px-4 py-3 rounded-lg bg-muted font-medium">
-                        {t('login')}
-                        </Link>
-                        <Link to="/register" onClick={() => setIsOpen(false)} className="block text-center px-4 py-3 rounded-lg bg-primary text-primary-content font-bold">
-                        {t('register')}
-                        </Link>
+                
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <span className="text-sm font-bold uppercase">{t('language', 'Language')}</span>
+                    <div className="flex gap-4">
+                        {languages.map(lang => (
+                            <button 
+                                key={lang.code}
+                                onClick={() => { setLanguage(lang.code); setIsOpen(false); }}
+                                className={`text-2xl ${language === lang.code ? 'ring-2 ring-primary rounded-full p-1' : 'opacity-50'}`}
+                            >
+                                {lang.flag}
+                            </button>
+                        ))}
                     </div>
-                )}
+                </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </header>
+
   );
 }

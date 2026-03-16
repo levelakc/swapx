@@ -95,6 +95,15 @@ const translations = {
     'willing_to_receive': 'Willing to receive cash',
     'trade_only': 'Trade Only',
     featuredItems: 'Featured Items',
+    navSearch: 'Search',
+    navBrowse: 'Browse',
+    navServices: 'Services',
+    navMessages: 'Messages',
+    navProfile: 'Profile',
+    navCoins: 'Coins',
+    navAdmin: 'Admin',
+    navLogin: 'Login',
+    navRegister: 'Register',
     howItWorks: {
       title: 'How SwapX Works',
       step1: {
@@ -331,6 +340,15 @@ const translations = {
     'willing_to_receive': 'מוכן לקבל מזומן',
     'trade_only': 'החלפה בלבד',
     featuredItems: 'פריטים נבחרים',
+    navSearch: 'חיפוש',
+    navBrowse: 'עיון',
+    navServices: 'שירותים',
+    navMessages: 'הודעות',
+    navProfile: 'פרופיל',
+    navCoins: 'מטבעות',
+    navAdmin: 'ניהול',
+    navLogin: 'התחברות',
+    navRegister: 'הרשמה',
     howItWorks: {
       title: 'איך סוואפ-אקס עובד',
       step1: {

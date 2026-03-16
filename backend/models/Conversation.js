@@ -28,6 +28,10 @@ const conversationSchema = mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    is_support_needed: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -16,9 +16,13 @@ const messageSchema = mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['text', 'offer', 'counter', 'accept', 'reject', 'system', 'image', 'voice'],
+      enum: ['text', 'offer', 'counter', 'accept', 'reject', 'system', 'image', 'voice', 'buttons'],
       default: 'text',
     },
+    buttons: [{
+      text: String,
+      payload: String,
+    }],
     trade_data: {
       type: Object, // To store trade offer details if message type is offer/counter
     },

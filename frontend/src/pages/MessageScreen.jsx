@@ -164,6 +164,21 @@ export default function MessageScreen() {
                                         </div>
                                     )}
                                 </div>
+                            ) : msg.type === 'buttons' ? (
+                                <div className="space-y-3">
+                                    <p className="whitespace-pre-wrap break-words text-[15px]">{msg.content}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {msg.buttons?.map((btn, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => messageMutation.mutate({ content: btn.payload || btn.text, type: 'text', sender: user.email })}
+                                                className="px-3 py-1.5 bg-background text-foreground border border-border rounded-lg text-sm font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all shadow-sm"
+                                            >
+                                                {btn.text}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             ) : (
                                 <p className="whitespace-pre-wrap break-words text-[15px]">{msg.content}</p>
                             )}
