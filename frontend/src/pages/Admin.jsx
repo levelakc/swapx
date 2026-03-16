@@ -4,6 +4,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Loader2, CheckCircle, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import CategoryManager from '../components/admin/CategoryManager';
 import ItemsTable from '../components/admin/ItemsTable';
 import OnlineUsersTable from '../components/admin/OnlineUsersTable';
