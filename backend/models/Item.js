@@ -97,6 +97,10 @@ const itemSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    open_to_other_offers: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

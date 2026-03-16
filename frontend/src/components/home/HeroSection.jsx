@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, TrendingUp, Repeat } from 'lucide-react';
+import { Search, ShieldCheck, TrendingUp, Repeat, LayoutGrid } from 'lucide-react';
 import { useState } from 'react';
 
 export default function HeroSection() {
@@ -17,11 +17,13 @@ export default function HeroSection() {
   };
 
   const categories = [
+    { name: t('viewAll'), icon: <LayoutGrid size={24} />, slug: 'all' },
     { name: t('electronics'), icon: '💻', slug: 'electronics' },
-    { name: t('fashion'), icon: '👕', slug: 'fashion' },
-    { name: t('gaming'), icon: '🎮', slug: 'gaming' },
-    { name: t('cars'), icon: '🚗', slug: 'cars' },
-    { name: t('jewelry'), icon: '💎', slug: 'jewelry' },
+    { name: t('vehicles', 'Vehicles'), icon: '🚗', slug: 'vehicles' },
+    { name: t('fashion'), icon: '👕', slug: 'fashion_main' },
+    { name: t('home', 'Home & Garden'), icon: '🏡', slug: 'home' },
+    { name: t('realEstate', 'Real Estate'), icon: '🏢', slug: 'real_estate_main' },
+    { name: t('lifestyle', 'Leisure'), icon: '🎨', slug: 'lifestyle' },
   ];
 
   return (
@@ -64,11 +66,11 @@ export default function HeroSection() {
             {categories.map((cat, i) => (
                 <Link 
                     key={i}
-                    to={`/browse?category=${cat.slug}`}
-                    className="flex flex-col items-center gap-2 px-6 py-4 rounded-2xl bg-card hover:bg-primary/10 hover:text-primary border border-border hover:border-primary/30 transition-all min-w-[100px] group shadow-sm hover:shadow-md"
+                    to={cat.slug === 'all' ? '/browse' : `/browse?category=${cat.slug}`}
+                    className="flex flex-col items-center justify-center gap-2 px-4 py-4 rounded-2xl bg-card hover:bg-primary/10 hover:text-primary border border-border hover:border-primary/30 transition-all min-w-[110px] group shadow-sm hover:shadow-md"
                 >
                     <span className="text-3xl group-hover:scale-125 transition-transform">{cat.icon}</span>
-                    <span className="text-xs font-bold uppercase tracking-wider">{cat.name}</span>
+                    <span className="text-[11px] font-black uppercase tracking-wider text-center line-clamp-1">{cat.name}</span>
                 </Link>
             ))}
         </motion.div>
@@ -83,22 +85,22 @@ export default function HeroSection() {
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-green-500/10"><ShieldCheck size={20} className="text-green-500" /></div>
                 <div className="text-left">
-                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">Secure</p>
-                    <p className="text-xs font-bold text-foreground">Secure Trading</p>
+                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('secure')}</p>
+                    <p className="text-xs font-bold text-foreground">{t('secureTrading')}</p>
                 </div>
             </div>
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-blue-500/10"><TrendingUp size={20} className="text-blue-500" /></div>
                 <div className="text-left">
-                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">Active</p>
-                    <p className="text-xs font-bold text-foreground">Active Community</p>
+                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('activeBadge')}</p>
+                    <p className="text-xs font-bold text-foreground">{t('activeCommunity')}</p>
                 </div>
             </div>
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-purple-500/10"><Repeat size={20} className="text-purple-500" /></div>
                 <div className="text-left">
-                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">Fast</p>
-                    <p className="text-xs font-bold text-foreground">Fast Swapping</p>
+                    <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('fast')}</p>
+                    <p className="text-xs font-bold text-foreground">{t('fastSwapping')}</p>
                 </div>
             </div>
         </motion.div>

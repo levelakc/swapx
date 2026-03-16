@@ -42,7 +42,6 @@ const CATEGORY_PRICE_RANGES_USD = {
   art: { min: 100, max: 100000 },
   pets: { min: 0, max: 5000 },
   services: { min: 20, max: 500 },
-  other: { min: 10, max: 1000 },
 };
 
 const CATEGORY_IMAGES = {
@@ -150,9 +149,6 @@ const CATEGORY_IMAGES = {
     { url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop', title: 'Fullstack Web App Development', title_he: 'פיתוח אפליקציות ווב', min_price: 150, max_price: 1000 },
     { url: 'https://images.unsplash.com/photo-1548690312-e3b507d17a12?q=80&w=800&auto=format&fit=crop', title: 'Elite Personal Training Program', title_he: 'אימון כושר אישי עילית', min_price: 50, max_price: 150 }
   ],
-  other: [
-    { url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop', title: 'Professional Cinematography Rig', title_he: 'ציוד קולנוע מקצועי', min_price: 1000, max_price: 5000 }
-  ]
 };
 
 
@@ -163,7 +159,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
 
-  const categoryAssets = CATEGORY_IMAGES[category.name] || CATEGORY_IMAGES['other'];
+  const categoryAssets = CATEGORY_IMAGES[category.name] || CATEGORY_IMAGES['phones'];
   const assetIndex = itemIndex % categoryAssets.length;
   const randomAsset = categoryAssets[assetIndex];
 
@@ -242,7 +238,8 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     seller_full_name: user.full_name,
     seller_avatar: user.avatar,
     seller_bio: user.bio,
-    seller_location: user.location || 'Israel'
+    seller_location: user.location || 'Israel',
+    open_to_other_offers: Math.random() > 0.5
   };
 }
 
@@ -269,7 +266,6 @@ const seedData = async () => {
       { name: 'real_estate_main', label_en: 'Real Estate', label_he: 'נדל"ן', icon: 'building' },
       { name: 'lifestyle', label_en: 'Lifestyle', label_he: 'פנאי', icon: 'smile' },
       { name: 'services_main', label_en: 'Services', label_he: 'שירותים', icon: 'briefcase' },
-      { name: 'other_main', label_en: 'Other', label_he: 'אחר', icon: 'circle' }
     ];
     
     const mainCategories = {};
@@ -313,6 +309,7 @@ const seedData = async () => {
 
         // Real Estate
         { name: 'real_estate', parent: 'real_estate_main', label_en: 'Properties', icon: 'home', label_he: 'נכסים' },
+        { name: 'lands', parent: 'real_estate_main', label_en: 'Lands', icon: 'map', label_he: 'קרקעות' },
 
         // Lifestyle
         { name: 'art', parent: 'lifestyle', label_en: 'Art', icon: 'palette', label_he: 'אמנות' },
@@ -322,9 +319,6 @@ const seedData = async () => {
 
         // Services
         { name: 'services', parent: 'services_main', label_en: 'General Services', icon: 'briefcase', label_he: 'שירותים כלליים' },
-
-        // Other
-        { name: 'other', parent: 'other_main', label_en: 'Other', icon: 'box', label_he: 'אחר' }
     ];
 
     for (const sub of subCategoriesData) {

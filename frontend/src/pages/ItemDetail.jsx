@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getItem, getCategories, getMe } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext'; // Updated import path
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, Tag, MapPin, Repeat, CircleDollarSign } from 'lucide-react';
+import { Loader2, Tag, MapPin, Repeat, CircleDollarSign, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
@@ -84,7 +84,12 @@ export default function ItemDetail() {
         </div>
         <div>
           {/* Item Info */}
-          <div className="bg-background rounded-lg shadow-lg p-6">
+          <div className="bg-background rounded-lg shadow-lg p-6 relative">
+            {item.open_to_other_offers && (
+                <div className="absolute top-4 right-4 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black flex items-center gap-1 animate-pulse">
+                    <Sparkles size={12} /> {t('openToOtherOffers')}
+                </div>
+            )}
             <h1 className="text-3xl font-bold mb-4">{item.title}</h1>
             <p className="text-2xl font-bold text-primary mb-4">{currencySymbol}{displayValue.toLocaleString()}</p>
             <p className="text-muted-foreground mb-6">{item.description}</p>

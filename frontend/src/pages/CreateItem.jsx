@@ -434,6 +434,20 @@ export default function CreateItem() {
                         )}
                         />
                     </div>
+
+                    <div className="bg-secondary/30 p-4 rounded-2xl border border-dashed border-white/10">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                {...register('open_to_other_offers')}
+                                className="mt-1 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary transition-all cursor-pointer"
+                            />
+                            <div className="flex-1">
+                                <span className="block text-sm font-bold group-hover:text-primary transition-colors">{t('openToOtherOffers')}</span>
+                                <span className="block text-xs text-muted-foreground">{t('openToOtherOffersDesc')}</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
             
