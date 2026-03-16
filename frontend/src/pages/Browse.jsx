@@ -6,13 +6,13 @@ import { getItems } from '../api/api';
 import ItemCard from '../components/items/ItemCard';
 import CategoryFilter from '../components/filters/CategoryFilter';
 import FilterSidebar from '../components/filters/FilterSidebar';
-import { Loader2, LayoutGrid, List, Filter } from 'lucide-react';
+import { Loader2, LayoutGrid, List, Filter, Search } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Browse({ listingType = 'item' }) {
   const { t } = useLanguage();
-  const [searchParams] = useSearchParams();
-  const keyword = searchParams.get('keyword') || '';
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function Browse({ listingType = 'item' }) {
     maxPrice: filters.priceRange[1],
     conditions: filters.conditions.join(','),
     location: filters.location,
-    keyword: keyword,
+    keyword: searchParams.get('keyword') || '',
     listing_type: listingType,
   };
 
@@ -56,6 +56,17 @@ export default function Browse({ listingType = 'item' }) {
       setCategoryCookie(selectedCategory);
     }
   }, [selectedCategory]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const newParams = new URLSearchParams(searchParams);
+    if (keyword) {
+        newParams.set('keyword', keyword);
+    } else {
+        newParams.delete('keyword');
+    }
+    setSearchParams(newParams);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -87,11 +98,32 @@ export default function Browse({ listingType = 'item' }) {
 
       {/* Main Content */}
       <div className="flex-1 w-full min-w-0">
-        <div className="mb-6">
-            <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                {t('browseItems')}
-            </h1>
-            <p className="text-muted-foreground mt-1">{t('browseItemsSubtitle', 'Discover unique items to trade')}</p>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-card p-6 rounded-xl shadow-sm border">
+            <div>
+                <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                    {t('browseItems')}
+                </h1>
+                <p className="text-muted-foreground mt-1">{t('browseItemsSubtitle', 'Discover unique items to trade')}</p>
+            </div>
+
+            <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto items-center">
+                <div className="relative flex-1 md:w-80">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <input 
+                        type="text" 
+                        placeholder={t('searchItems')} 
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        className="w-full bg-muted/50 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                    />
+                </div>
+                <button 
+                    type="submit"
+                    className="px-4 py-2 bg-primary text-primary-content rounded-full text-sm font-bold hover:shadow-lg transition-all active:scale-95"
+                >
+                    {t('navSearch', 'Search')}
+                </button>
+            </form>
         </div>
 
         <CategoryFilter selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />

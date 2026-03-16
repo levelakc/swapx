@@ -1,20 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { motion } from 'framer-motion';
-import { ArrowLeftRight, Coins, Package, Repeat, Search, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import { Search, ShieldCheck, TrendingUp, Repeat } from 'lucide-react';
 import { useState } from 'react';
 
 export default function HeroSection() {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
-
-  const floatingIcons = [
-    { Icon: ArrowLeftRight, color: "text-blue-500", x: -150, y: -100, delay: 0 },
-    { Icon: Coins, color: "text-yellow-500", x: 180, y: -120, delay: 1 },
-    { Icon: Package, color: "text-green-500", x: -120, y: 150, delay: 2 },
-    { Icon: Repeat, color: "text-purple-500", x: 150, y: 120, delay: 0.5 },
-  ];
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -32,32 +25,8 @@ export default function HeroSection() {
   ];
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[60vh] overflow-hidden bg-background pt-20">
+    <div className="relative flex flex-col items-center justify-center min-h-[50vh] bg-transparent pt-20">
       
-      {/* Animated Background Icons */}
-      <div className="absolute inset-0 pointer-events-none">
-        {floatingIcons.map((item, index) => (
-          <motion.div
-            key={index}
-            className={`absolute left-1/2 top-1/2 ${item.color} opacity-20 hidden md:block`}
-            initial={{ x: item.x, y: item.y, scale: 0.8 }}
-            animate={{ 
-              y: [item.y - 40, item.y + 40, item.y - 40],
-              rotate: [0, 25, -25, 0],
-              scale: [0.8, 1.2, 0.8]
-            }}
-            transition={{ 
-              duration: 10, 
-              repeat: Infinity, 
-              delay: item.delay,
-              ease: "easeInOut" 
-            }}
-          >
-            <item.Icon size={100} />
-          </motion.div>
-        ))}
-      </div>
-
       <div className="relative z-10 px-4 text-center w-full max-w-5xl mx-auto space-y-12">
         {/* Functional Search Bar - More Prominent */}
         <motion.div 

@@ -3,9 +3,10 @@ import { useLanguage, languages } from '../../contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
 import { getMe } from '../../api/api';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CurrencySwitcher from '../CurrencySwitcher';
+import LanguageSwitcher from '../LanguageSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function NavBar() {
@@ -111,25 +112,12 @@ export default function NavBar() {
             </div>
 
             {/* Desktop Only Actions */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-3 ml-2">
                 <button onClick={handleThemeChange} className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
                 {theme === 'dark' ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
                 </button>
 
-                <div className="relative">
-                    <select 
-                        onChange={(e) => setLanguage(e.target.value)} 
-                        value={language} 
-                        className="bg-transparent text-lg appearance-none cursor-pointer focus:outline-none hover:opacity-80 transition-opacity"
-                    >
-                        {languages.map(lang => (
-                        <option key={lang.code} value={lang.code} className="bg-background text-foreground">
-                            {lang.flag}
-                        </option>
-                        ))}
-                    </select>
-                </div>
-                
+                <LanguageSwitcher />
                 <CurrencySwitcher />
             </div>
 
@@ -169,7 +157,7 @@ export default function NavBar() {
                     </div>
                     
                     <Link to="/profile" className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors">
-                      <User className="mr-2 h-4 w-4"/> {t('profile')}
+                      <UserIcon className="mr-2 h-4 w-4"/> {t('profile')}
                     </Link>
                     
                     {user?.role === 'admin' && (
@@ -217,29 +205,19 @@ export default function NavBar() {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-background border-b border-border overflow-hidden"
           >
-            <div className="px-4 pt-2 pb-6 space-y-2">
+            <div className="px-4 pt-2 pb-6 space-y-4">
                 <div className="grid grid-cols-2 gap-2">
                     <button onClick={handleThemeChange} className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted text-sm font-bold">
                         {theme === 'dark' ? <><Sun className="mr-2 h-4 w-4"/> LIGHT</> : <><Moon className="mr-2 h-4 w-4"/> DARK</>}
                     </button>
-                    <div className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted">
+                    <div className="flex items-center justify-center p-3 rounded-lg bg-muted/50">
                         <CurrencySwitcher />
                     </div>
                 </div>
                 
                 <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                     <span className="text-sm font-bold uppercase">{t('language', 'Language')}</span>
-                    <div className="flex gap-4">
-                        {languages.map(lang => (
-                            <button 
-                                key={lang.code}
-                                onClick={() => { setLanguage(lang.code); setIsOpen(false); }}
-                                className={`text-2xl ${language === lang.code ? 'ring-2 ring-primary rounded-full p-1' : 'opacity-50'}`}
-                            >
-                                {lang.flag}
-                            </button>
-                        ))}
-                    </div>
+                    <LanguageSwitcher />
                 </div>
             </div>
           </motion.div>

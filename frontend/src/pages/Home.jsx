@@ -5,6 +5,7 @@ import HeroSection from '../components/home/HeroSection';
 import PopularItems from '../components/home/PopularItems';
 import PopularServices from '../components/home/PopularServices';
 import { useLanguage } from '../contexts/LanguageContext';
+import FloatingBackground from '../components/home/FloatingBackground';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -81,57 +82,60 @@ export default function Home() {
   };
 
   return (
-    <motion.div 
-      className="space-y-16 pb-20"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      <motion.div variants={itemVariants}>
-        <HeroSection />
+    <>
+      <FloatingBackground />
+      <motion.div 
+        className="space-y-16 pb-20 relative z-10"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants}>
+          <HeroSection />
+        </motion.div>
+        
+        <div className="container mx-auto px-4 space-y-24">
+          {/* Popular Items Section */}
+          <motion.div variants={itemVariants}>
+            <PopularItems 
+                items={popularItems?.items || []} 
+                title={t('popularItems')}
+                onRefresh={() => refreshPopular()}
+                isLoading={isLoadingPopular}
+            />
+          </motion.div>
+
+          {/* Suggested Items Section */}
+          <motion.div variants={itemVariants}>
+            <PopularItems 
+                items={suggestedItems?.items || []} 
+                title={t('suggestedItems')}
+                onRefresh={() => refreshSuggested()}
+                isLoading={isLoadingSuggested}
+            />
+          </motion.div>
+
+          {/* Popular Services Section */}
+          <motion.div variants={itemVariants}>
+            <PopularServices 
+                services={popularServices?.services || []} 
+                title={t('popularServices')}
+                onRefresh={() => refreshServices()}
+                isLoading={isLoadingServices}
+            />
+          </motion.div>
+
+          {/* Suggested Services Section */}
+          <motion.div variants={itemVariants}>
+            <PopularServices 
+                services={suggestedServices?.services || []} 
+                title={t('suggestedServices')}
+                onRefresh={() => refreshSuggestedServices()}
+                isLoading={isLoadingSuggestedServices}
+            />
+          </motion.div>
+        </div>
       </motion.div>
-      
-      <div className="container mx-auto px-4 space-y-24">
-        {/* Popular Items Section */}
-        <motion.div variants={itemVariants}>
-          <PopularItems 
-              items={popularItems?.items || []} 
-              title={t('popularItems')}
-              onRefresh={() => refreshPopular()}
-              isLoading={isLoadingPopular}
-          />
-        </motion.div>
-
-        {/* Suggested Items Section */}
-        <motion.div variants={itemVariants}>
-          <PopularItems 
-              items={suggestedItems?.items || []} 
-              title={t('suggestedItems')}
-              onRefresh={() => refreshSuggested()}
-              isLoading={isLoadingSuggested}
-          />
-        </motion.div>
-
-        {/* Popular Services Section */}
-        <motion.div variants={itemVariants}>
-          <PopularServices 
-              services={popularServices?.services || []} 
-              title={t('popularServices')}
-              onRefresh={() => refreshServices()}
-              isLoading={isLoadingServices}
-          />
-        </motion.div>
-
-        {/* Suggested Services Section */}
-        <motion.div variants={itemVariants}>
-          <PopularServices 
-              services={suggestedServices?.services || []} 
-              title={t('suggestedServices')}
-              onRefresh={() => refreshSuggestedServices()}
-              isLoading={isLoadingSuggestedServices}
-          />
-        </motion.div>
-      </div>
-    </motion.div>
+    </>
   );
 }
