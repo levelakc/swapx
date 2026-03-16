@@ -69,7 +69,7 @@ export default function NavBar() {
                 >
                     <Compass size={20} />
                     <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                        Browse / עיון
+                        {t('navBrowse', 'Browse')}
                     </span>
                 </NavLink>
                 <NavLink 
@@ -78,7 +78,7 @@ export default function NavBar() {
                 >
                     <Briefcase size={20} />
                     <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                        Services / שירותים
+                        {t('navServices', 'Services')}
                     </span>
                 </NavLink>
              </div>
@@ -90,7 +90,7 @@ export default function NavBar() {
                         <Search className="absolute left-6 md:left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                         <input 
                             type="text" 
-                            placeholder={`${t('search')} / חיפוש`} 
+                            placeholder={t('search')} 
                             className="w-full bg-muted/50 rounded-full py-2 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                             autoFocus
                             onBlur={() => setIsSearchOpen(false)}
@@ -104,7 +104,7 @@ export default function NavBar() {
                     <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground">
                         <Search size={20}/>
                         <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                            Search / חיפוש
+                            {t('navSearch', 'Search')}
                         </span>
                     </button>
                 )}

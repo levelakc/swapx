@@ -72,15 +72,15 @@ export default function HeroSection() {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder={t('searchItems')}
-                    className="w-full h-20 pl-16 pr-40 rounded-3xl bg-card border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
+                    className="w-full h-20 pl-16 pr-44 md:pr-52 rounded-3xl bg-card border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
                 />
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} />
                 <button 
                     type="submit"
-                    className="absolute right-3 top-3 bottom-3 px-8 rounded-2xl bg-primary text-primary-content font-black hover:bg-primary/90 transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                    className="absolute right-2.5 top-2.5 bottom-2.5 px-6 md:px-10 rounded-2xl bg-primary text-primary-content font-black hover:bg-primary/90 transition-all shadow-lg active:scale-95 flex items-center gap-2"
                 >
-                    <Search size={20} />
-                    <span>{t('search').split(' ')[0]} / חיפוש</span>
+                    <Search size={20} className="hidden sm:block" />
+                    <span>{t('search').split(' ')[0]}</span>
                 </button>
             </form>
         </motion.div>
