@@ -264,6 +264,8 @@ const translations = {
     fastSwapping: "Fast Swapping",
     openToOtherOffers: "Open to other offers",
     openToOtherOffersDesc: "Check this if you are willing to hear offers outside your preferred categories.",
+    timeToUpgrade: "Time to upgrade!",
+    doNotShowAgain: "Do not show again",
   },
   he: {
     brand: "SwapX",
@@ -523,6 +525,8 @@ const translations = {
     fastSwapping: "החלפות מהירות",
     openToOtherOffers: "פתוח להצעות אחרות",
     openToOtherOffersDesc: "סמן אם אתה מוכן לשמוע הצעות שאינן מהקטגוריות שבחרת.",
+    timeToUpgrade: "הגיע הזמן להתחדש!",
+    doNotShowAgain: "אל תראה שוב",
   },
 };
 

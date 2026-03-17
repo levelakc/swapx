@@ -7,17 +7,23 @@ export default function WelcomeTour() {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem('hasSeenTourV2');
-    if (!hasSeenTour) {
+    const hideTour = localStorage.getItem('hideTourV2');
+    const isLoggedOut = !localStorage.getItem('base44_user');
+    
+    // Show tour if user is not logged in AND hasn't checked "do not show again"
+    if (isLoggedOut && !hideTour) {
       const timer = setTimeout(() => setIsOpen(true), 1500);
       return () => clearTimeout(timer);
     }
   }, []);
 
   const closeTour = () => {
-    localStorage.setItem('hasSeenTourV2', 'true');
+    if (doNotShowAgain) {
+      localStorage.setItem('hideTourV2', 'true');
+    }
     setIsOpen(false);
   };
 
@@ -143,8 +149,17 @@ export default function WelcomeTour() {
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-primary/5 p-4 text-center border-t border-primary/10"
+                className="bg-primary/5 p-4 flex flex-col gap-4 border-t border-primary/10"
               >
+                <label className="flex items-center justify-center gap-2 cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        checked={doNotShowAgain}
+                        onChange={(e) => setDoNotShowAgain(e.target.checked)}
+                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm font-medium text-muted-foreground">{t('doNotShowAgain')}</span>
+                </label>
                 <button 
                   onClick={closeTour}
                   className="w-full py-3 bg-primary text-primary-content font-black rounded-xl shadow-lg hover:shadow-primary/30 transition-all"

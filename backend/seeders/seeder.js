@@ -28,98 +28,129 @@ const CATEGORY_PRICE_RANGES_USD = {
   motorcycles: { min: 2000, max: 30000 },
   boats: { min: 10000, max: 200000 },
   real_estate: { min: 200000, max: 5000000 },
-  lands: { min: 50000, max: 1000000 },
   phones: { min: 100, max: 1500 },
   tablets: { min: 100, max: 1200 },
   computers: { min: 300, max: 5000 },
   gaming: { min: 50, max: 1000 },
   cameras: { min: 200, max: 8000 },
-  audio: { min: 50, max: 3000 },
-  tv: { min: 200, max: 5000 },
-  drones: { min: 300, max: 4000 },
   watches: { min: 100, max: 50000 },
   jewelry: { min: 50, max: 20000 },
   handbags: { min: 100, max: 10000 },
   sneakers: { min: 50, max: 2000 },
   fashion: { min: 20, max: 1000 },
   furniture: { min: 50, max: 5000 },
-  kitchen: { min: 30, max: 2000 },
-  garden: { min: 40, max: 3000 },
-  tools: { min: 20, max: 1500 },
   art: { min: 100, max: 100000 },
   pets: { min: 0, max: 5000 },
-  books: { min: 5, max: 500 },
-  music: { min: 50, max: 10000 },
   services: { min: 20, max: 500 },
 };
 
 const CATEGORY_IMAGES = {
   phones: [
-    { url: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=800&auto=format&fit=crop', title: 'iPhone 15 Pro Max', title_he: 'אייפון 15 פרו מקס 256GB', min_price: 1000, max_price: 1300 },
-    { url: 'https://images.unsplash.com/photo-1678911820864-e2c567c655d7?q=80&w=800&auto=format&fit=crop', title: 'Samsung Galaxy S23 Ultra', title_he: 'סמסונג גלקסי S23 אולטרה', min_price: 850, max_price: 1100 },
-    { url: 'https://images.unsplash.com/photo-1592890288564-76628a30a657?q=80&w=800&auto=format&fit=crop', title: 'Google Pixel 8 Pro', title_he: 'גוגל פיקסל 8 פרו', min_price: 700, max_price: 950 }
+    { url: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=800&auto=format&fit=crop', title: 'iPhone 15 Pro', title_he: 'אייפון 15 פרו', min_price: 900, max_price: 1200 },
+    { url: 'https://images.unsplash.com/photo-1678911820864-e2c567c655d7?q=80&w=800&auto=format&fit=crop', title: 'Samsung Galaxy S23', title_he: 'סמסונג גלקסי S23', min_price: 700, max_price: 900 },
+    { url: 'https://images.unsplash.com/photo-1592890288564-76628a30a657?q=80&w=800&auto=format&fit=crop', title: 'Google Pixel 8', title_he: 'גוגל פיקסל 8', min_price: 600, max_price: 800 },
+    { url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba3f9e?q=80&w=800&auto=format&fit=crop', title: 'iPhone 13 Mini', title_he: 'אייפון 13 מיני', min_price: 400, max_price: 550 },
+    { url: 'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?q=80&w=800&auto=format&fit=crop', title: 'Xiaomi 13 Ultra', title_he: 'שיאומי 13 אולטרה', min_price: 500, max_price: 750 }
   ],
   tablets: [
-    { url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800&auto=format&fit=crop', title: 'iPad Pro 12.9 M2', title_he: 'אייפד פרו 12.9 M2', min_price: 900, max_price: 1400 },
-    { url: 'https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?q=80&w=800&auto=format&fit=crop', title: 'Samsung Galaxy Tab S9 Ultra', title_he: 'סמסונג גלקסי טאב S9 אולטרה', min_price: 800, max_price: 1200 }
+    { url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800&auto=format&fit=crop', title: 'iPad Pro 12.9', title_he: 'אייפד פרו 12.9', min_price: 800, max_price: 1300 },
+    { url: 'https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?q=80&w=800&auto=format&fit=crop', title: 'Samsung Galaxy Tab S9', title_he: 'סמסונג גלקסי טאב S9', min_price: 400, max_price: 800 },
+    { url: 'https://images.unsplash.com/photo-1561154464-82e9adf32764?q=80&w=800&auto=format&fit=crop', title: 'iPad Air M1', title_he: 'אייפד אייר M1', min_price: 500, max_price: 700 }
   ],
   computers: [
-    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop', title: 'MacBook Air M2 16GB', title_he: 'מקבוק אייר M2 16GB', min_price: 1100, max_price: 1400 },
-    { url: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=800&auto=format&fit=crop', title: 'Dell XPS 15 OLED', title_he: 'דל XPS 15 מסך OLED', min_price: 1600, max_price: 2400 },
-    { url: 'https://images.unsplash.com/photo-1517336712461-7e9024b7ad33?q=80&w=800&auto=format&fit=crop', title: 'MacBook Pro 16" M3 Max', title_he: 'מקבוק פרו 16 M3 מקס', min_price: 3000, max_price: 4500 }
+    { url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop', title: 'MacBook Air M2', title_he: 'מקבוק אייר M2', min_price: 1000, max_price: 1300 },
+    { url: 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=800&auto=format&fit=crop', title: 'Dell XPS 15', title_he: 'דל XPS 15', min_price: 1500, max_price: 2200 },
+    { url: 'https://images.unsplash.com/photo-1517336712461-7e9024b7ad33?q=80&w=800&auto=format&fit=crop', title: 'MacBook Pro 14"', title_he: 'מקבוק פרו 14 אינץ׳', min_price: 1800, max_price: 2500 }
   ],
   cars: [
-    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=800&auto=format&fit=crop', title: 'Porsche 911 Carrera S', title_he: 'פורשה 911 קאררה S', min_price: 130000, max_price: 200000 },
-    { url: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=800&auto=format&fit=crop', title: 'Tesla Model 3 Long Range', title_he: 'טסלה מודל 3 לונג ריינג׳', min_price: 40000, max_price: 60000 },
-    { url: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop', title: 'Toyota RAV4 Hybrid', title_he: 'טויוטה ראב 4 היברידית', min_price: 25000, max_price: 40000 }
+    { url: 'https://images.unsplash.com/photo-1503376763036-066120622c74?q=80&w=800&auto=format&fit=crop', title: 'Porsche 911 Carrera', title_he: 'פורשה 911 קאררה', min_price: 120000, max_price: 250000 },
+    { url: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=800&auto=format&fit=crop', title: 'Tesla Model S Plaid', title_he: 'טסלה מודל S פלייד', min_price: 90000, max_price: 130000 },
+    { url: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=800&auto=format&fit=crop', title: 'Range Rover Sport', title_he: 'ריינג׳ רובר ספורט', min_price: 60000, max_price: 130000 },
+    { url: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=800&auto=format&fit=crop', title: 'Ford Focus ST', title_he: 'פורד פוקוס ST', min_price: 15000, max_price: 25000 },
+    { url: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop', title: 'Toyota Corolla Hybrid', title_he: 'טויוטה קורולה היברידית', min_price: 18000, max_price: 28000 }
   ],
   motorcycles: [
-    { url: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', title: 'Honda PCX 125', title_he: 'הונדה PCX 125 (מושלם לשליחויות)', min_price: 2500, max_price: 4500 },
-    { url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', title: 'Yamaha MT-07', title_he: 'ימאהה MT-07', min_price: 6000, max_price: 9000 }
+    { url: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop', title: 'Harley Davidson Iron 883', title_he: 'הארלי דייוידסון 883', min_price: 8000, max_price: 12000 },
+    { url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop', title: 'Ducati Panigale V4', title_he: 'דוקאטי פניגאלה V4', min_price: 22000, max_price: 35000 }
+  ],
+  boats: [
+    { url: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=800&auto=format&fit=crop', title: 'Luxury Yacht 40ft', title_he: 'יאכטה יוקרתית 40 רגל', min_price: 250000, max_price: 750000 }
   ],
   scooters: [
-    { url: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?q=80&w=800&auto=format&fit=crop', title: 'Segway Ninebot Max G30', title_he: 'קורקינט סגווי ניינבוט מקס', min_price: 500, max_price: 800 }
+    { url: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?q=80&w=800&auto=format&fit=crop', title: 'Xiaomi Pro 2 Scooter', title_he: 'קורקינט שיאומי פרו 2', min_price: 350, max_price: 550 },
+    { url: 'https://images.unsplash.com/photo-1565158630607-35313941296c?q=80&w=800&auto=format&fit=crop', title: 'Vespa Primavera 125', title_he: 'וספה פרימוורה 125', min_price: 3500, max_price: 5500 }
   ],
   bicycles: [
-    { url: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=800&auto=format&fit=crop', title: 'Trek Marlin 7', title_he: 'אופני הרים טרק מרלין 7', min_price: 600, max_price: 1200 }
+    { url: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=800&auto=format&fit=crop', title: 'Specialized Stumpjumper MTB', title_he: 'אופני הרים Specialized', min_price: 1500, max_price: 4000 }
   ],
   watches: [
-    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', title: 'Rolex Submariner Date', title_he: 'רולקס סאבמרינר', min_price: 12000, max_price: 25000 },
-    { url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop', title: 'Garmin Fenix 7X', title_he: 'שעון גרמין פניקס 7X', min_price: 600, max_price: 1000 }
+    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', title: 'Rolex Submariner Date', title_he: 'רולקס סאבמרינר', min_price: 12000, max_price: 28000 },
+    { url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop', title: 'Apple Watch Ultra 2', title_he: 'אפל ווטש אולטרה 2', min_price: 750, max_price: 950 }
   ],
   gaming: [
-    { url: 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=800&auto=format&fit=crop', title: 'PlayStation 5 Disc Edition', title_he: 'פלייסטיישן 5 מהדורת דיסק', min_price: 450, max_price: 600 },
-    { url: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=800&auto=format&fit=crop', title: 'Custom Gaming PC RTX 4080', title_he: 'מחשב גיימינג מותאם RTX 4080', min_price: 1500, max_price: 3000 }
+    { url: 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=800&auto=format&fit=crop', title: 'PlayStation 5 Digital Edition', title_he: 'פלייסטיישן 5 דיגיטלי', min_price: 400, max_price: 550 },
+    { url: 'https://images.unsplash.com/photo-1621259182903-06dc1c460599?q=80&w=800&auto=format&fit=crop', title: 'Xbox Series X 1TB', title_he: 'אקסבוקס Series X', min_price: 450, max_price: 550 }
   ],
   cameras: [
-    { url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop', title: 'Sony A7 IV + 24-70mm Lens', title_he: 'סוני A7 IV עם עדשה', min_price: 2500, max_price: 3500 }
+    { url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop', title: 'Sony A7 IV Body', title_he: 'סוני A7 IV', min_price: 2100, max_price: 2600 },
+    { url: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=800&auto=format&fit=crop', title: 'Fujifilm X-T5 Silver', title_he: 'פוג׳יפילם X-T5', min_price: 1500, max_price: 1900 }
   ],
-  audio: [
-    { url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop', title: 'Sony WH-1000XM5', title_he: 'אוזניות סוני XM5', min_price: 250, max_price: 400 },
-    { url: 'https://images.unsplash.com/photo-1545127398-14699f92334b?q=80&w=800&auto=format&fit=crop', title: 'KRK Rokit 5 Studio Monitors', title_he: 'רמקולים לאולפן KRK Rokit 5', min_price: 300, max_price: 600 }
+  sneakers: [
+    { url: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop', title: 'Nike Air Jordan 1 Lost & Found', title_he: 'אייר ג׳ורדן 1 נדיר', min_price: 250, max_price: 600 },
+    { url: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?q=80&w=800&auto=format&fit=crop', title: 'Adidas Yeezy Boost 350 V2', title_he: 'איזי בוסט 350', min_price: 200, max_price: 450 }
   ],
-  tv: [
-    { url: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=800&auto=format&fit=crop', title: 'LG C3 65" OLED 4K', title_he: 'טלוויזיה LG OLED 65 אינץ׳', min_price: 1200, max_price: 2200 }
+  jewelry: [
+    { url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop', title: '18k White Gold Engagement Ring', title_he: 'טבעת יהלום 18 קראט', min_price: 2500, max_price: 8000 }
   ],
-  drones: [
-    { url: 'https://images.unsplash.com/photo-1473968512647-3e44a224fe8f?q=80&w=800&auto=format&fit=crop', title: 'DJI Mini 3 Pro', title_he: 'רחפן DJI Mini 3 Pro', min_price: 600, max_price: 1000 }
+  fashion: [
+    { url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop', title: 'Levi\'s Vintage Denim Jacket', title_he: 'ז׳קט ג׳ינס ליוויס', min_price: 60, max_price: 180 }
+  ],
+  handbags: [
+    { url: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800&auto=format&fit=crop', title: 'Prada Leather Shoulder Bag', title_he: 'תיק פראדה מקורי', min_price: 1200, max_price: 2800 }
+  ],
+  furniture: [
+    { url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop', title: 'Modern Italian Velvet Sofa', title_he: 'ספת קטיפה איטלקית', min_price: 1200, max_price: 3500 }
   ],
   real_estate: [
-    { url: 'https://images.unsplash.com/photo-1580587771525-78b9bed22ad9?q=80&w=800&auto=format&fit=crop', title: 'Modern 4-Bedroom Villa', title_he: 'וילה מודרנית 4 חדרים עם בריכה', min_price: 1500000, max_price: 4000000 },
-    { url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop', title: 'Downtown Penthouse Apartment', title_he: 'פנטהאוז יוקרתי במרכז העיר', min_price: 800000, max_price: 2500000 }
+    { url: 'https://images.unsplash.com/photo-1580587771525-78b9bed22ad9?q=80&w=800&auto=format&fit=crop', title: '6-Bedroom Modern Villa with Pool', title_he: 'וילה מודרנית 6 חדרים', min_price: 2500000, max_price: 5500000 }
   ],
-  lands: [
-    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800&auto=format&fit=crop', title: 'Agricultural Land 5 Acres', title_he: 'קרקע חקלאית 5 דונם להשקעה', min_price: 100000, max_price: 500000 }
+  pets: [
+    { url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=800&auto=format&fit=crop', title: 'Purebred Golden Retriever Puppy', title_he: 'גור גולדן רטריבר גזעי', min_price: 1500, max_price: 3000 }
+  ],
+  art: [
+    { url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop', title: 'Large Format Abstract Oil Painting', title_he: 'ציור שמן אבסטרקט ענק', min_price: 500, max_price: 8000 }
   ],
   tools: [
-    { url: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?q=80&w=800&auto=format&fit=crop', title: 'Makita 18V Combo Kit', title_he: 'סט כלי עבודה מקיטה 18V', min_price: 250, max_price: 600 }
+    { url: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?q=80&w=800&auto=format&fit=crop', title: 'DeWalt 20V Cordless Drill Set', title_he: 'סט מברגות דיוולט', min_price: 180, max_price: 350 }
+  ],
+  kitchen: [
+    { url: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800&auto=format&fit=crop', title: 'Breville Barista Pro Espresso', title_he: 'מכונת אספרסו ברוויל', min_price: 600, max_price: 950 }
+  ],
+  garden: [
+    { url: 'https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=800&auto=format&fit=crop', title: 'Rattan Outdoor Lounge Suite', title_he: 'סט ראטן יוקרתי לגינה', min_price: 80, max_price: 250 }
+  ],
+  drones: [
+    { url: 'https://images.unsplash.com/photo-1473968512647-3e44a224fe8f?q=80&w=800&auto=format&fit=crop', title: 'DJI Mavic 3 Pro Cine', title_he: 'רחפן DJI Mavic 3 Pro', min_price: 1500, max_price: 3500 }
+  ],
+  audio: [
+    { url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop', title: 'Sony WH-1000XM5 ANC Headphones', title_he: 'אוזניות סוני XM5', min_price: 300, max_price: 450 }
+  ],
+  tv: [
+    { url: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=800&auto=format&fit=crop', title: '75" LG C3 OLED 4K TV', title_he: 'טלוויזיה LG OLED 75 אינץ׳', min_price: 1500, max_price: 3500 }
+  ],
+  books: [
+    { url: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=800&auto=format&fit=crop', title: 'Rare 1st Edition Classic Novel', title_he: 'מהדורה ראשונה נדירה', min_price: 100, max_price: 2000 }
+  ],
+  music: [
+    { url: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?q=80&w=800&auto=format&fit=crop', title: 'Fender Stratocaster American Pro', title_he: 'גיטרה פנדר אמריקאית', min_price: 1200, max_price: 2500 }
   ],
   services: [
-    { url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop', title: 'Custom Website Development', title_he: 'פיתוח אתרים ללקוחות פרטיים', min_price: 500, max_price: 3000 },
-    { url: 'https://images.unsplash.com/photo-1617469165786-8007eda3caa7?q=80&w=800&auto=format&fit=crop', title: 'Express Courier & Delivery', title_he: 'שירותי שליחויות מהירות ואקספרס', min_price: 20, max_price: 100 },
-    { url: 'https://images.unsplash.com/photo-1581578731548-c64695cc6954?q=80&w=800&auto=format&fit=crop', title: 'Deep Cleaning Service', title_he: 'שירותי ניקיון יסודי לדירות', min_price: 100, max_price: 300 }
-  ]
+    { url: 'https://images.unsplash.com/photo-1581578731548-c64695cc6954?q=80&w=800&auto=format&fit=crop', title: 'Full Home Deep Cleaning Service', title_he: 'ניקוי יסודי לבית', min_price: 80, max_price: 250 },
+    { url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop', title: 'Fullstack Web App Development', title_he: 'פיתוח אפליקציות ווב', min_price: 150, max_price: 1000 },
+    { url: 'https://images.unsplash.com/photo-1548690312-e3b507d17a12?q=80&w=800&auto=format&fit=crop', title: 'Elite Personal Training Program', title_he: 'אימון כושר אישי עילית', min_price: 50, max_price: 150 }
+  ],
 };
+
 
 async function generateRandomItem(category, user, itemIndex, allCategories) {
   const conditions = ['new', 'like_new', 'excellent', 'good', 'fair'];
@@ -128,13 +159,14 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
 
-  // Fallback gracefully if category is missing in CATEGORY_IMAGES
   const categoryAssets = CATEGORY_IMAGES[category.name] || CATEGORY_IMAGES['phones'];
   const assetIndex = itemIndex % categoryAssets.length;
   const randomAsset = categoryAssets[assetIndex];
 
   let title = randomAsset.title_he || randomAsset.title;
 
+  let description;
+  let description_en;
   const itemTypeHe = category.label_he || 'פריט';
   const itemTypeEn = category.label_en || 'Item';
   
@@ -142,31 +174,31 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
       `פריט ${itemTypeHe} במצב מעולה, כמעט לא היה בשימוש.`, 
       `שמרתי על ה${itemTypeHe} הזה בקנאות. מוכן להחלפה מעניינת.`, 
       `הזדמנות להשיג ${itemTypeHe} איכותי במחיר הוגן.`, 
-      `מוצר שמור מאוד, מגיע עם כל האביזרים המקוריים בקופסה.`, 
-      `מוכר/מחליף עקב שדרוג. עובד חלק וללא תקלות.`, 
+      `מוצר שמור מאוד, מגיע עם כל האביזרים.`, 
+      `מחפש לשדרג את ה${itemTypeHe} שלי למשהו חדש.`, 
       `מצב חדש לגמרי, היה בשימוש פעמים ספורות בלבד.`,
-      `גמיש מעט במחיר לרציניים, פתוח להצעות החלפה על ציוד מקביל.`,
-      `נקנה לאחרונה, נמכר עקב מעבר דירה/שינוי תחום, חייב להימכר!`,
-      `איכות ללא פשרות, כל הקודם זוכה. שמור ברמת הבורג.`,
-      `פריט מבוקש מאוד במצב מצוין, קשה למצוא כאלה היום בשוק.`
+      `גמיש מעט במחיר לרציניים, פתוח להצעות החלפה מעניינות.`,
+      `נמכר עקב מעבר דירה, חייב להימכר מהר!`,
+      `איכות ללא פשרות, כל הקודם זוכה.`,
+      `פריט נדיר במצב מצוין, קשה למצוא כאלה היום.`
   ];
 
   const englishDescriptions = [
       `${itemTypeEn} in excellent condition, barely used.`,
-      `I kept this ${itemTypeEn} in great shape. Open to interesting trades.`,
+      `I kept this ${itemTypeEn} in great shape. Open to trades.`,
       `Opportunity to get a high-quality ${itemTypeEn} at a fair price.`,
-      `Very well maintained, comes with all original accessories in the box.`,
-      `Selling/trading due to an upgrade. Works flawlessly.`,
-      `Brand new condition, used only a handful of times.`,
-      `Slightly flexible on price for serious buyers, open to trade offers for similar gear.`,
-      `Bought recently, selling due to moving/career change, must go!`,
-      `Uncompromising quality, first come first served. Kept in pristine shape.`,
-      `Highly sought-after item in excellent condition, hard to find these days.`
+      `Very well maintained, comes with all original accessories.`,
+      `Looking to upgrade my ${itemTypeEn} to something newer.`,
+      `Brand new condition, used only a few times.`,
+      `Slightly flexible on price for serious buyers, open to interesting trade offers.`,
+      `Selling due to moving, must go fast!`,
+      `Uncompromising quality, first come first served.`,
+      `Rare item in excellent condition, hard to find these days.`
   ];
   
   const descIndex = (itemIndex + Math.floor(Math.random() * hebrewDescriptions.length)) % hebrewDescriptions.length;
-  const description = hebrewDescriptions[descIndex];
-  const description_en = englishDescriptions[descIndex];
+  description = hebrewDescriptions[descIndex];
+  description_en = englishDescriptions[descIndex];
 
   const categoryDefaults = CATEGORY_PRICE_RANGES_USD[category.name] || { min: 50, max: 500 };
   const priceRange = {
@@ -180,6 +212,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   if (allCategories && allCategories.length > 0) {
     for (let i = 0; i < numLookingFor; i++) {
       const randomCat = allCategories[Math.floor(Math.random() * allCategories.length)];
+      // FIX: Use ID as string to match frontend expectations
       if (!lookingFor.includes(randomCat._id.toString())) {
         lookingFor.push(randomCat._id.toString());
       }
@@ -212,6 +245,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
 
 const seedData = async () => {
   try {
+    // Clear existing data
     await Promise.all([
       User.deleteMany(),
       Category.deleteMany(),
@@ -221,7 +255,7 @@ const seedData = async () => {
       Conversation.deleteMany(),
       Message.deleteMany(),
     ]);
-    console.log('Database cleared successfully.');
+    console.log('Data cleared successfully.');
 
     // --- CATEGORIES ---
     const mainCategoriesData = [
@@ -235,12 +269,15 @@ const seedData = async () => {
     ];
     
     const mainCategories = {};
+    const createdCategories = [];
+
     for (const cat of mainCategoriesData) {
         const newCat = await Category.create({ ...cat, parent: null });
         mainCategories[cat.name] = newCat;
     }
 
     const subCategoriesData = [
+        // Electronics
         { name: 'phones', parent: 'electronics', label_en: 'Cell Phones', icon: 'smartphone', label_he: 'סלולר' },
         { name: 'tablets', parent: 'electronics', label_en: 'Tablets', icon: 'tablet', label_he: 'טאבלטים' },
         { name: 'computers', parent: 'electronics', label_en: 'Computers', icon: 'monitor', label_he: 'מחשבים' },
@@ -250,34 +287,40 @@ const seedData = async () => {
         { name: 'tv', parent: 'electronics', label_en: 'TV & Screens', icon: 'tv', label_he: 'טלוויזיות' },
         { name: 'drones', parent: 'electronics', label_en: 'Drones', icon: 'send', label_he: 'רחפנים' },
 
+        // Vehicles
         { name: 'cars', parent: 'vehicles', label_en: 'Cars', icon: 'car', label_he: 'מכוניות' },
         { name: 'motorcycles', parent: 'vehicles', label_en: 'Motorcycles', icon: 'bike', label_he: 'אופנועים' },
+        { name: 'boats', parent: 'vehicles', label_en: 'Boats', icon: 'anchor', label_he: 'סירות' },
         { name: 'scooters', parent: 'vehicles', label_en: 'Scooters', icon: 'wind', label_he: 'קורקינטים' },
         { name: 'bicycles', parent: 'vehicles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים' },
 
+        // Fashion
         { name: 'fashion', parent: 'fashion_main', label_en: 'Clothing', icon: 'shirt', label_he: 'ביגוד' },
         { name: 'sneakers', parent: 'fashion_main', label_en: 'Sneakers', icon: 'footprints', label_he: 'נעליים' },
         { name: 'watches', parent: 'fashion_main', label_en: 'Watch', icon: 'watch', label_he: 'שעונים' },
         { name: 'jewelry', parent: 'fashion_main', label_en: 'Jewelry', icon: 'diamond', label_he: 'תכשיטים' },
         { name: 'handbags', parent: 'fashion_main', label_en: 'Handbags', icon: 'shopping-bag', label_he: 'תיקים' },
 
+        // Home
         { name: 'furniture', parent: 'home', label_en: 'Furniture', icon: 'sofa', label_he: 'רהיטים' },
         { name: 'kitchen', parent: 'home', label_en: 'Kitchen', icon: 'coffee', label_he: 'מטבח' },
         { name: 'garden', parent: 'home', label_en: 'Garden', icon: 'flower', label_he: 'גינה' },
         { name: 'tools', parent: 'home', label_en: 'Tools', icon: 'tool', label_he: 'כלי עבודה' },
 
+        // Real Estate
         { name: 'real_estate', parent: 'real_estate_main', label_en: 'Properties', icon: 'home', label_he: 'נכסים' },
         { name: 'lands', parent: 'real_estate_main', label_en: 'Lands', icon: 'map', label_he: 'קרקעות' },
 
+        // Lifestyle
         { name: 'art', parent: 'lifestyle', label_en: 'Art', icon: 'palette', label_he: 'אמנות' },
         { name: 'pets', parent: 'lifestyle', label_en: 'Pets', icon: 'dog', label_he: 'חיות מחמד' },
         { name: 'books', parent: 'lifestyle', label_en: 'Books', icon: 'book', label_he: 'ספרים' },
         { name: 'music', parent: 'lifestyle', label_en: 'Musical Instruments', icon: 'music', label_he: 'כלי נגינה' },
 
+        // Services
         { name: 'services', parent: 'services_main', label_en: 'General Services', icon: 'briefcase', label_he: 'שירותים כלליים' },
     ];
 
-    const createdCategories = [];
     for (const sub of subCategoriesData) {
         const parentCat = mainCategories[sub.parent];
         const newCat = await Category.create({ ...sub, parent: parentCat._id });
@@ -300,12 +343,12 @@ const seedData = async () => {
         language: 'he'
       },
       {
-        full_name: 'עידן שמש',
-        email: 'idan@example.com',
+        full_name: 'דני כהן',
+        email: 'dani@example.com',
         password: 'password123',
         role: 'user',
-        bio: 'עצמאי, עושה שליחויות ומפתח אתרים ללקוחות פרטיים. מחפש להחליף ציוד עבודה ושירותים.',
-        avatar: 'https://i.pravatar.cc/150?u=idan',
+        bio: 'אוהב להחליף ציוד צילום וגאדג\'טים.',
+        avatar: 'https://i.pravatar.cc/150?u=dani',
         phone: '054-123-4567',
         location: ISRAELI_CITIES[0],
         verification_status: 'verified',
@@ -340,10 +383,22 @@ const seedData = async () => {
         email: 'noa@example.com',
         password: 'password123',
         role: 'user',
-        bio: 'סטודנטית לעיצוב, מחפשת מציאות וציוד צילום.',
+        bio: 'סטודנטית לעיצוב, מחפשת מציאות.',
         avatar: 'https://i.pravatar.cc/150?u=noa',
         phone: '053-333-4444',
         location: ISRAELI_CITIES[3],
+        verification_status: 'verified',
+        language: 'he'
+      },
+      {
+        full_name: 'יוסי פרידמן',
+        email: 'yossi@example.com',
+        password: 'password123',
+        role: 'user',
+        bio: 'מוזיקאי בנשמה, מחליף כלי נגינה.',
+        avatar: 'https://i.pravatar.cc/150?u=yossi',
+        phone: '058-555-6666',
+        location: ISRAELI_CITIES[4],
         verification_status: 'verified',
         language: 'he'
       }
@@ -358,13 +413,17 @@ const seedData = async () => {
 
     // --- CHATBOTS ---
     await seedChatbotUsers();
-    
+    console.log('Chatbot users seeded.');
+
+    // Create initial conversation with Chatbot for each user
     for (const user of createdUsers) {
         const chatbot = getChatbotForLanguage(user.language || 'en');
         if (chatbot) {
-            const msgContent = user.language === 'he' 
-              ? `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`
-              : `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`;
+            const welcomeMessage = {
+                en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
+                he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+            };
+            const msgContent = welcomeMessage[user.language] || welcomeMessage.en;
 
             const conversation = await Conversation.create({
                 participants: [user.email, chatbot.email],
@@ -381,31 +440,28 @@ const seedData = async () => {
             });
         }
     }
+    console.log('Chatbot conversations created.');
 
-    // --- ITEMS & SERVICES ---
+    // --- ITEMS ---
     const allItems = [];
     const allServices = [];
     
     for (const category of createdCategories) {
       if (category.name === 'services') {
           const serviceAssets = CATEGORY_IMAGES['services'];
-          for (let i = 0; i < 15; i++) {
-            // Give 'idan' priority for the web dev and courier service listings for realism
-            let owner = createdUsers[Math.floor(Math.random() * createdUsers.length)];
+          for (let i = 0; i < 20; i++) {
+            const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
+            const owner = createdUsers[randomUserIndex];
             const asset = serviceAssets[i % serviceAssets.length];
-            
-            if (asset.title.includes('Website') || asset.title.includes('Courier')) {
-                owner = createdUsers.find(u => u.email === 'idan@example.com') || owner;
-            }
             
             const hourly_rate = Math.floor(Math.random() * (asset.max_price - asset.min_price + 1)) + asset.min_price;
 
             allServices.push({
                 title: asset.title_he || asset.title,
-                description: `Offering professional ${asset.title}. Highly reliable with great reviews. Open to bartering for physical items or other professional services.`,
-                category: category.name, // Matched dynamically to avoid mapping bugs
+                description: `Professional ${asset.title} with high quality and reliability. Looking for interesting trade offers for my services.`,
+                category: 'Professional Services',
                 hourly_rate: hourly_rate,
-                availability: 'Flexible / 09:00 - 18:00',
+                availability: '09:00 - 17:00',
                 location: owner.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],
                 images: [asset.url],
                 provider: owner._id,
@@ -416,14 +472,14 @@ const seedData = async () => {
           continue; 
       }
 
-      // Generate items for all non-service leaf categories
-      for (let i = 0; i < 10; i++) {
-        const owner = createdUsers[Math.floor(Math.random() * createdUsers.length)];
+      for (let i = 0; i < 20; i++) {
+        const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
+        const owner = createdUsers[randomUserIndex];
+        
         const newItem = await generateRandomItem(category, owner, i, createdCategories);
         allItems.push(newItem);
       }
     }
-    
     const createdItems = await Item.insertMany(allItems);
     const createdServices = await Service.insertMany(allServices);
     console.log(`Seeded ${createdItems.length} items and ${createdServices.length} services.`);
@@ -442,7 +498,6 @@ const destroyData = async () => {
       User.deleteMany(),
       Category.deleteMany(),
       Item.deleteMany(),
-      Service.deleteMany(), // Fixed: Included Service model destruction here
       Trade.deleteMany(),
       Conversation.deleteMany(),
       Message.deleteMany(),

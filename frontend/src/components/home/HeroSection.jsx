@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, TrendingUp, Repeat, LayoutGrid, Loader2 } from 'lucide-react';
+import { Search, ShieldCheck, TrendingUp, Repeat, LayoutGrid, Loader2, ArrowLeftRight, Coins, Package, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '../../api/api';
@@ -32,9 +32,43 @@ export default function HeroSection() {
     }
   };
 
+  const floatingIcons = [
+    { Icon: ArrowLeftRight, color: "text-blue-500", x: -150, y: -80, delay: 0, size: 60 },
+    { Icon: Coins, color: "text-yellow-500", x: 180, y: -100, delay: 1, size: 70 },
+    { Icon: Package, color: "text-green-500", x: -120, y: 120, delay: 2, size: 65 },
+    { Icon: Repeat, color: "text-purple-500", x: 150, y: 100, delay: 0.5, size: 55 },
+    { Icon: Zap, color: "text-orange-500", x: 0, y: -140, delay: 1.5, size: 45 },
+  ];
+
   return (
     <div className="relative flex flex-col items-center justify-center min-h-[50vh] bg-transparent pt-20">
       
+      {/* Animated Background Icons Specific to Hero */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center -z-10">
+        <div className="relative w-full max-w-4xl h-full">
+            {floatingIcons.map((item, index) => (
+            <motion.div
+                key={index}
+                className={`absolute left-1/2 top-1/2 ${item.color} opacity-20 hidden md:block`}
+                initial={{ x: item.x, y: item.y, scale: 0.8 }}
+                animate={{ 
+                y: [item.y - 30, item.y + 30, item.y - 30],
+                rotate: [0, 20, -20, 0],
+                scale: [0.8, 1.1, 0.8]
+                }}
+                transition={{ 
+                duration: 8 + Math.random() * 4, 
+                repeat: Infinity, 
+                delay: item.delay,
+                ease: "easeInOut" 
+                }}
+            >
+                <item.Icon size={item.size} />
+            </motion.div>
+            ))}
+        </div>
+      </div>
+
       <div className="relative z-10 px-4 text-center w-full max-w-5xl mx-auto space-y-12">
         {/* Functional Search Bar - More Prominent */}
         <motion.div 
@@ -42,14 +76,18 @@ export default function HeroSection() {
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-3xl mx-auto w-full"
         >
-            <h2 className="text-xl font-bold text-muted-foreground mb-6 uppercase tracking-widest">{t('searchItems')}</h2>
+            <h1 className="text-3xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-secondary mb-4 drop-shadow-sm">
+                {t('timeToUpgrade')}
+            </h1>
+            <h2 className="text-lg font-bold text-muted-foreground mb-8 uppercase tracking-widest">{t('searchItems')}</h2>
+            
             <form onSubmit={handleSearch} className="relative group">
                 <input 
                     type="text" 
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder={t('searchItems')}
-                    className="w-full h-20 ps-16 pe-44 md:pe-52 rounded-3xl bg-card border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
+                    className="w-full h-20 ps-16 pe-44 md:pe-52 rounded-3xl bg-card/90 backdrop-blur-md border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
                 />
                 <Search className="absolute start-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} />
                 <button 
