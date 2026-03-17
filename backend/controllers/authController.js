@@ -8,7 +8,7 @@ const { getChatbotForLanguage } = require('../services/chatbotService');
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { full_name, email, password, role, language } = req.body;
+  const { full_name, email, password, role, language, phone } = req.body;
 
   if (!full_name || !email || !password) {
     res.status(400);
@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     role,
     language: language || 'en',
+    phone,
     coins: 5, // Initial coins
     lastLoginRewardClaimed: new Date(),
   });
@@ -62,6 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       language: user.language,
+      phone: user.phone,
       token: user.getSignedJwtToken(),
     });
   } else {
@@ -107,6 +109,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       language: user.language,
+      phone: user.phone,
       token: user.getSignedJwtToken(),
       dailyReward,
     });

@@ -65,6 +65,20 @@ export default function Register() {
               {errors.full_name && <p className="text-red-500 text-xs mt-1">{errors.full_name.message}</p>}
             </div>
             <div>
+              <label htmlFor="phone-number" className="sr-only">{t('phoneNumber', 'Phone Number')}</label>
+              <input
+                id="phone-number"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                placeholder={t('phoneNumberPlaceholder', 'Phone Number')}
+                {...register('phone', { required: t('phoneNumberRequired', 'Phone Number is required') })}
+              />
+              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
+            </div>
+            <div>
               <label htmlFor="email-address" className="sr-only">{t('emailAddress', 'Email address')}</label>
               <input
                 id="email-address"

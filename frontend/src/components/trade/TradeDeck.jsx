@@ -61,7 +61,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     const { data: myItemsData, isLoading: isLoadingMyItems } = useQuery({
         queryKey: ['items', 'my', 'active'],
         queryFn: () => getMyItems(),
-        enabled: !!user,
+        enabled: !!user && !isService,
     });
     const myItems = myItemsData?.items || [];
     
@@ -85,10 +85,10 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     };
 
     const handleSubmit = () => {
-        let currentOfferedItems = selectedItemIds;
-        let currentCashOffered = cashMode === 'add' ? cashAmount : 0;
-        let currentCashRequested = cashMode === 'request' ? cashAmount : 0;
-        let currentNewOffer = (showNewOfferForm && newOffer.title) ? newOffer : null;
+        let currentOfferedItems = isService ? [] : selectedItemIds;
+        let currentCashOffered = (isService || cashMode === 'add') ? cashAmount : 0;
+        let currentCashRequested = (!isService && cashMode === 'request') ? cashAmount : 0;
+        let currentNewOffer = (!isService && showNewOfferForm && newOffer.title) ? newOffer : null;
         
         let tradeType = isService ? 'service_booking' : 'item_only';
 
@@ -145,102 +145,106 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                         </section>
                     )}
 
-                    {/* Section 1: Select Items */}
-                    <section>
-                        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-                            <Package size={16} /> {isService ? t('offerItemsInExchange', 'Offer Items in Exchange (Optional)') : t('yourItems')}
-                        </h3>
-                        
-                        {(isLoadingUser || isLoadingMyItems) ? (
-                            <div className="flex justify-center p-4"><Loader2 className="animate-spin text-primary" /></div>
-                        ) : myItems.length > 0 ? (
-                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                {myItems.map(item => (
-                                    <ItemCarouselCard key={item._id} item={item} isSelected={selectedItemIds.includes(item._id)} onSelect={handleSelect} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center p-6 bg-muted/30 rounded-xl border border-dashed">
-                                <p className="text-sm text-muted-foreground">You don't have any items listed yet.</p>
-                            </div>
-                        )}
-
-                        <button 
-                            onClick={() => setShowNewOfferForm(!showNewOfferForm)}
-                            className="mt-4 text-xs font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1"
-                        >
-                            <Plus size={14} /> {showNewOfferForm ? t('cancelCustomItem') : t('orCreateCustomOffer')}
-                        </button>
-
-                        <AnimatePresence>
-                            {showNewOfferForm && (
-                                <motion.div 
-                                    initial={{ height: 0, opacity: 0 }} 
-                                    animate={{ height: 'auto', opacity: 1 }} 
-                                    exit={{ height: 0, opacity: 0 }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="mt-3 p-4 bg-muted/30 rounded-xl space-y-3 border">
-                                        <input type="text" placeholder={t('title')} className="w-full bg-background p-2 rounded-lg text-sm border focus:ring-2 ring-purple-500 outline-none text-foreground" onChange={e => setNewOffer({...newOffer, title: e.target.value})}/>
-                                        <div className="flex gap-2">
-                                            <input type="number" placeholder={t('estimatedValue')} className="w-1/3 bg-background p-2 rounded-lg text-sm border outline-none text-foreground" onChange={e => setNewOffer({...newOffer, estimated_value: e.target.value})}/>
-                                            <input type="file" className="flex-1 text-xs pt-1.5" onChange={e => setNewOffer({...newOffer, image: e.target.files[0]})}/>
-                                        </div>
+                    {!isService && (
+                        <>
+                            {/* Section 1: Select Items */}
+                            <section>
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
+                                    <Package size={16} /> {t('yourItems')}
+                                </h3>
+                                
+                                {(isLoadingUser || isLoadingMyItems) ? (
+                                    <div className="flex justify-center p-4"><Loader2 className="animate-spin text-primary" /></div>
+                                ) : myItems.length > 0 ? (
+                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                        {myItems.map(item => (
+                                            <ItemCarouselCard key={item._id} item={item} isSelected={selectedItemIds.includes(item._id)} onSelect={handleSelect} />
+                                        ))}
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </section>
-
-                    {/* Section 2: Cash Adjustment */}
-                    <section>
-                        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-                            <DollarSign size={16} /> {t('cashAdjustment', 'Cash Adjustment')}
-                        </h3>
-                        
-                        <div className="flex p-1 bg-muted rounded-lg mb-4">
-                            <button onClick={() => setCashMode('none')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'none' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{t('none', 'None')}</button>
-                            <button onClick={() => setCashMode('add')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'add' ? 'bg-background shadow-sm text-green-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iAddCash', 'I Add Cash')}</button>
-                            <button onClick={() => setCashMode('request')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'request' ? 'bg-background shadow-sm text-blue-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iRequestCash', 'I Request Cash')}</button>
-                        </div>
-
-                        <div className="min-h-[80px]">
-                            <AnimatePresence mode="wait">
-                                {cashMode !== 'none' && (
-                                    <motion.div 
-                                        key={cashMode}
-                                        initial={{ opacity: 0, y: 10 }} 
-                                        animate={{ opacity: 1, y: 0 }} 
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="space-y-3"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xl font-bold text-foreground">{currencySymbol}</span>
-                                            <input 
-                                                type="number" 
-                                                value={cashAmount} 
-                                                onChange={(e) => setCashAmount(Number(e.target.value))}
-                                                className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors text-foreground"
-                                                placeholder="0"
-                                            />
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {quickCashOptions.map(amount => (
-                                                <button 
-                                                    key={amount} 
-                                                    onClick={() => setCashAmount(prev => prev + amount)}
-                                                    className="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-full font-medium transition-colors"
-                                                >
-                                                    +{currencySymbol}{amount}
-                                                </button>
-                                            ))}
-                                            <button onClick={() => setCashAmount(0)} className="px-3 py-1 text-xs bg-red-100 text-red-600 hover:bg-red-200 rounded-full font-medium transition-colors ml-auto">{t('clear', 'Clear')}</button>
-                                        </div>
-                                    </motion.div>
+                                ) : (
+                                    <div className="text-center p-6 bg-muted/30 rounded-xl border border-dashed">
+                                        <p className="text-sm text-muted-foreground">You don't have any items listed yet.</p>
+                                    </div>
                                 )}
-                            </AnimatePresence>
-                        </div>
-                    </section>
+
+                                <button 
+                                    onClick={() => setShowNewOfferForm(!showNewOfferForm)}
+                                    className="mt-4 text-xs font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                                >
+                                    <Plus size={14} /> {showNewOfferForm ? t('cancelCustomItem') : t('orCreateCustomOffer')}
+                                </button>
+
+                                <AnimatePresence>
+                                    {showNewOfferForm && (
+                                        <motion.div 
+                                            initial={{ height: 0, opacity: 0 }} 
+                                            animate={{ height: 'auto', opacity: 1 }} 
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="mt-3 p-4 bg-muted/30 rounded-xl space-y-3 border">
+                                                <input type="text" placeholder={t('title')} className="w-full bg-background p-2 rounded-lg text-sm border focus:ring-2 ring-purple-500 outline-none text-foreground" onChange={e => setNewOffer({...newOffer, title: e.target.value})}/>
+                                                <div className="flex gap-2">
+                                                    <input type="number" placeholder={t('estimatedValue')} className="w-1/3 bg-background p-2 rounded-lg text-sm border outline-none text-foreground" onChange={e => setNewOffer({...newOffer, estimated_value: e.target.value})}/>
+                                                    <input type="file" className="flex-1 text-xs pt-1.5" onChange={e => setNewOffer({...newOffer, image: e.target.files[0]})}/>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </section>
+
+                            {/* Section 2: Cash Adjustment */}
+                            <section>
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
+                                    <DollarSign size={16} /> {t('cashAdjustment', 'Cash Adjustment')}
+                                </h3>
+                                
+                                <div className="flex p-1 bg-muted rounded-lg mb-4">
+                                    <button onClick={() => setCashMode('none')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'none' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{t('none', 'None')}</button>
+                                    <button onClick={() => setCashMode('add')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'add' ? 'bg-background shadow-sm text-green-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iAddCash', 'I Add Cash')}</button>
+                                    <button onClick={() => setCashMode('request')} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${cashMode === 'request' ? 'bg-background shadow-sm text-blue-600' : 'text-muted-foreground hover:text-foreground'}`}>{t('iRequestCash', 'I Request Cash')}</button>
+                                </div>
+
+                                <div className="min-h-[80px]">
+                                    <AnimatePresence mode="wait">
+                                        {cashMode !== 'none' && (
+                                            <motion.div 
+                                                key={cashMode}
+                                                initial={{ opacity: 0, y: 10 }} 
+                                                animate={{ opacity: 1, y: 0 }} 
+                                                exit={{ opacity: 0, y: -10 }}
+                                                className="space-y-3"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xl font-bold text-foreground">{currencySymbol}</span>
+                                                    <input 
+                                                        type="number" 
+                                                        value={cashAmount} 
+                                                        onChange={(e) => setCashAmount(Number(e.target.value))}
+                                                        className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors text-foreground"
+                                                        placeholder="0"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {quickCashOptions.map(amount => (
+                                                        <button 
+                                                            key={amount} 
+                                                            onClick={() => setCashAmount(prev => prev + amount)}
+                                                            className="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-full font-medium transition-colors"
+                                                        >
+                                                            +{currencySymbol}{amount}
+                                                        </button>
+                                                    ))}
+                                                    <button onClick={() => setCashAmount(0)} className="px-3 py-1 text-xs bg-red-100 text-red-600 hover:bg-red-200 rounded-full font-medium transition-colors ml-auto">{t('clear', 'Clear')}</button>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </section>
+                        </>
+                    )}
 
                     {/* Section 3: Message */}
                     <section>
@@ -260,8 +264,12 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                 {/* Footer / Summary */}
                 <div className="p-4 border-t bg-background">
                     <div className="flex items-center justify-between mb-4 text-xs text-muted-foreground px-1">
-                        <span>{isService ? t('totalOffered', 'Offering') : t('offering')}: <b className="text-foreground">{selectedItemIds.length} items</b> {showNewOfferForm && '+ 1 custom'}</span>
-                        {cashMode !== 'none' && cashAmount > 0 && (
+                        {!isService ? (
+                            <span>{t('offering')}: <b className="text-foreground">{selectedItemIds.length} items</b> {showNewOfferForm && '+ 1 custom'}</span>
+                        ) : (
+                            <span>{t('bookingService', 'Booking Service')}</span>
+                        )}
+                        {cashMode !== 'none' && cashAmount > 0 && !isService && (
                             <span className={cashMode === 'add' ? 'text-green-600 font-bold' : 'text-blue-600 font-bold'}>
                                 {cashMode === 'add' ? '+' : '-'}{currencySymbol}{cashAmount.toLocaleString()}
                             </span>

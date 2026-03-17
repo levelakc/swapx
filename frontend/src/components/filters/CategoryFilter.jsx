@@ -3,7 +3,7 @@ import { getCategories } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Loader2, LayoutGrid, Search, ChevronLeft } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 const Icon = ({ name, className }) => {
   // Convert kebab-case (e.g. "shopping-bag") to PascalCase (e.g. "ShoppingBag") for Lucide
@@ -27,6 +27,24 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
     const sub = categories.filter(c => c.parent);
     return { mainCats: main, subCats: sub };
   }, [categories]);
+
+  // Sync active main category from selectedCategory
+  useEffect(() => {
+    if (selectedCategory && selectedCategory !== 'all' && !activeMainCategory) {
+        // Check if selectedCategory is a main category that has subcategories
+        const isMainWithSubs = mainCats.some(m => m._id === selectedCategory) && 
+                               subCats.some(s => s.parent === selectedCategory);
+        if (isMainWithSubs) {
+            setActiveMainCategory(selectedCategory);
+        } else {
+            // Check if it's a subcategory, and set its parent as active
+            const sub = subCats.find(s => s._id === selectedCategory);
+            if (sub) {
+                setActiveMainCategory(sub.parent);
+            }
+        }
+    }
+  }, [selectedCategory, mainCats, subCats, activeMainCategory]);
 
   // Handle Search Mode (Flattened list)
   if (searchTerm) {
