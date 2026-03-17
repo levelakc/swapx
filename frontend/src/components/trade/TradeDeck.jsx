@@ -14,13 +14,16 @@ function ItemCarouselCard({ item, isSelected, onSelect }) {
     const { currency, convertCurrency } = useCurrency();
     const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
     const currencySymbol = currency === 'ILS' ? '₪' : '$';
+    const isTraded = item.status === 'traded';
 
     return (
         <motion.div
-            className={`relative flex flex-col items-center p-2 rounded-xl cursor-pointer transition-all border-2 ${isSelected ? 'border-purple-500 bg-purple-500/10' : 'border-transparent hover:bg-muted'}`}
-            onClick={() => onSelect(item._id)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className={`relative flex flex-col items-center p-2 rounded-xl transition-all border-2 
+                ${isTraded ? 'opacity-50 grayscale cursor-not-allowed border-transparent' : 'cursor-pointer'}
+                ${isSelected ? 'border-purple-500 bg-purple-500/10' : 'border-transparent hover:bg-muted'}`}
+            onClick={() => !isTraded && onSelect(item._id)}
+            whileHover={!isTraded ? { scale: 1.02 } : {}}
+            whileTap={!isTraded ? { scale: 0.98 } : {}}
         >
             <div className="relative w-24 h-24 rounded-lg overflow-hidden shadow-sm">
                 <img src={item.images?.[0] || 'https://via.placeholder.com/150'} alt={t(item.title)} className="w-full h-full object-cover" />
@@ -29,6 +32,15 @@ function ItemCarouselCard({ item, isSelected, onSelect }) {
                         <div className="bg-white text-purple-600 rounded-full p-1 shadow-sm">
                             <Plus size={16} strokeWidth={3} />
                         </div>
+                    </div>
+                )}
+                {item.status !== 'active' && (
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-lg ${
+                            item.status === 'pending' ? 'bg-yellow-500 text-white' : 'bg-black/60 text-white'
+                        }`}>
+                            {t(item.status) || item.status}
+                        </span>
                     </div>
                 )}
             </div>
@@ -59,7 +71,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     });
 
     const { data: myItemsData, isLoading: isLoadingMyItems } = useQuery({
-        queryKey: ['items', 'my', 'active'],
+        queryKey: ['items', 'my'],
         queryFn: () => getMyItems(),
         enabled: !!user && !isService,
     });
@@ -94,9 +106,9 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
 
         const tradeData = {
             initiator_email: user.email,
-            receiver_email: targetItem.user?.email || targetItem.created_by?.email,
+            receiver_email: targetItem?.user?.email || targetItem?.created_by?.email || '', 
             offered_items: currentOfferedItems,
-            requested_items: [targetItem._id],
+            requested_items: targetItem ? [targetItem._id] : [],
             cash_offered: currentCashOffered,
             cash_requested: currentCashRequested,
             status: 'pending',
@@ -108,6 +120,12 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
             new_offer: currentNewOffer,
             trade_type: tradeType, 
         };
+        
+        if (!tradeData.receiver_email) {
+            toast.error(t('receiverRequired', 'Receiver is required for an offer'));
+            return;
+        }
+
         console.log('Sending Trade Offer:', tradeData);
         tradeMutation.mutate(tradeData);
     };
@@ -125,7 +143,12 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             {isService ? <><Calendar size={20} className="text-primary"/> {t('scheduleDate')}</> : <>🤝 {t('makeOffer')}</>}
                         </h2>
-                        <p className="text-xs text-muted-foreground mt-0.5">{isService ? t('bookingFor', 'Booking for') : t('tradingFor')}: <span className="font-medium text-foreground">{t(targetItem.title)}</span></p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            {isService ? t('bookingFor', 'Booking for') : t('tradingFor')}: 
+                            <span className="font-medium text-foreground ml-1">
+                                {targetItem ? t(targetItem.title) : t('negotiation', 'Negotiation')}
+                            </span>
+                        </p>
                     </div>
                 </div>
 

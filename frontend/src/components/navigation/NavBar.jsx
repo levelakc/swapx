@@ -147,10 +147,10 @@ export default function NavBar() {
                     <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
                 </Link>
 
-                {/* Messages Badge */}
+                {/* Offers Badge */}
                 <Link to="/messages" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative">
                     <div className="relative">
-                        <MessageCircle size={20} />
+                        <ArrowRightLeft size={20} />
                         {totalUnread > 0 && (
                             <span className="absolute -top-1 -right-1 flex h-3 w-3">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -158,7 +158,7 @@ export default function NavBar() {
                             </span>
                         )}
                     </div>
-                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('messages')}</span>
+                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
                 </Link>
 
                 <div className="relative group">

@@ -15,10 +15,10 @@ const validateItems = async (itemIds, ownerId) => {
     return { valid: false, message: 'One or more items not found' };
   }
 
-  // Ensure items are active
-  const inactiveItems = items.filter(item => item.status !== 'active');
-  if (inactiveItems.length > 0) {
-    return { valid: false, message: 'One or more items are not active' };
+  // Ensure items are not already traded
+  const tradedItems = items.filter(item => item.status === 'traded');
+  if (tradedItems.length > 0) {
+    return { valid: false, message: 'One or more items are already traded' };
   }
 
   // Ensure ownerId owns all items
@@ -39,23 +39,15 @@ const createTrade = asyncHandler(async (req, res) => {
   const { receiver_email, offered_items, requested_items, cash_offered, cash_requested, message } = req.body;
   const initiator_email = req.user.email;
 
-  console.log('--- Trade Creation Debug ---');
-  console.log('Initiator:', initiator_email, '(_id:', req.user._id, ')');
-  console.log('Receiver:', receiver_email);
-  console.log('Offered Items:', offered_items);
-  console.log('Requested Items:', requested_items);
-
   // Validate receiver
   const receiver = await User.findOne({ email: receiver_email });
   if (!receiver) {
-    console.log('Error: Receiver not found');
     res.status(404);
     throw new Error('Receiver not found');
   }
 
   // Prevent trading with self
   if (initiator_email === receiver_email) {
-    console.log('Error: Cannot initiate a trade with yourself');
     res.status(400);
     throw new Error('Cannot initiate a trade with yourself');
   }
@@ -63,27 +55,26 @@ const createTrade = asyncHandler(async (req, res) => {
   // Validate offered items (must belong to initiator)
   const offeredValidation = await validateItems(offered_items, req.user._id);
   if (!offeredValidation.valid) {
-    console.log('Error: Invalid offered items -', offeredValidation.message);
     res.status(400);
     throw new Error(`Invalid offered items: ${offeredValidation.message}`);
   }
 
-  // Validate requested items (must belong to receiver and be active)
-  const requestedValidation = await validateItems(requested_items, null); // No owner check for requested items
-  if (!requestedValidation.valid) {
-    console.log('Error: Invalid requested items -', requestedValidation.message);
-    res.status(400);
-    throw new Error(`Invalid requested items: ${requestedValidation.message}`);
-  }
-
-  // Check if requested items are owned by the receiver
-  const foreignRequestedItems = requestedValidation.items.filter(item => item.created_by.toString() !== receiver._id.toString());
-  if (foreignRequestedItems.length > 0) {
-      console.log('Error: Requested items do not belong to receiver');
+  // Validate requested items (must belong to receiver)
+  let requestedValidation = { valid: true, items: [] };
+  if (requested_items && requested_items.length > 0) {
+    requestedValidation = await validateItems(requested_items, null);
+    if (!requestedValidation.valid) {
       res.status(400);
-      throw new Error('One or more requested items do not belong to the receiver');
-  }
+      throw new Error(`Invalid requested items: ${requestedValidation.message}`);
+    }
 
+    // Check if requested items are owned by the receiver
+    const foreignRequestedItems = requestedValidation.items.filter(item => item.created_by.toString() !== receiver._id.toString());
+    if (foreignRequestedItems.length > 0) {
+        res.status(400);
+        throw new Error('One or more requested items do not belong to the receiver');
+    }
+  }
 
   const newTrade = await Trade.create({
     initiator_email,
@@ -96,37 +87,25 @@ const createTrade = asyncHandler(async (req, res) => {
     status: 'pending',
   });
 
-  // Set offered items status to pending
+  // Set offered items status to pending (if not already pending)
   if (offeredValidation.items.length > 0) {
-    await Item.updateMany({ _id: { $in: offered_items } }, { status: 'pending' });
+    await Item.updateMany({ _id: { $in: offered_items }, status: 'active' }, { status: 'pending' });
   }
 
-  // Set requested items status to pending
-  if (requestedValidation.items.length > 0) {
-    await Item.updateMany({ _id: { $in: requested_items } }, { status: 'pending' });
+  // Set requested items status to pending (if not already pending)
+  if (requestedValidation && requestedValidation.items && requestedValidation.items.length > 0) {
+    await Item.updateMany({ _id: { $in: requested_items }, status: 'active' }, { status: 'pending' });
   }
 
-  // Create or Find Conversation for this trade
-  let conversation = await Conversation.findOne({
-      participants: { $all: [initiator_email, receiver_email] },
-      related_item_id: requested_items[0], // Linked to the main item being traded for
+  // ALWAYS create a NEW Conversation for this specific trade
+  const conversation = await Conversation.create({
+      participants: [initiator_email, receiver_email],
+      related_item_id: requested_items && requested_items.length > 0 ? requested_items[0] : undefined,
+      related_trade_id: newTrade._id,
+      last_message: message || 'New trade offer',
   });
 
-  if (!conversation) {
-      conversation = await Conversation.create({
-          participants: [initiator_email, receiver_email],
-          related_item_id: requested_items[0],
-          related_trade_id: newTrade._id,
-          last_message: message || 'New trade offer',
-      });
-  } else {
-      conversation.related_trade_id = newTrade._id;
-      conversation.last_message = message || 'New trade offer';
-      conversation.last_message_at = Date.now();
-      await conversation.save();
-  }
-
-  // Create initial message in the conversation
+  // Create initial message in the message collection too (for real-time chat)
   await Message.create({
       conversation_id: conversation._id.toString(),
       sender_email: initiator_email,
@@ -225,10 +204,36 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
     const itemIdsToMarkTraded = [...trade.offered_items, ...trade.requested_items];
     await Item.updateMany({ _id: { $in: itemIdsToMarkTraded } }, { status: 'traded' });
 
-    // Also mark any other pending trades involving these items as cancelled
-    // This is a complex operation and might be better handled by a separate background job or more sophisticated logic
-    // For now, we'll assume a simpler flow.
-    // In a real app, you'd find other trades where these items are 'pending' and cancel them.
+    // Cancel all other pending trades involving these items
+    const overlappingTrades = await Trade.find({
+      _id: { $ne: trade._id },
+      status: { $in: ['pending', 'countered'] },
+      $or: [
+        { offered_items: { $in: itemIdsToMarkTraded } },
+        { requested_items: { $in: itemIdsToMarkTraded } }
+      ]
+    });
+
+    for (const otherTrade of overlappingTrades) {
+      otherTrade.status = 'cancelled';
+      otherTrade.messages.push({ 
+        sender: 'system', 
+        content: 'This trade was cancelled because one of the items was traded in another offer.', 
+        type: 'text' 
+      });
+      await otherTrade.save();
+
+      // Also send a system message to the associated conversation
+      const otherConversation = await Conversation.findOne({ related_trade_id: otherTrade._id });
+      if (otherConversation) {
+        await Message.create({
+          conversation_id: otherConversation._id.toString(),
+          sender_email: 'system@swapx.com',
+          content: 'This trade was cancelled because one of the items was traded in another offer.',
+          type: 'system'
+        });
+      }
+    }
 
   } else if (status === 'rejected') {
     if (trade.receiver_email !== userEmail) {

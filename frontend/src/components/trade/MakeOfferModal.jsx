@@ -10,15 +10,19 @@ export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemNa
   const [cashAmount, setCashAmount] = useState(0);
   const [cashType, setCashType] = useState('add'); // 'add' or 'request'
 
-  const { data: myItems = [], isLoading } = useQuery({
+  const { data: myItemsData, isLoading } = useQuery({
     queryKey: ['items', 'my'],
     queryFn: getMyItems,
     enabled: isOpen,
   });
+  const myItems = myItemsData?.items || [];
 
   if (!isOpen) return null;
 
-  const toggleItemSelection = (itemId) => {
+  const toggleItemSelection = (item) => {
+    if (item.status === 'traded') return;
+    
+    const itemId = item._id;
     setSelectedItems(prev => 
       prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
     );
@@ -60,16 +64,33 @@ export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemNa
               <p className="text-muted-foreground text-center py-4">{t('noItemsToList', 'You have no items listed yet.')}</p>
             ) : (
               <div className="grid grid-cols-2 gap-3">
-                {myItems.map(item => (
-                  <div 
-                    key={item._id} 
-                    onClick={() => toggleItemSelection(item._id)}
-                    className={`cursor-pointer border rounded-md p-2 flex flex-col gap-2 transition-all ${selectedItems.includes(item._id) ? 'border-primary ring-2 ring-primary bg-primary/10' : 'hover:border-primary/50'}`}
-                  >
-                    <img src={item.images[0]} alt={item.title} className="w-full h-24 object-cover rounded-md" />
-                    <p className="text-sm font-medium truncate">{item.title}</p>
-                  </div>
-                ))}
+                {myItems.map(item => {
+                  const isTraded = item.status === 'traded';
+                  const isSelected = selectedItems.includes(item._id);
+                  
+                  return (
+                    <div 
+                      key={item._id} 
+                      onClick={() => toggleItemSelection(item)}
+                      className={`relative cursor-pointer border rounded-md p-2 flex flex-col gap-2 transition-all 
+                        ${isTraded ? 'opacity-60 grayscale cursor-not-allowed border-muted' : ''}
+                        ${isSelected ? 'border-primary ring-2 ring-primary bg-primary/10' : 'hover:border-primary/50'}`}
+                    >
+                      <img src={item.images[0]} alt={item.title} className="w-full h-24 object-cover rounded-md" />
+                      <p className="text-sm font-medium truncate">{item.title}</p>
+                      
+                      {item.status !== 'active' && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <span className={`text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider shadow-lg ${
+                            item.status === 'pending' ? 'bg-yellow-500/90 text-white' : 'bg-black/60 text-white'
+                          }`}>
+                            {t(item.status) || item.status}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

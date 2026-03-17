@@ -42,6 +42,9 @@ const CATEGORY_PRICE_RANGES_USD = {
   art: { min: 100, max: 100000 },
   pets: { min: 0, max: 5000 },
   services: { min: 20, max: 500 },
+  bitcoin: { min: 100, max: 100000 },
+  alt: { min: 50, max: 50000 },
+  meme: { min: 10, max: 100000 },
 };
 
 // MASSIVELY EXPANDED IMAGES LIST (+49 new items)
@@ -146,7 +149,21 @@ const CATEGORY_IMAGES = {
     { url: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?q=80&w=800&auto=format&fit=crop', title: 'Adidas Yeezy Boost 350 V2', title_he: 'איזי בוסט 350', min_price: 200, max_price: 450 },
     // NEW SNEAKERS
     { url: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=800&auto=format&fit=crop', title: 'New Balance 990v6', title_he: 'ניו באלאנס 990', min_price: 150, max_price: 250 },
-    { url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=800&auto=format&fit=crop', title: 'Nike Dunk Low Panda', title_he: 'נייקי דאנק לואו פנדה', min_price: 100, max_price: 200 }
+    { url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=800&auto=format&fit=crop', title: 'Nike Dunk Low Panda', title_he: 'ניייקי דאנק לואו פנדה', min_price: 100, max_price: 200 }
+  ],
+  bitcoin: [
+    { url: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=800&auto=format&fit=crop', title: '1.0 Bitcoin (BTC)', title_he: '1.0 ביטקוין', min_price: 60000, max_price: 70000 },
+    { url: 'https://images.unsplash.com/photo-1621416848440-236914c7447d?q=80&w=800&auto=format&fit=crop', title: '5.0 Ethereum (ETH)', title_he: '5.0 אתריום', min_price: 15000, max_price: 20000 },
+    { url: 'https://images.unsplash.com/photo-1622790694515-6d629f3cb427?q=80&w=800&auto=format&fit=crop', title: '100 Solana (SOL)', title_he: '100 סולאנה', min_price: 10000, max_price: 15000 }
+  ],
+  alt: [
+    { url: 'https://images.unsplash.com/photo-1622790694515-6d629f3cb427?q=80&w=800&auto=format&fit=crop', title: 'Cardano (ADA) Bundle', title_he: 'חבילת קרדאנו', min_price: 500, max_price: 2000 },
+    { url: 'https://images.unsplash.com/photo-1621416848440-236914c7447d?q=80&w=800&auto=format&fit=crop', title: 'Polkadot (DOT) Stack', title_he: 'ערימת פולקדות', min_price: 400, max_price: 1500 }
+  ],
+  meme: [
+    { url: 'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?q=80&w=800&auto=format&fit=crop', title: '1M Dogecoin (DOGE)', title_he: 'מיליון דוגקוין', min_price: 80000, max_price: 150000 },
+    { url: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=800&auto=format&fit=crop', title: 'Shiba Inu (SHIB) Collection', title_he: 'אוסף שיבא אינו', min_price: 1000, max_price: 5000 },
+    { url: 'https://images.unsplash.com/photo-1605792657660-596af903772c?q=80&w=800&auto=format&fit=crop', title: 'Pepe Coin Assets', title_he: 'נכסי פפה קוין', min_price: 500, max_price: 3000 }
   ],
   jewelry: [
     { url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop', title: '18k White Gold Engagement Ring', title_he: 'טבעת יהלום 18 קראט', min_price: 2500, max_price: 8000 },
@@ -365,8 +382,8 @@ const seedData = async () => {
       { name: 'real_estate_main', label_en: 'Real Estate', label_he: 'נדל"ן', icon: 'building' },
       { name: 'lifestyle', label_en: 'Lifestyle', label_he: 'פנאי', icon: 'smile' },
       { name: 'services_main', label_en: 'Services', label_he: 'שירותים', icon: 'briefcase' },
-    ];
-    
+      { name: 'crypto_main', label_en: 'Crypto', label_he: 'קריפטו', icon: 'bitcoin' },
+      ];
     const mainCategories = {};
     const createdCategories = [];
 
@@ -393,6 +410,10 @@ const seedData = async () => {
         { name: 'scooters', parent: 'vehicles', label_en: 'Scooters', icon: 'wind', label_he: 'קורקינטים' },
         { name: 'bicycles', parent: 'vehicles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים' },
 
+        // Crypto
+        { name: 'bitcoin', parent: 'crypto_main', label_en: 'Main Coins', icon: 'bitcoin', label_he: 'מטבעות ראשיים' },
+        { name: 'alt', parent: 'crypto_main', label_en: 'Alt Coins', icon: 'coins', label_he: 'מטבעות אלטרנטיביים' },
+        { name: 'meme', parent: 'crypto_main', label_en: 'Meme Coins', icon: 'zap', label_he: 'מטבעות מים' },
         // Fashion
         { name: 'fashion', parent: 'fashion_main', label_en: 'Clothing', icon: 'shirt', label_he: 'ביגוד' },
         { name: 'sneakers', parent: 'fashion_main', label_en: 'Sneakers', icon: 'footprints', label_he: 'נעליים' },
