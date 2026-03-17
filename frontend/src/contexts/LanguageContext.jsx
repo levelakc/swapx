@@ -617,6 +617,16 @@ const translations = {
     online: 'מחובר/ת',
     offline: 'מנותק/ת',
     you: 'אני',
+    openNegotiation: 'פתח חלון משא ומתן',
+    negotiationRoom: 'חדר משא ומתן',
+    tradeSummary: 'סיכום הצעה',
+    noActiveNegotiation: 'אין משא ומתן פעיל',
+    backToOffers: 'חזרה להצעות',
+    viewItems: 'צפה בפריטים',
+    chatWithUser: 'צ׳אט עם המשתמש',
+    systemMessage: 'הודעת מערכת',
+    newOfferReceived: 'התקבלה הצעה חדשה!',
+    openToViewAndChat: 'פתח כדי לצפות בפריטים ולדבר',
   },
     };
 
