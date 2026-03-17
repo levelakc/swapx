@@ -1,13 +1,29 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, TrendingUp, Repeat, LayoutGrid } from 'lucide-react';
+import { Search, ShieldCheck, TrendingUp, Repeat, LayoutGrid, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '../../api/api';
+import * as LucideIcons from 'lucide-react';
+
+const Icon = ({ name, className }) => {
+  const iconName = name ? name.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('') : 'LayoutGrid';
+  const LucideIcon = LucideIcons[iconName] || LucideIcons[name] || LayoutGrid;
+  return <LucideIcon className={className} />;
+};
 
 export default function HeroSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+  });
+
+  const mainCategories = categories.filter(c => !c.parent && c.name !== 'services_main' && c.name !== 'other_main');
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -15,16 +31,6 @@ export default function HeroSection() {
         navigate(`/browse?keyword=${encodeURIComponent(searchValue)}`);
     }
   };
-
-  const categories = [
-    { name: t('viewAll'), icon: <LayoutGrid size={24} />, slug: 'all' },
-    { name: t('electronics'), icon: '💻', slug: 'electronics' },
-    { name: t('vehicles', 'Vehicles'), icon: '🚗', slug: 'vehicles' },
-    { name: t('fashion'), icon: '👕', slug: 'fashion_main' },
-    { name: t('home', 'Home & Garden'), icon: '🏡', slug: 'home' },
-    { name: t('realEstate', 'Real Estate'), icon: '🏢', slug: 'real_estate_main' },
-    { name: t('lifestyle', 'Leisure'), icon: '🎨', slug: 'lifestyle' },
-  ];
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-[50vh] bg-transparent pt-20">
@@ -56,21 +62,34 @@ export default function HeroSection() {
             </form>
         </motion.div>
 
-        {/* Quick Categories with improved look */}
+        {/* Dynamic Categories */}
         <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="flex flex-wrap justify-center gap-4 pt-4"
         >
-            {categories.map((cat, i) => (
+            {/* Show All */}
+            <Link 
+                to="/browse"
+                className="flex flex-col items-center justify-center gap-2 px-4 py-4 rounded-2xl bg-card hover:bg-primary/10 hover:text-primary border border-border hover:border-primary/30 transition-all min-w-[110px] group shadow-sm hover:shadow-md"
+            >
+                <LayoutGrid size={32} className="group-hover:scale-125 transition-transform" />
+                <span className="text-[11px] font-black uppercase tracking-wider text-center line-clamp-1">{t('viewAll')}</span>
+            </Link>
+
+            {isLoadingCategories ? <Loader2 className="animate-spin" /> : mainCategories.map((cat) => (
                 <Link 
-                    key={i}
-                    to={cat.slug === 'all' ? '/browse' : `/browse?category=${cat.slug}`}
+                    key={cat._id}
+                    to={`/browse?category=${cat._id}`}
                     className="flex flex-col items-center justify-center gap-2 px-4 py-4 rounded-2xl bg-card hover:bg-primary/10 hover:text-primary border border-border hover:border-primary/30 transition-all min-w-[110px] group shadow-sm hover:shadow-md"
                 >
-                    <span className="text-3xl group-hover:scale-125 transition-transform">{cat.icon}</span>
-                    <span className="text-[11px] font-black uppercase tracking-wider text-center line-clamp-1">{cat.name}</span>
+                    <div className="text-3xl group-hover:scale-125 transition-transform">
+                        <Icon name={cat.icon} className="w-8 h-8" />
+                    </div>
+                    <span className="text-[11px] font-black uppercase tracking-wider text-center line-clamp-1">
+                        {cat[`label_${language}`] || cat.label_en}
+                    </span>
                 </Link>
             ))}
         </motion.div>

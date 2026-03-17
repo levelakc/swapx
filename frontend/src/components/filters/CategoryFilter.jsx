@@ -72,18 +72,15 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
       : mainCats;
 
   const handleCategoryClick = (cat) => {
+      // Always select the category immediately to render items
+      onSelectCategory(cat._id);
+
       if (!activeMainCategory) {
-          // If we are in Main View
+          // If we are in Main View and it has children, also enter subcategory view
           const hasChildren = subCats.some(sub => sub.parent === cat._id);
           if (hasChildren) {
               setActiveMainCategory(cat._id);
-          } else {
-              // It's a leaf node main category (rare in new structure, but possible)
-              onSelectCategory(cat._id);
           }
-      } else {
-          // If we are in Sub View, select the category
-          onSelectCategory(cat._id);
       }
   };
 
