@@ -2,6 +2,8 @@ const asyncHandler = require('express-async-handler');
 const Trade = require('../models/Trade');
 const Item = require('../models/Item');
 const User = require('../models/User');
+const Conversation = require('../models/Conversation');
+const Message = require('../models/Message');
 
 // Helper function to validate items and ownership
 const validateItems = async (itemIds, ownerId) => {
@@ -104,8 +106,45 @@ const createTrade = asyncHandler(async (req, res) => {
     await Item.updateMany({ _id: { $in: requested_items } }, { status: 'pending' });
   }
 
+  // Create or Find Conversation for this trade
+  let conversation = await Conversation.findOne({
+      participants: { $all: [initiator_email, receiver_email] },
+      related_item_id: requested_items[0], // Linked to the main item being traded for
+  });
 
-  res.status(201).json(newTrade);
+  if (!conversation) {
+      conversation = await Conversation.create({
+          participants: [initiator_email, receiver_email],
+          related_item_id: requested_items[0],
+          related_trade_id: newTrade._id,
+          last_message: message || 'New trade offer',
+      });
+  } else {
+      conversation.related_trade_id = newTrade._id;
+      conversation.last_message = message || 'New trade offer';
+      conversation.last_message_at = Date.now();
+      await conversation.save();
+  }
+
+  // Create initial message in the conversation
+  await Message.create({
+      conversation_id: conversation._id.toString(),
+      sender_email: initiator_email,
+      content: message || 'Sent you a trade offer!',
+      type: 'offer',
+      trade_data: {
+          trade_id: newTrade._id,
+          offered_items,
+          requested_items,
+          cash_offered,
+          cash_requested,
+      }
+  });
+
+  res.status(201).json({
+      ...newTrade.toObject(),
+      conversationId: conversation._id
+  });
 });
 
 // @desc    Get trades initiated by current user

@@ -410,7 +410,7 @@ const translations = {
     valueRequired: "נדרש שווי מוערך.",
     minimumValue: "הערך המינימלי הוא 1.",
     quickLinks: "קישורים מהירים",
-    company: "חברה",
+    company: "החברה",
     aboutUs: "אודותינו",
     careers: "קריירה",
     press: "עיתונות",
