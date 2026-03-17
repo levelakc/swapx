@@ -5,6 +5,8 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
+    google: "Google",
+    facebook: "Facebook",
     brand: "Ahlafot",
     tagline: "Connect. Trade. Swap.",
     heroTitle: "The Modern Way to Trade and Swap",
@@ -300,6 +302,8 @@ const translations = {
     googleReviews: 'Google Reviews',
   },
   he: {
+    google: "Google",
+    facebook: "Facebook",
     brand: "Ahlafot",
     tagline: "שדרג את העולם שלך. החלפות.",
     heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
@@ -331,7 +335,7 @@ const translations = {
     editProfile: 'ערוך פרופיל',
     signInToAccount: 'התחבר לחשבונך',
     orContinueWith: 'או המשך באמצעות',
-    heroTitle: "מסחר חכם לאנשים חכמים",
+    heroTitle: "הדרך המודרנית למסחר והחלפות",
     cars: 'מכוניות',
     motorcycles: 'אופנועים',
     boats: 'סירות',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Link } from 'react-router-dom';
+import logoIcon from '../../imgs/1.jpg';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -10,7 +11,12 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-bold text-primary">{t('brand')}</h3>
+            <Link to="/" className="flex items-center gap-2 group transition-all duration-300">
+                <img src={logoIcon} alt="Ahlafot" className="h-10 w-auto object-contain rounded-lg transition-transform group-hover:scale-105" />
+                <h3 className="text-xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
+                    {t('brand')}
+                </h3>
+            </Link>
             <p className="text-muted-foreground mt-2">{t('tagline')}</p>
           </div>
           <div>

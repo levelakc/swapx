@@ -11,7 +11,7 @@ function AppContent({ children }) {
       <Toaster richColors position="bottom-right" />
       <WelcomeTour />
       <NavBar />
-      <main className="pt-20 flex-grow flex flex-col">
+      <main className="pt-20 flex-grow flex flex-col overflow-x-hidden">
         <div className={`${window.location.pathname.startsWith('/messages') ? 'flex-1' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {children}
         </div>

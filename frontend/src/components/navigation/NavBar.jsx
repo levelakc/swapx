@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 import CurrencySwitcher from '../CurrencySwitcher';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoFull from '../../imgs/2.jpg';
+import logoIcon from '../../imgs/1.jpg';
 
 export default function NavBar() {
   const { t, setLanguage, language } = useLanguage();
@@ -65,8 +67,13 @@ export default function NavBar() {
           
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center gap-2">
-            <Link to="/" className="text-2xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              {t('brand')}
+            <Link to="/" className="flex items-center gap-2 group transition-all duration-300">
+              <img 
+                src={logoFull} 
+                alt="Ahlafot Logo" 
+                className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+              />
+              <span className="sr-only">{t('brand')}</span>
             </Link>
           </div>
 

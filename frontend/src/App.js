@@ -3,7 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { LanguageProvider } from './contexts/LanguageContext'; // Import LanguageProvider
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext'; // Import LanguageProvider
+import { useEffect } from 'react';
 import Layout from './Layout';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
@@ -24,10 +25,19 @@ import StaticPage from './pages/StaticPages';
 
 const queryClient = new QueryClient();
 
+function AppTitleUpdater() {
+  const { t } = useLanguage();
+  useEffect(() => {
+    document.title = t('brand');
+  }, [t]);
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider> {/* Wrap with LanguageProvider */}
+        <AppTitleUpdater />
         <ThemeProvider>
           <CurrencyProvider>
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>

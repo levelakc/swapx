@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { toast } from 'sonner';
 import { Facebook, Globe } from 'lucide-react';
+import logoWithSlogan from '../imgs/3.jpg';
 
 export default function Register() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -41,10 +42,13 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
+        <div className="flex flex-col items-center">
+          <Link to="/">
+            <img src={logoWithSlogan} alt="Ahlafot" className="h-32 md:h-40 w-auto object-contain mb-2 hover:scale-105 transition-transform" />
+          </Link>
+          <h2 className="mt-2 text-center text-3xl font-extrabold text-foreground">
             {t('registerAccount', 'Register your account')}
           </h2>
         </div>
