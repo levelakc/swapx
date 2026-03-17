@@ -16,26 +16,26 @@ const icons = [
 
 export default function FloatingBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-[0.04] dark:opacity-[0.07]">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10 opacity-[0.08] dark:opacity-[0.12]">
       {icons.map((item, index) => (
         <motion.div
           key={index}
           className={`absolute ${item.color} hidden md:block`}
           style={{ top: item.top, left: item.left }}
           animate={{
-            y: [0, -40, 0],
-            x: [0, 30, 0],
-            rotate: [0, 20, -20, 0],
-            scale: [1, 1.15, 0.85, 1]
+            y: [0, -60, 0],
+            x: [0, 40, 0],
+            rotate: [0, 30, -30, 0],
+            scale: [1, 1.2, 0.8, 1]
           }}
           transition={{
-            duration: 12 + Math.random() * 8,
+            duration: 15 + Math.random() * 10,
             repeat: Infinity,
             delay: item.delay,
             ease: "easeInOut"
           }}
         >
-          <item.Icon size={item.size} strokeWidth={1.5} />
+          <item.Icon size={item.size} strokeWidth={1} />
         </motion.div>
       ))}
     </div>

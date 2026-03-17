@@ -515,6 +515,14 @@ const translations = {
     perHour: "/שעה",
     flexible: "גמיש",
     notSpecified: "לא צוין",
+    secure: "מאובטח",
+    secureTrading: "מסחר בטוח",
+    activeBadge: "פעיל",
+    activeCommunity: "קהילה פעילה",
+    fast: "מהיר",
+    fastSwapping: "החלפות מהירות",
+    openToOtherOffers: "פתוח להצעות אחרות",
+    openToOtherOffersDesc: "סמן אם אתה מוכן לשמוע הצעות שאינן מהקטגוריות שבחרת.",
   },
 };
 

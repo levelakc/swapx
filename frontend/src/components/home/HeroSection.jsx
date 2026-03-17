@@ -43,15 +43,15 @@ export default function HeroSection() {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder={t('searchItems')}
-                    className="w-full h-20 pl-16 pr-44 md:pr-52 rounded-3xl bg-card border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
+                    className="w-full h-20 ps-16 pe-44 md:pe-52 rounded-3xl bg-card border-2 border-border focus:border-primary shadow-2xl focus:ring-8 focus:ring-primary/5 transition-all text-xl outline-none"
                 />
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} />
+                <Search className="absolute start-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} />
                 <button 
                     type="submit"
-                    className="absolute right-2.5 top-2.5 bottom-2.5 px-6 md:px-10 rounded-2xl bg-primary text-primary-content font-black hover:bg-primary/90 transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                    className="absolute end-2.5 top-2.5 bottom-2.5 px-6 md:px-10 rounded-2xl bg-primary text-primary-content font-black hover:bg-primary/90 transition-all shadow-lg active:scale-95 flex items-center gap-2"
                 >
                     <Search size={20} className="hidden sm:block" />
-                    <span>{t('search').split(' ')[0]}</span>
+                    <span>{t('navSearch')}</span>
                 </button>
             </form>
         </motion.div>
@@ -84,21 +84,21 @@ export default function HeroSection() {
         >
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-green-500/10"><ShieldCheck size={20} className="text-green-500" /></div>
-                <div className="text-left">
+                <div className="text-start">
                     <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('secure')}</p>
                     <p className="text-xs font-bold text-foreground">{t('secureTrading')}</p>
                 </div>
             </div>
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-blue-500/10"><TrendingUp size={20} className="text-blue-500" /></div>
-                <div className="text-left">
+                <div className="text-start">
                     <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('activeBadge')}</p>
                     <p className="text-xs font-bold text-foreground">{t('activeCommunity')}</p>
                 </div>
             </div>
             <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-purple-500/10"><Repeat size={20} className="text-purple-500" /></div>
-                <div className="text-left">
+                <div className="text-start">
                     <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">{t('fast')}</p>
                     <p className="text-xs font-bold text-foreground">{t('fastSwapping')}</p>
                 </div>
