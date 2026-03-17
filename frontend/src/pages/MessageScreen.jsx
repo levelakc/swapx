@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, createTrade } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X } from 'lucide-react';
+import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X, Package } from 'lucide-react';
 import { toast } from 'sonner';
 import AudioRecorder from '../components/common/AudioRecorder';
 import MakeOfferModal from '../components/trade/MakeOfferModal';
