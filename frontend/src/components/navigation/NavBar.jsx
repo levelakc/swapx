@@ -3,7 +3,7 @@ import { useLanguage, languages } from '../../contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
 import { getMe, getConversations } from '../../api/api';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase, ArrowRightLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CurrencySwitcher from '../CurrencySwitcher';
 import LanguageSwitcher from '../LanguageSwitcher';
