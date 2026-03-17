@@ -7,6 +7,7 @@ import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X } from 'luci
 import { toast } from 'sonner';
 import AudioRecorder from '../components/common/AudioRecorder';
 import MakeOfferModal from '../components/trade/MakeOfferModal';
+import TradeDetailsModal from '../components/trade/TradeDetailsModal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MessageScreen() {
@@ -14,6 +15,8 @@ export default function MessageScreen() {
   const { t } = useLanguage();
   const [message, setMessage] = useState('');
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+  const [selectedTradeId, setSelectedTradeId] = useState(null);
+  const [isTradeDetailsOpen, setIsTradeDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -147,22 +150,26 @@ export default function MessageScreen() {
                                     <audio controls src={msg.content} className="w-full h-8" />
                                 </div>
                             ) : msg.type === 'offer' ? (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 font-bold border-b border-primary-foreground/20 pb-1 mb-1">
-                                        <HeartHandshake size={18} />
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 font-bold border-b border-primary-foreground/20 pb-2 mb-1">
+                                        <HeartHandshake size={20} />
                                         <span>{t('tradeOffer', 'Trade Offer')}</span>
                                     </div>
-                                    <p className="text-sm">{msg.content}</p>
-                                    {!isMe && (
-                                        <div className="flex gap-2 mt-2">
-                                            <button className="flex-1 bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded text-xs font-bold flex items-center justify-center gap-1">
-                                                <Check size={12}/> Accept
-                                            </button>
-                                            <button className="flex-1 bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded text-xs font-bold flex items-center justify-center gap-1">
-                                                <X size={12}/> Decline
-                                            </button>
-                                        </div>
-                                    )}
+                                    <p className="text-[15px] font-medium leading-relaxed">{msg.content}</p>
+                                    
+                                    <button 
+                                        onClick={() => {
+                                            setSelectedTradeId(msg.trade_data?.trade_id);
+                                            setIsTradeDetailsOpen(true);
+                                        }}
+                                        className={`w-full py-2.5 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm ${
+                                            isMe 
+                                            ? 'bg-white/20 hover:bg-white/30 text-white' 
+                                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                                        }`}
+                                    >
+                                        <Package size={16} /> {t('viewOffer', 'View Offer')}
+                                    </button>
                                 </div>
                             ) : msg.type === 'buttons' ? (
                                 <div className="space-y-3">
@@ -257,6 +264,15 @@ export default function MessageScreen() {
         onClose={() => setIsOfferModalOpen(false)} 
         onSubmit={handleSendOffer}
       />
+
+      {selectedTradeId && (
+        <TradeDetailsModal
+          isOpen={isTradeDetailsOpen}
+          onClose={() => setIsTradeDetailsOpen(false)}
+          tradeId={selectedTradeId}
+          isReceiver={messages.find(m => m.trade_data?.trade_id === selectedTradeId)?.sender_email !== user.email}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useTheme } from '../../contexts/ThemeContext';
 import { useLanguage, languages } from '../../contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
-import { getMe } from '../../api/api';
+import { getMe, getConversations } from '../../api/api';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -22,6 +22,17 @@ export default function NavBar() {
     queryFn: getMe,
     retry: false,
   });
+
+  const { data: conversations = [] } = useQuery({
+    queryKey: ['conversations'],
+    queryFn: getConversations,
+    enabled: !!user,
+    refetchInterval: 10000, // Poll every 10 seconds
+  });
+
+  const totalUnread = conversations.reduce((acc, conv) => {
+    return acc + (conv.unread_count?.[user?.email] || 0);
+  }, 0);
 
   const handleLogout = () => {
     localStorage.removeItem('base44_user');
@@ -138,7 +149,15 @@ export default function NavBar() {
 
                 {/* Messages Badge */}
                 <Link to="/messages" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative">
-                    <MessageCircle size={20} />
+                    <div className="relative">
+                        <MessageCircle size={20} />
+                        {totalUnread > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                        )}
+                    </div>
                     <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('messages')}</span>
                 </Link>
 
