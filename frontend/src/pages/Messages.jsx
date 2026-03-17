@@ -395,34 +395,33 @@ export default function Messages() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] bg-background border rounded-none md:rounded-xl overflow-hidden shadow-2xl transition-all duration-300">
-      
-      {/* Offers List Sidebar */}
-      <div className={`w-full md:w-80 lg:w-96 border-r flex flex-col bg-card/50 backdrop-blur-md ${!showList && 'hidden md:flex'}`}>
-        <div className="p-4 border-b space-y-4 bg-background/40">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black flex items-center gap-2 tracking-tighter">
-                    <ArrowRightLeft className="text-primary" />
-                    {t('offers', 'Offers')}
-                </h2>
-                <div className="bg-primary/10 px-2 py-0.5 rounded text-[10px] font-black uppercase text-primary">Beta</div>
-            </div>
+    <div className="flex flex-col md:flex-row h-[calc(100vh-6rem)] md:h-[calc(100vh-7rem)] bg-background border-none md:border rounded-none md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300">
 
-            <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      {/* Offers List Sidebar */}
+      <div className={`w-full md:w-80 lg:w-96 border-r flex flex-col bg-card/30 backdrop-blur-xl ${!showList && 'hidden md:flex'}`}>
+        <div className="p-6 border-b space-y-4">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black flex items-center gap-3 tracking-tighter">
+                    <ArrowRightLeft className="text-primary w-7 h-7" />
+                    {t('offers')}
+                </h2>
+                <div className="bg-primary/10 px-2.5 py-1 rounded-full text-[10px] font-black uppercase text-primary tracking-widest border border-primary/20">Beta</div>
+            </div>
+            <div className="relative group">
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <input 
                     type="text" 
-                    placeholder={t('searchOffers', 'Filter offers...')}
-                    className="w-full pl-9 pr-4 py-2 bg-background border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                    placeholder={t('searchOffers')}
+                    className="w-full pl-10 pr-4 py-3 bg-muted/50 border-none rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all placeholder:font-medium"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
         </div>
-        
-        <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-muted">
+
+        <div className="flex-grow overflow-y-auto scrollbar-none hover:scrollbar-thin">
             {isLoadingConversations ? (
-                <div className="flex justify-center p-8"><Loader2 className="animate-spin text-primary" /></div>
+                <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>
             ) : filteredConversations.length > 0 ? (
                 filteredConversations.map(convo => {
                     const otherParticipant = convo.participants.find(p => p !== me?.email);
@@ -435,35 +434,46 @@ export default function Messages() {
                         <div 
                             key={convo._id}
                             onClick={() => handleSelectConversation(convo._id)}
-                            className={`p-4 cursor-pointer border-b transition-all relative group ${
+                            className={`p-5 cursor-pointer border-b border-border/40 transition-all relative group flex items-center gap-4 ${
                                 isSelected 
                                 ? 'bg-primary/10 border-l-4 border-l-primary shadow-inner' 
-                                : 'hover:bg-muted/50 border-l-4 border-l-transparent'
+                                : 'hover:bg-muted/40 border-l-4 border-l-transparent'
                             }`}
                         >
-                            <div className="flex items-center justify-between mb-1">
+                            <div className="relative flex-shrink-0">
+                                <div className={`w-12 h-12 rounded-2xl overflow-hidden shadow-md ring-2 transition-all ${isSelected ? 'ring-primary' : 'ring-transparent group-hover:ring-primary/30'}`}>
+                                    <img 
+                                        src={isSupport ? '/sona-avatar.png' : `https://avatar.vercel.sh/${otherParticipant}.svg`} 
+                                        alt="" 
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => e.target.src = `https://ui-avatars.com/api/?name=${otherParticipant}&background=random`}
+                                    />
+                                </div>
+                                {isOnline && <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-4 border-card shadow-lg"></div>}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                    <p className={`font-black text-sm tracking-tight truncate ${unreadCount > 0 ? 'text-foreground' : 'text-foreground/80'}`}>
+                                        {isSupport ? t('supportChat') : otherParticipant}
+                                    </p>
+                                    <p className="text-[10px] font-bold text-muted-foreground/60">{format(new Date(convo.last_message_at), 'p')}</p>
+                                </div>
+
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-muted'}`}></div>
-                                    <p className={`font-bold text-sm tracking-tight truncate max-w-[150px] ${unreadCount > 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
-                                        {isSupport ? t('supportChat', 'SwapX Support') : otherParticipant}
+                                    {convo.related_trade_id && (
+                                        <div className="flex-shrink-0 bg-primary/20 p-1 rounded-lg">
+                                            <Package size={12} className="text-primary" />
+                                        </div>
+                                    )}
+                                    <p className={`text-xs truncate flex-1 ${unreadCount > 0 ? 'font-bold text-foreground' : 'text-muted-foreground/70'}`}>
+                                        {convo.last_message || t('noMessagesYet')}
                                     </p>
                                 </div>
-                                <p className="text-[9px] font-medium text-muted-foreground/60">{format(new Date(convo.last_message_at), 'p')}</p>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                                {convo.related_trade_id && (
-                                    <div className="flex-shrink-0 bg-primary/20 p-1 rounded">
-                                        <Package size={10} className="text-primary" />
-                                    </div>
-                                )}
-                                <p className={`text-xs truncate flex-1 ${unreadCount > 0 ? 'font-bold text-foreground' : 'text-muted-foreground/80'}`}>
-                                    {convo.last_message || t('noMessagesYet', 'No messages yet')}
-                                </p>
                             </div>
 
                             {unreadCount > 0 && (
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg animate-bounce">
+                                <div className="flex-shrink-0 bg-primary text-primary-foreground text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-xl shadow-lg shadow-primary/20 animate-in zoom-in">
                                     {unreadCount}
                                 </div>
                             )}
@@ -471,13 +481,13 @@ export default function Messages() {
                     );
                 })
             ) : (
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-6">
-                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center opacity-40">
-                        <ArrowRightLeft size={32} />
+                <div className="flex flex-col items-center justify-center h-full p-10 text-center space-y-6 animate-in fade-in slide-in-from-bottom-4">
+                    <div className="w-20 h-20 bg-muted/30 rounded-3xl flex items-center justify-center border-2 border-dashed border-muted-foreground/20">
+                        <ArrowRightLeft size={40} className="text-muted-foreground/30" />
                     </div>
                     <div className="space-y-2">
-                        <p className="text-foreground font-bold">{t('noOffersFound', 'No active offers found')}</p>
-                        <p className="text-muted-foreground text-xs leading-relaxed">{t('startTradingPrompt', 'Find items you like and send an offer to start a conversation!')}</p>
+                        <p className="text-foreground font-black text-lg">{t('noOffersFound')}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed max-w-[200px] mx-auto font-medium">{t('startTradingPrompt')}</p>
                     </div>
                     <button 
                         onClick={() => {
@@ -487,9 +497,9 @@ export default function Messages() {
                                 setShowList(false);
                             }).catch(err => toast.error('Failed to start chat'));
                         }}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-xl text-xs font-black hover:bg-primary/90 transition-all shadow-lg active:scale-95"
+                        className="flex items-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-2xl text-xs font-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 active:scale-95"
                     >
-                        <MessageCircle size={14}/> {t('askHelp', 'Need Help?')}
+                        <MessageCircle size={16}/> {t('askHelp')}
                     </button>
                 </div>
             )}
@@ -497,25 +507,27 @@ export default function Messages() {
       </div>
 
       {/* Main Area: Trade Preview + Chat */}
-      <div className={`flex-1 flex flex-col bg-background ${showList && 'hidden md:flex'}`}>
+      <div className={`flex-1 flex flex-col bg-card/10 backdrop-blur-sm ${showList && 'hidden md:flex'}`}>
         {selectedConversationId ? (
           <>
-            {/* Header / Trade Preview */}
-            <div className="flex flex-col">
-                <div className="p-3 border-b flex items-center justify-between bg-card/30">
-                    <div className="flex items-center gap-3">
-                        <button onClick={() => setShowList(true)} className="md:hidden p-2 hover:bg-muted rounded-full transition-colors">
+            {/* Header / Trade Preview Container */}
+            <div className="flex flex-col shadow-lg z-10">
+                <div className="px-6 py-4 border-b flex items-center justify-between bg-background/60 backdrop-blur-md">
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => setShowList(true)} className="md:hidden p-2.5 hover:bg-muted rounded-2xl transition-all active:scale-90 bg-muted/30">
                             <ChevronLeft size={20} />
                         </button>
                         <div>
-                            <p className="font-black text-sm">{selectedConversation?.participants.find(p => p !== me?.email)}</p>
-                            {isTyping && <p className="text-[10px] text-primary font-bold animate-pulse">{t('typing', 'typing...')}</p>}
+                            <p className="font-black text-lg tracking-tighter leading-none">{selectedConversation?.participants.find(p => p !== me?.email)}</p>
+                            {isTyping ? (
+                                <p className="text-[10px] text-primary font-black mt-1 animate-pulse tracking-widest uppercase">{t('typing')}</p>
+                            ) : (
+                                    <div className="flex items-center gap-1.5 mt-1">
+                                    <div className={`w-1.5 h-1.5 rounded-full ${onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? 'bg-green-500' : 'bg-muted-foreground/30'}`}></div>
+                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? t('online') : t('offline')}</span>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                    <div className="flex gap-1">
-                        <button onClick={() => setIsOfferModalOpen(true)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-all" title={t('makeCounterOffer', 'Counter Offer')}>
-                            <ArrowRightLeft size={18} />
-                        </button>
                     </div>
                 </div>
 
@@ -528,126 +540,153 @@ export default function Messages() {
                 )}
             </div>
 
-            {/* Messages List */}
-            <div className="flex-grow p-4 overflow-y-auto space-y-4 bg-muted/5 scroll-smooth">
+            {/* Messages List - Enhanced Bubbles */}
+            <div className="flex-grow p-6 overflow-y-auto space-y-6 bg-transparent scrollbar-none">
               {isLoadingMessages ? (
-                <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-primary" /></div>
+                <div className="flex justify-center items-center h-full"><Loader2 className="animate-spin text-primary w-10 h-10" /></div>
               ) : messages.length > 0 ? (
-                messages.map(msg => {
+                messages.map((msg, index) => {
                     const isMe = msg.sender_email === me?.email;
+                    const prevMsg = index > 0 ? messages[index - 1] : null;
+                    const isSameSender = prevMsg?.sender_email === msg.sender_email;
+
                     return (
-                        <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] md:max-w-[70%] p-3 rounded-2xl shadow-sm ${
-                                isMe 
-                                ? 'bg-primary text-primary-foreground rounded-tr-none' 
-                                : 'bg-card text-card-foreground border border-border rounded-tl-none'
-                            }`}>
-                                {msg.type === 'image' ? (
-                                    <img src={msg.content} alt="" className="w-full h-auto rounded-lg mb-1 shadow-sm" />
-                                ) : msg.type === 'voice' ? (
-                                    <audio controls src={msg.content} className="w-full max-w-[240px] h-8" />
-                                ) : msg.type === 'offer' || msg.type === 'counter' ? (
-                                    <div className="p-2 bg-black/10 rounded-xl space-y-2 mb-1">
-                                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-80 border-b border-white/10 pb-1">
-                                            <HeartHandshake size={14} />
-                                            <span>{msg.type === 'offer' ? t('tradeOffer') : t('counterOffer')}</span>
-                                        </div>
-                                        <p className="text-sm font-medium leading-relaxed italic">"{msg.content}"</p>
-                                    </div>
-                                ) : (
-                                    <p className="whitespace-pre-wrap break-words text-[14px] leading-relaxed font-medium">{msg.content}</p>
+                        <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} ${isSameSender ? '-mt-4' : 'mt-2'}`}>
+                            <div className={`max-w-[85%] md:max-w-[65%] group relative ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
+                                {!isSameSender && (
+                                    <span className={`text-[10px] font-black uppercase tracking-widest mb-1 mx-2 opacity-40`}>
+                                        {isMe ? t('you') : msg.sender_email.split('@')[0]}
+                                    </span>
                                 )}
-                                <div className="flex items-center justify-end mt-1.5 gap-1 opacity-60">
-                                    <p className={`text-[8px] font-bold ${isMe ? 'text-primary-foreground' : 'text-muted-foreground'}`}>
-                                        {format(new Date(msg.createdAt), 'p')}
-                                    </p>
-                                    {isMe && (
-                                        msg.read ? <CheckCheck size={10} className="text-blue-300" /> : <Check size={10} className="" />
+
+                                <div className={`p-4 shadow-xl shadow-black/5 transition-all hover:shadow-2xl ${
+                                    isMe 
+                                    ? 'bg-gradient-to-br from-primary to-indigo-600 text-primary-foreground rounded-3xl rounded-tr-sm' 
+                                    : 'bg-card text-card-foreground border border-white/5 rounded-3xl rounded-tl-sm'
+                                }`}>
+                                    {msg.type === 'image' ? (
+                                        <img src={msg.content} alt="" className="w-full max-w-sm h-auto rounded-2xl mb-1 shadow-inner border border-white/10" />
+                                    ) : msg.type === 'voice' ? (
+                                        <audio controls src={msg.content} className="w-full max-w-[240px] h-10 filter invert dark:invert-0" />
+                                    ) : msg.type === 'offer' || msg.type === 'counter' ? (
+                                        <div className="p-3 bg-black/20 backdrop-blur-md rounded-2xl space-y-3 mb-1 border border-white/10">
+                                            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-90 border-b border-white/10 pb-2">
+                                                <HeartHandshake size={16} />
+                                                <span>{msg.type === 'offer' ? t('tradeOffer') : t('counterOffer')}</span>
+                                            </div>
+                                            <p className="text-[15px] font-bold leading-relaxed italic">"{msg.content}"</p>
+                                        </div>
+                                    ) : msg.type === 'system' ? (
+                                        <div className="flex items-center gap-2 text-xs font-bold opacity-80 italic">
+                                            <Info size={14} />
+                                            <span>{msg.content}</span>
+                                        </div>
+                                    ) : (
+                                        <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed font-bold tracking-tight">{msg.content}</p>
                                     )}
+
+                                    <div className={`flex items-center justify-end mt-2 gap-1.5 transition-opacity ${isMe ? 'opacity-70' : 'opacity-40'}`}>
+                                        <p className="text-[9px] font-black tracking-tighter uppercase">
+                                            {format(new Date(msg.createdAt), 'p')}
+                                        </p>
+                                        {isMe && (
+                                            msg.read ? <CheckCheck size={12} className="text-blue-300" /> : <Check size={12} className="" />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     );
                 })
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-muted-foreground/30 py-20">
-                    <MessageCircle size={64} className="mb-4" />
-                    <p className="font-bold">{t('startChatPrompt', 'No messages in this offer yet')}</p>
+                <div className="flex flex-col items-center justify-center h-full text-muted-foreground/30 py-20 animate-pulse">
+                    <MessageCircle size={80} className="mb-6 opacity-20" />
+                    <p className="font-black text-xl tracking-tighter uppercase">{t('startChatPrompt')}</p>
                 </div>
               )}
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} className="h-4" />
             </div>
 
-            {/* Input Area */}
-            <div className="p-3 md:p-4 border-t bg-background/80 backdrop-blur-md">
-              <div className="flex items-center gap-2 max-w-5xl mx-auto">
-                  <div className="flex items-center gap-0.5">
-                      <button onClick={() => setIsShareModalOpen(true)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors" title="Share Item">
-                        <LinkIcon size={18} />
+            {/* Input Area - Restored & Improved */}
+            <div className="p-6 border-t bg-background/80 backdrop-blur-xl">
+              <div className="flex items-center gap-3 max-w-5xl mx-auto">
+                  <div className="flex items-center gap-1">
+                      <button onClick={() => setIsShareModalOpen(true)} className="p-3 text-muted-foreground hover:bg-muted hover:text-primary rounded-2xl transition-all active:scale-90 bg-muted/20" title="Share Item">
+                        <LinkIcon size={20} />
                       </button>
-                      <button onClick={() => fileInputRef.current.click()} className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors" title={t('sendImage')}>
-                        <Image size={18} />
+                      <button onClick={() => fileInputRef.current.click()} className="p-3 text-muted-foreground hover:bg-muted hover:text-primary rounded-2xl transition-all active:scale-90 bg-muted/20" title={t('sendImage')}>
+                        <Image size={20} />
                       </button>
                   </div>
-                  
-                  <div className="flex-grow relative">
+
+                  <div className="flex-grow relative group">
                       <input 
                         type="text" 
                         value={messageContent}
                         onChange={handleTyping}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        placeholder={t('negotiatePrompt', 'Message about this offer...')}
-                        className="w-full bg-muted/30 border border-border/50 p-2.5 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm font-medium transition-all"
+                        placeholder={t('negotiatePrompt')}
+                        className="w-full bg-muted/40 border-none p-4 pr-14 rounded-3xl focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm font-black transition-all group-focus-within:bg-muted/60"
                       />
-                      {messageContent.trim() && (
-                          <button onClick={handleSendMessage} className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground p-1.5 rounded-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-primary/20">
-                              <Send size={14} />
-                          </button>
-                      )}
+                      <AnimatePresence>
+                        {messageContent.trim() && (
+                            <motion.button 
+                                initial={{ opacity: 0, scale: 0.5 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.5 }}
+                                onClick={handleSendMessage} 
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground p-2.5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/30"
+                            >
+                                <Send size={18} />
+                            </motion.button>
+                        )}
+                      </AnimatePresence>
                   </div>
-                  
+
                   {!messageContent.trim() && (
                       <AudioRecorder onRecordingComplete={handleAudioRecorded} isUploading={mediaMutation.isLoading} />
                   )}
               </div>
-              
+
               <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*" />
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-12 text-center space-y-6">
-            <div className="w-32 h-32 bg-muted/20 rounded-full flex items-center justify-center relative shadow-inner">
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-12 text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
+            <div className="w-40 h-40 bg-primary/5 rounded-[3rem] flex items-center justify-center relative shadow-inner border border-primary/10">
                 <motion.div 
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border-2 border-dashed border-primary/20 rounded-full"
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border-4 border-dashed border-primary/10 rounded-[3rem]"
                 ></motion.div>
-                <ArrowRightLeft size={48} className="text-primary/30" />
+                <div className="w-32 h-32 bg-background rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-white/5">
+                    <ArrowRightLeft size={64} className="text-primary opacity-40" />
+                </div>
             </div>
-            <div className="max-w-xs space-y-2">
-                <h3 className="text-2xl font-black text-foreground tracking-tighter">{t('yourOffers', 'Offer Center')}</h3>
-                <p className="text-sm font-medium leading-relaxed">{t('selectOfferPrompt', 'Select an offer from the sidebar to view details and negotiate.')}</p>
+            <div className="max-w-xs space-y-3">
+                <h3 className="text-3xl font-black text-foreground tracking-tighter uppercase">{t('yourOffers')}</h3>
+                <p className="text-sm font-bold leading-relaxed text-muted-foreground/80">{t('selectOfferPrompt')}</p>
             </div>
-            <div className="flex gap-4">
-                <div className="flex flex-col items-center gap-1 opacity-40">
-                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center"><Check size={20}/></div>
-                    <span className="text-[10px] font-bold uppercase">{t('accept')}</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 opacity-40">
-                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center"><X size={20}/></div>
-                    <span className="text-[10px] font-bold uppercase">{t('decline')}</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 opacity-40">
-                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center"><ArrowRightLeft size={20}/></div>
-                    <span className="text-[10px] font-bold uppercase">{t('counter')}</span>
-                </div>
+            <div className="flex gap-6">
+                {[
+                    { icon: Check, label: t('accept'), color: 'text-green-500' },
+                    { icon: X, label: t('decline'), color: 'text-red-500' },
+                    { icon: Trash2, label: t('cancel'), color: 'text-orange-500' }
+                ].map((item, i) => (
+                    <div key={i} className="flex flex-col items-center gap-2 group cursor-default">
+                        <div className="w-14 h-14 bg-muted/20 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner group-hover:bg-muted/40 transition-all">
+                            <item.icon size={24} className={`${item.color} opacity-60 group-hover:opacity-100 transition-all`}/>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-40 group-hover:opacity-100 transition-all">{item.label}</span>
+                    </div>
+                ))}
             </div>
           </div>
         )}
       </div>
 
-      <MakeOfferModal isOpen={isOfferModalOpen} onClose={() => setIsOfferModalOpen(false)} onSubmit={handleSendOffer} />
       <ShareItemModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} onSubmit={handleShareItem} />
     </div>
   );
-}
+  }
+
