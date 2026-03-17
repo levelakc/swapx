@@ -113,8 +113,11 @@ export default function NavBar() {
 
             {/* Desktop Only Actions */}
             <div className="hidden lg:flex items-center gap-3 ml-2">
-                <button onClick={handleThemeChange} className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
-                {theme === 'dark' ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
+                <button onClick={handleThemeChange} className="flex flex-col items-center p-1.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                    {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                        {theme === 'dark' ? t('light') : t('dark')}
+                    </span>
                 </button>
 
                 <LanguageSwitcher />
@@ -207,8 +210,11 @@ export default function NavBar() {
           >
             <div className="px-4 pt-2 pb-6 space-y-4">
                 <div className="grid grid-cols-2 gap-2">
-                    <button onClick={handleThemeChange} className="flex items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted text-sm font-bold">
-                        {theme === 'dark' ? <><Sun className="mr-2 h-4 w-4"/> LIGHT</> : <><Moon className="mr-2 h-4 w-4"/> DARK</>}
+                    <button onClick={handleThemeChange} className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all">
+                        {theme === 'dark' ? <Sun className="h-5 w-5 mb-1"/> : <Moon className="h-5 w-5 mb-1"/>}
+                        <span className="text-xs font-black uppercase tracking-widest">
+                            {theme === 'dark' ? t('light') : t('dark')}
+                        </span>
                     </button>
                     <div className="flex items-center justify-center p-3 rounded-lg bg-muted/50">
                         <CurrencySwitcher />
@@ -216,7 +222,7 @@ export default function NavBar() {
                 </div>
                 
                 <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <span className="text-sm font-bold uppercase">{t('language', 'Language')}</span>
+                    <span className="text-sm font-black uppercase tracking-widest">{t('language')}</span>
                     <LanguageSwitcher />
                 </div>
             </div>
