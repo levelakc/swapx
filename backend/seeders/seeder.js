@@ -159,7 +159,8 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
 
-  const categoryAssets = CATEGORY_IMAGES[category.name] || CATEGORY_IMAGES['phones'];
+  // We are guaranteed to have categoryAssets because of the check in the main loop
+  const categoryAssets = CATEGORY_IMAGES[category.name]; 
   const assetIndex = itemIndex % categoryAssets.length;
   const randomAsset = categoryAssets[assetIndex];
 
@@ -212,7 +213,6 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   if (allCategories && allCategories.length > 0) {
     for (let i = 0; i < numLookingFor; i++) {
       const randomCat = allCategories[Math.floor(Math.random() * allCategories.length)];
-      // FIX: Use ID as string to match frontend expectations
       if (!lookingFor.includes(randomCat._id.toString())) {
         lookingFor.push(randomCat._id.toString());
       }
@@ -447,12 +447,19 @@ const seedData = async () => {
     const allServices = [];
     
     for (const category of createdCategories) {
+      const categoryAssets = CATEGORY_IMAGES[category.name];
+      
+      // If there are no images for this category, skip it so we don't create duplicates or empty items
+      if (!categoryAssets || categoryAssets.length === 0) {
+        continue;
+      }
+
       if (category.name === 'services') {
-          const serviceAssets = CATEGORY_IMAGES['services'];
-          for (let i = 0; i < 20; i++) {
+          // Loop EXACTLY the amount of unique images we have for services
+          for (let i = 0; i < categoryAssets.length; i++) {
             const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
             const owner = createdUsers[randomUserIndex];
-            const asset = serviceAssets[i % serviceAssets.length];
+            const asset = categoryAssets[i];
             
             const hourly_rate = Math.floor(Math.random() * (asset.max_price - asset.min_price + 1)) + asset.min_price;
 
@@ -472,7 +479,8 @@ const seedData = async () => {
           continue; 
       }
 
-      for (let i = 0; i < 20; i++) {
+      // Loop EXACTLY the amount of unique images we have for regular items
+      for (let i = 0; i < categoryAssets.length; i++) {
         const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
         const owner = createdUsers[randomUserIndex];
         

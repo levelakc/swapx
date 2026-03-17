@@ -33,11 +33,11 @@ export default function HeroSection() {
   };
 
   const floatingIcons = [
-    { Icon: ArrowLeftRight, color: "text-blue-500", x: -150, y: -80, delay: 0, size: 60 },
-    { Icon: Coins, color: "text-yellow-500", x: 180, y: -100, delay: 1, size: 70 },
-    { Icon: Package, color: "text-green-500", x: -120, y: 120, delay: 2, size: 65 },
-    { Icon: Repeat, color: "text-purple-500", x: 150, y: 100, delay: 0.5, size: 55 },
-    { Icon: Zap, color: "text-orange-500", x: 0, y: -140, delay: 1.5, size: 45 },
+    { Icon: ArrowLeftRight, color: "text-blue-500", x: -150, y: -80, delay: 0, size: 60, mobileSize: 40 },
+    { Icon: Coins, color: "text-yellow-500", x: 180, y: -100, delay: 1, size: 70, mobileSize: 45 },
+    { Icon: Package, color: "text-green-500", x: -120, y: 120, delay: 2, size: 65, mobileSize: 40 },
+    { Icon: Repeat, color: "text-purple-500", x: 150, y: 100, delay: 0.5, size: 55, mobileSize: 35 },
+    { Icon: Zap, color: "text-orange-500", x: 0, y: -140, delay: 1.5, size: 45, mobileSize: 30 },
   ];
 
   return (
@@ -49,10 +49,10 @@ export default function HeroSection() {
             {floatingIcons.map((item, index) => (
             <motion.div
                 key={index}
-                className={`absolute left-1/2 top-1/2 ${item.color} opacity-20 hidden md:block`}
-                initial={{ x: item.x, y: item.y, scale: 0.8 }}
+                className={`absolute left-1/2 top-1/2 ${item.color} opacity-20`}
+                initial={{ x: item.x * 0.6, y: item.y * 0.6, scale: 0.8 }}
                 animate={{ 
-                y: [item.y - 30, item.y + 30, item.y - 30],
+                y: [item.y - 20, item.y + 20, item.y - 20],
                 rotate: [0, 20, -20, 0],
                 scale: [0.8, 1.1, 0.8]
                 }}
@@ -63,7 +63,12 @@ export default function HeroSection() {
                 ease: "easeInOut" 
                 }}
             >
-                <item.Icon size={item.size} />
+                <div className="md:block hidden">
+                    <item.Icon size={item.size} />
+                </div>
+                <div className="md:hidden block">
+                    <item.Icon size={item.mobileSize} />
+                </div>
             </motion.div>
             ))}
         </div>

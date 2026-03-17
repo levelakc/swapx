@@ -6,22 +6,22 @@ export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center bg-muted/50 rounded-full p-1 border border-border/50 shadow-inner">
-      <div className="relative flex items-center">
+    <div className="flex items-center bg-muted/50 rounded-full p-1 border border-border/50 shadow-inner w-24">
+      <div className="relative flex items-center w-full h-7">
         {/* Animated Background Highlighting Active */}
         <motion.div
-          className="absolute h-full bg-background rounded-full shadow-sm"
+          className="absolute top-0 bottom-0 bg-background rounded-full shadow-sm"
           initial={false}
           animate={{
-            x: language === 'en' ? 0 : '100%',
-            width: '50%'
+            left: language === 'en' ? '0%' : '50%',
           }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          style={{ width: '50%' }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         />
         
         <button
           onClick={() => setLanguage('en')}
-          className={`relative z-10 px-3 py-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
+          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
             language === 'en' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -30,7 +30,7 @@ export default function LanguageSwitcher() {
         
         <button
           onClick={() => setLanguage('he')}
-          className={`relative z-10 px-3 py-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
+          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
             language === 'he' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
           }`}
         >

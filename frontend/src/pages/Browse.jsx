@@ -6,7 +6,7 @@ import { getItems } from '../api/api';
 import ItemCard from '../components/items/ItemCard';
 import CategoryFilter from '../components/filters/CategoryFilter';
 import FilterSidebar from '../components/filters/FilterSidebar';
-import { Loader2, LayoutGrid, List, Filter, Search } from 'lucide-react';
+import { Loader2, LayoutGrid, List, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Browse({ listingType = 'item' }) {
@@ -14,7 +14,9 @@ export default function Browse({ listingType = 'item' }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const selectedCategory = searchParams.get('category') || 'all';
+  const currentPage = Number(searchParams.get('pageNumber')) || 1;
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({
     priceRange: [0, 1000000],
@@ -26,7 +28,8 @@ export default function Browse({ listingType = 'item' }) {
 
   const queryFilters = {
     status: 'active',
-    limit: 50,
+    limit: 12,
+    pageNumber: currentPage,
     minPrice: filters.priceRange[0],
     maxPrice: filters.priceRange[1],
     conditions: filters.conditions.join(','),
@@ -40,22 +43,31 @@ export default function Browse({ listingType = 'item' }) {
   }
 
   const { data: queryResult, isLoading, error } = useQuery({
-    queryKey: ['items', 'browse', queryFilters, selectedCategory],
+    queryKey: ['items', 'browse', queryFilters],
     queryFn: () => getItems(queryFilters),
+    keepPreviousData: true,
   });
+  
   const items = queryResult?.items || [];
+  const totalPages = queryResult?.pages || 1;
 
-  const setCategoryCookie = (category) => {
-    if (category && category !== 'all') {
-      document.cookie = `last_category_search=${category}; path=/; max-age=${60 * 60 * 24 * 7}`; // 1 week
+  const setCategory = (catId) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (catId === 'all') {
+        newParams.delete('category');
+    } else {
+        newParams.set('category', catId);
     }
+    newParams.set('pageNumber', '1'); // Reset to page 1 on category change
+    setSearchParams(newParams);
   };
 
-  useEffect(() => {
-    if (selectedCategory !== 'all') {
-      setCategoryCookie(selectedCategory);
-    }
-  }, [selectedCategory]);
+  const setPage = (page) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('pageNumber', page.toString());
+    setSearchParams(newParams);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -65,6 +77,7 @@ export default function Browse({ listingType = 'item' }) {
     } else {
         newParams.delete('keyword');
     }
+    newParams.set('pageNumber', '1');
     setSearchParams(newParams);
   };
 
@@ -73,7 +86,7 @@ export default function Browse({ listingType = 'item' }) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   };
@@ -126,7 +139,7 @@ export default function Browse({ listingType = 'item' }) {
             </form>
         </div>
 
-        <CategoryFilter selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
+        <CategoryFilter selectedCategory={selectedCategory} onSelectCategory={setCategory} />
         
         <div className="flex flex-wrap gap-4 justify-between items-center mb-6 bg-card p-4 rounded-xl shadow-sm border">
           <div className="flex items-center gap-4">
@@ -137,7 +150,9 @@ export default function Browse({ listingType = 'item' }) {
                 <Filter size={18} />
                 {t('filters', 'Filters')}
              </button>
-             <p className="text-sm font-medium text-muted-foreground hidden sm:block">{items.length} {t('itemsFoundSuffix', 'items found')}</p>
+             <p className="text-sm font-medium text-muted-foreground hidden sm:block">
+                {isLoading ? '...' : queryResult?.count || 0} {t('itemsFoundSuffix', 'items found')}
+             </p>
           </div>
 
           <div className="flex items-center bg-muted/50 p-1 rounded-lg">
@@ -175,11 +190,54 @@ export default function Browse({ listingType = 'item' }) {
           animate="visible"
         >
           {items.map(item => (
-            <motion.div key={item.id} variants={itemVariants}>
+            <motion.div key={item._id} variants={itemVariants}>
               <ItemCard item={item} viewMode={viewMode} />
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Pagination UI */}
+        {!isLoading && totalPages > 1 && (
+            <div className="mt-12 flex justify-center items-center gap-2">
+                <button 
+                    onClick={() => setPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded-lg bg-card border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                    <ChevronLeft size={20} />
+                </button>
+                
+                <div className="flex items-center gap-1">
+                    {[...Array(totalPages)].map((_, i) => {
+                        const pageNum = i + 1;
+                        // Basic logic to show limited pages if there are many
+                        if (totalPages > 7) {
+                            if (pageNum !== 1 && pageNum !== totalPages && Math.abs(pageNum - currentPage) > 1) {
+                                if (pageNum === 2 || pageNum === totalPages - 1) return <span key={pageNum} className="px-1 text-muted-foreground">...</span>;
+                                return null;
+                            }
+                        }
+                        return (
+                            <button
+                                key={pageNum}
+                                onClick={() => setPage(pageNum)}
+                                className={`w-10 h-10 rounded-lg font-bold text-sm transition-all ${currentPage === pageNum ? 'bg-primary text-primary-content shadow-md' : 'bg-card border hover:bg-muted'}`}
+                            >
+                                {pageNum}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <button 
+                    onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded-lg bg-card border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                    <ChevronRight size={20} />
+                </button>
+            </div>
+        )}
       </div>
     </div>
   );
