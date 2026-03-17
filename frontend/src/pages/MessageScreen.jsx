@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getMessages, sendMessage, getMe, uploadMessageMedia } from '../api/api';
+import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, createTrade } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -25,6 +25,12 @@ export default function MessageScreen() {
     queryKey: ['user', 'me'],
     queryFn: getMe,
     retry: false,
+  });
+
+  const { data: conversation, isLoading: isLoadingConversation } = useQuery({
+    queryKey: ['conversation', conversationId],
+    queryFn: () => getConversation(conversationId),
+    enabled: !!user,
   });
 
   const { data: messages = [], isLoading: isLoadingMessages, error } = useQuery({
@@ -70,6 +76,17 @@ export default function MessageScreen() {
     }
   });
 
+  const createTradeMutation = useMutation({
+    mutationFn: (tradeData) => createTrade(tradeData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['messages', conversationId]);
+      toast.success(t('offerSent'));
+    },
+    onError: (error) => {
+      toast.error(error.message || t('failedToSendOffer'));
+    }
+  });
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -90,6 +107,19 @@ export default function MessageScreen() {
   };
 
   const handleSendOffer = (offerData) => {
+    if (!conversation) {
+        toast.error("Conversation not loaded yet");
+        return;
+    }
+
+    const otherParticipant = conversation.participants.find(p => p !== user.email);
+    const requestedItem = conversation.related_item_id?._id || conversation.related_item_id;
+
+    if (!requestedItem) {
+        toast.error("No item linked to this conversation to trade for");
+        return;
+    }
+
     // Construct a readable offer message
     const itemsCount = offerData.offeredItems.length;
     const cashText = offerData.cash.amount > 0 
@@ -98,13 +128,14 @@ export default function MessageScreen() {
     
     const content = `Proposed a trade: ${itemsCount} items${cashText}`;
     
-    messageMutation.mutate({ 
-        content: content, 
-        type: 'offer', 
-        sender: user.email, 
-        trade_data: offerData 
+    createTradeMutation.mutate({
+        receiver_email: otherParticipant,
+        offered_items: offerData.offeredItems,
+        requested_items: [requestedItem],
+        cash_offered: offerData.cash.type === 'add' ? offerData.cash.amount : 0,
+        cash_requested: offerData.cash.type === 'request' ? offerData.cash.amount : 0,
+        message: content,
     });
-    toast.success(t('offerSent'));
   };
 
   if (isLoadingUser || isLoadingMessages) {

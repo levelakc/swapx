@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getUserConversations,
+  getConversationById,
   createConversation,
   getConversationMessages,
   sendMessage,
@@ -14,6 +15,8 @@ router.post('/support', protect, startSupportChat);
 router.route('/')
   .get(protect, getUserConversations)
   .post(protect, createConversation);
+
+router.get('/:id', protect, getConversationById);
 
 router.route('/:id/messages')
   .get(protect, getConversationMessages)

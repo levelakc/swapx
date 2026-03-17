@@ -134,6 +134,8 @@ export const getSuggestedServices = (limit, lastCategory) => {
 
 export const getConversations = () => request('/conversations');
 
+export const getConversation = (id) => request(`/conversations/${id}`);
+
 export const getMessages = (conversationId) => request(`/conversations/${conversationId}/messages`);
 
 export const sendMessage = (conversationId, messageData) => request(`/conversations/${conversationId}/messages`, {

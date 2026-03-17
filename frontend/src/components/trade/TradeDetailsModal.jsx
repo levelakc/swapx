@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getTradeById, updateTradeStatus, getItem } from '../../api/api';
+import { getTradeById, updateTradeStatus, getItem, getMe } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { Loader2, X, ArrowRightLeft, DollarSign, Package, Check, AlertCircle } from 'lucide-react';
@@ -10,6 +10,12 @@ export default function TradeDetailsModal({ isOpen, onClose, tradeId, isReceiver
   const { t } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const queryClient = useQueryClient();
+
+  const { data: user } = useQuery({
+    queryKey: ['user', 'me'],
+    queryFn: getMe,
+    enabled: isOpen,
+  });
 
   const { data: trade, isLoading, error } = useQuery({
     queryKey: ['trade', tradeId],
@@ -35,6 +41,8 @@ export default function TradeDetailsModal({ isOpen, onClose, tradeId, isReceiver
     },
     enabled: !!trade?.requested_items?.length,
   });
+
+  const isInitiator = user && trade && trade.initiator_email === user.email;
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }) => updateTradeStatus(id, status),
@@ -181,6 +189,14 @@ export default function TradeDetailsModal({ isOpen, onClose, tradeId, isReceiver
                 {statusMutation.isLoading ? <Loader2 className="animate-spin" /> : <><Check size={20} /> {t('acceptOffer', 'Accept Offer')}</>}
               </button>
             </div>
+          ) : isInitiator && trade?.status === 'pending' ? (
+            <button 
+                onClick={() => statusMutation.mutate({ id: tradeId, status: 'cancelled' })}
+                disabled={statusMutation.isLoading}
+                className="w-full border-2 border-red-500 text-red-500 hover:bg-red-50 py-3 rounded-xl font-black transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
+              >
+                {statusMutation.isLoading ? <Loader2 className="animate-spin" /> : <><X size={20} /> {t('cancelOffer', 'Cancel Offer')}</>}
+              </button>
           ) : (
             <button 
               onClick={onClose}

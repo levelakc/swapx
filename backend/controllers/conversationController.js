@@ -227,8 +227,30 @@ const startSupportChat = asyncHandler(async (req, res) => {
   res.json(conversation);
 });
 
+// @desc    Get a single conversation by ID
+// @route   GET /api/conversations/:id
+// @access  Private
+const getConversationById = asyncHandler(async (req, res) => {
+  const conversation = await Conversation.findById(req.params.id)
+    .populate('related_item_id')
+    .populate('related_trade_id');
+
+  if (!conversation) {
+    res.status(404);
+    throw new Error('Conversation not found');
+  }
+
+  if (!conversation.participants.includes(req.user.email)) {
+    res.status(403);
+    throw new Error('Not authorized to view this conversation');
+  }
+
+  res.json(conversation);
+});
+
 module.exports = {
   getUserConversations,
+  getConversationById,
   createConversation,
   getConversationMessages,
   sendMessage,
