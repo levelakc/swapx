@@ -30,6 +30,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const queryClient = useQueryClient();
   const [messageContent, setMessageContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [activeTab, setActiveTab] = useState('chat'); // 'details' or 'chat' for mobile
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const socket = useRef(null);
@@ -177,8 +178,6 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         </div>
     );
   };
-
-  const [activeTab, setActiveTab] = useState('chat'); // 'details' or 'chat' for mobile
 
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 

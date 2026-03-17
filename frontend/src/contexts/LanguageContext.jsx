@@ -298,12 +298,10 @@ const translations = {
     owner: 'Owner',
     website: 'Website',
     instagram: 'Instagram',
-    facebook: 'Facebook',
     googleReviews: 'Google Reviews',
   },
   he: {
     google: "Google",
-    facebook: "Facebook",
     brand: "Ahlafot",
     tagline: "שדרג את העולם שלך. החלפות.",
     heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
