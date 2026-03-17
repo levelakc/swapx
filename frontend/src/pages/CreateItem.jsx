@@ -104,8 +104,7 @@ export default function CreateItem() {
   };
 
   const conditionOptions = ['new', 'like_new', 'excellent', 'good', 'fair'];
-  const cashOptions = ['willing_to_add', 'willing_to_receive', 'both', 'trade_only'];
-  const currencySymbol = currency === 'ILS' ? '₪' : '$';
+  const cashOptions = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];  const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   return (
     <motion.div 
@@ -426,7 +425,7 @@ export default function CreateItem() {
                         <Controller
                         name="cash_flexibility"
                         control={control}
-                        defaultValue="trade_only"
+                        defaultValue="prefer_exchange"
                         render={({ field }) => (
                             <select {...field} className="w-full bg-secondary/50 border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4">
                                 {cashOptions.map(opt => <option key={opt} value={opt}>{t(opt)}</option>)}

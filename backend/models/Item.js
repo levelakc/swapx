@@ -60,8 +60,8 @@ const itemSchema = mongoose.Schema(
     ],
     cash_flexibility: {
       type: String,
-      enum: ['willing_to_add', 'willing_to_receive', 'both', 'trade_only'],
-      default: 'trade_only',
+      enum: ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'],
+      default: 'prefer_exchange',
     },
     status: {
       type: String,

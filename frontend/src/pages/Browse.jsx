@@ -27,29 +27,65 @@ export default function Browse({ listingType = 'item' }) {
     cashOptions: searchParams.get('cashOptions') ? searchParams.get('cashOptions').split(',') : [],
     location: searchParams.get('location') || ''
   });
-  const [viewMode, setViewMode] = useState('grid');
 
-  // Sync filters to URL
+  // Sync state FROM URL when searchParams change (e.g., navigation)
+  useEffect(() => {
+    const currentKeyword = searchParams.get('keyword') || '';
+    if (currentKeyword !== keyword) setKeyword(currentKeyword);
+
+    const newFilters = {
+        priceRange: [
+            Number(searchParams.get('minPrice')) || 0,
+            Number(searchParams.get('maxPrice')) || 1000000
+        ],
+        conditions: searchParams.get('conditions') ? searchParams.get('conditions').split(',') : [],
+        cashOptions: searchParams.get('cashOptions') ? searchParams.get('cashOptions').split(',') : [],
+        location: searchParams.get('location') || ''
+    };
+
+    // Deep compare to avoid unnecessary state updates
+    if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
+        setFilters(newFilters);
+    }
+  }, [searchParams]);
+
+  // Sync filters to URL when filters state change
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
     
-    if (filters.priceRange[0] > 0) newParams.set('minPrice', filters.priceRange[0]);
-    else newParams.delete('minPrice');
-    
-    if (filters.priceRange[1] < 1000000) newParams.set('maxPrice', filters.priceRange[1]);
-    else newParams.delete('maxPrice');
-    
-    if (filters.conditions.length > 0) newParams.set('conditions', filters.conditions.join(','));
-    else newParams.delete('conditions');
-    
-    if (filters.cashOptions.length > 0) newParams.set('cashOptions', filters.cashOptions.join(','));
-    else newParams.delete('cashOptions');
-    
-    if (filters.location) newParams.set('location', filters.location);
-    else newParams.delete('location');
+    // Check if we actually need to update to avoid infinite loops
+    let changed = false;
 
-    setSearchParams(newParams, { replace: true });
-  }, [filters]);
+    const setParam = (key, val, defaultVal = null) => {
+        const current = newParams.get(key);
+        if (val && val !== defaultVal) {
+            if (current !== String(val)) {
+                newParams.set(key, val);
+                changed = true;
+            }
+        } else if (current !== null) {
+            newParams.delete(key);
+            changed = true;
+        }
+    };
+
+    setParam('minPrice', filters.priceRange[0], 0);
+    setParam('maxPrice', filters.priceRange[1], 1000000);
+    
+    const condStr = filters.conditions.join(',');
+    setParam('conditions', condStr, '');
+    
+    const cashStr = filters.cashOptions.join(',');
+    setParam('cashOptions', cashStr, '');
+    
+    setParam('location', filters.location, '');
+
+    if (changed) {
+        setSearchParams(newParams, { replace: true });
+    }
+  }, [filters, searchParams, setSearchParams]);
+
+  const [viewMode, setViewMode] = useState('grid');
 
   const queryFilters = {
     status: 'active',

@@ -17,7 +17,7 @@ export default function FilterSidebar({ filters, onFilterChange, isOpen, onClose
   };
 
   const conditionOptions = ['new', 'like_new', 'excellent', 'good', 'fair'];
-  const cashOptions = ['willing_to_add', 'willing_to_receive', 'both', 'trade_only'];
+  const cashOptions = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];
 
   return (
     <>

@@ -270,7 +270,7 @@ const CATEGORY_IMAGES = {
 
 async function generateRandomItem(category, user, itemIndex, allCategories) {
   const conditions = ['new', 'like_new', 'excellent', 'good', 'fair'];
-  const cashFlexibilities = ['willing_to_add', 'willing_to_receive', 'both', 'trade_only'];
+  const cashFlexibilities = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];
   
   const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
@@ -411,7 +411,7 @@ const seedData = async () => {
         { name: 'bicycles', parent: 'vehicles', label_en: 'Bicycles', icon: 'bicycle', label_he: 'אופניים' },
 
         // Crypto
-        { name: 'bitcoin', parent: 'crypto_main', label_en: 'Main Coins', icon: 'bitcoin', label_he: 'מטבעות ראשיים' },
+        { name: 'bitcoin', parent: 'crypto_main', label_en: 'Bitcoin', icon: 'bitcoin', label_he: 'ביטקוין' },
         { name: 'alt', parent: 'crypto_main', label_en: 'Alt Coins', icon: 'coins', label_he: 'מטבעות אלטרנטיביים' },
         { name: 'meme', parent: 'crypto_main', label_en: 'Meme Coins', icon: 'zap', label_he: 'מטבעות מים' },
         // Fashion
