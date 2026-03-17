@@ -8,8 +8,23 @@ import { useState, useEffect } from 'react';
 import CurrencySwitcher from '../CurrencySwitcher';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoFull from '../../imgs/2.jpg';
-import logoIcon from '../../imgs/1.jpg';
+
+const Logo = () => (
+  <div className="flex items-center gap-2 group">
+    <div className="relative flex items-center justify-center w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-primary via-purple-500 to-secondary rounded-xl shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+      <ArrowRightLeft className="text-white w-6 h-6 md:w-7 md:h-7 transition-transform duration-500 group-hover:rotate-180" />
+      <div className="absolute -inset-1 bg-gradient-to-br from-primary via-purple-500 to-secondary opacity-20 blur-sm rounded-xl group-hover:opacity-40 transition-opacity" />
+    </div>
+    <div className="flex flex-col leading-none">
+      <span className="text-xl md:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300">
+        AHLAFOT
+      </span>
+      <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase opacity-80">
+        SWAPX
+      </span>
+    </div>
+  </div>
+);
 
 export default function NavBar() {
   const { t, setLanguage, language } = useLanguage();
@@ -66,13 +81,9 @@ export default function NavBar() {
         <div className="flex items-center justify-between">
           
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center gap-2">
-            <Link to="/" className="flex items-center gap-2 group transition-all duration-300">
-              <img 
-                src={logoFull} 
-                alt="Ahlafot Logo" 
-                className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
-              />
+          <div className="flex-shrink-0">
+            <Link to="/" className="block">
+              <Logo />
               <span className="sr-only">{t('brand')}</span>
             </Link>
           </div>
