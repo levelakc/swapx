@@ -180,13 +180,14 @@ export default function ItemDetail() {
           {/* User Info Placeholder/Preview */}
           <div className="bg-card rounded-3xl shadow-xl p-6 border border-white/10 flex items-center gap-4">
              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-black">
-                {item.user?.name?.[0] || 'U'}
+                {(item.seller_full_name?.[0] || item.user?.name?.[0] || 'U')}
              </div>
              <div>
                 <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">{t('owner', 'Owner')}</p>
-                <h3 className="text-xl font-black text-foreground">{item.user?.name || 'User'}</h3>
+                <h3 className="text-xl font-black text-foreground">{item.seller_full_name || item.user?.name || 'User'}</h3>
              </div>
           </div>
+
         </div>
       </div>
 
@@ -202,7 +203,7 @@ export default function ItemDetail() {
                 </div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {similarItems.map(similarItem => (
                     <ItemCard key={similarItem._id} item={similarItem} />
                 ))}

@@ -556,7 +556,7 @@ const seedData = async () => {
       if (category.name === 'services') {
           // Loop EXACTLY the amount of unique images we have for services
           for (let i = 0; i < categoryAssets.length; i++) {
-            const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
+            const randomUserIndex = Math.floor(Math.random() * (createdUsers.length - 1)) + 1;
             const owner = createdUsers[randomUserIndex];
             const asset = categoryAssets[i];
             
@@ -580,10 +580,10 @@ const seedData = async () => {
 
       // Loop EXACTLY the amount of unique images we have for regular items
       for (let i = 0; i < categoryAssets.length; i++) {
-        const randomUserIndex = Math.floor(Math.random() * createdUsers.length);
+        const randomUserIndex = Math.floor(Math.random() * (createdUsers.length - 1)) + 1;
         const owner = createdUsers[randomUserIndex];
-        
         const newItem = await generateRandomItem(category, owner, i, createdCategories);
+
         allItems.push(newItem);
       }
     }
