@@ -103,10 +103,10 @@ export default function ServiceDetail() {
             
             {/* Social Links */}
             <div className="mt-8 flex flex-wrap gap-4">
-                {service.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-primary hover:bg-secondary transition-all font-bold text-sm"><Globe size={18}/> Website</a>}
-                {service.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-pink-500 hover:bg-secondary transition-all font-bold text-sm"><Instagram size={18}/> Instagram</a>}
-                {service.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-blue-600 hover:bg-secondary transition-all font-bold text-sm"><Facebook size={18}/> Facebook</a>}
-                {service.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-green-600 hover:bg-secondary transition-all font-bold text-sm"><Map size={18}/> Google Reviews</a>}
+                {service.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-primary hover:bg-secondary transition-all font-bold text-sm"><Globe size={18}/> {t('website', 'Website')}</a>}
+                {service.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-pink-500 hover:bg-secondary transition-all font-bold text-sm"><Instagram size={18}/> {t('instagram', 'Instagram')}</a>}
+                {service.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-blue-600 hover:bg-secondary transition-all font-bold text-sm"><Facebook size={18}/> {t('facebook', 'Facebook')}</a>}
+                {service.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-green-600 hover:bg-secondary transition-all font-bold text-sm"><Map size={18}/> {t('googleReviews', 'Google Reviews')}</a>}
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export default function ServiceDetail() {
           <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10">
             <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
                 <Star size={24} className="text-yellow-400 fill-current"/> 
-                Reviews ({reviews.length})
+                {t('reviews', 'Reviews')} ({reviews.length})
             </h2>
             
             <div className="space-y-6">
@@ -122,10 +122,10 @@ export default function ServiceDetail() {
                     <div key={review._id} className="bg-secondary/20 p-6 rounded-2xl border border-white/5">
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                                <img src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} className="w-10 h-10 rounded-full border-2 border-primary/20"/>
+                                <img src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} className="w-10 h-10 rounded-full border-2 border-primary/20" alt={review.reviewer.full_name}/>
                                 <div>
                                     <span className="font-bold block">{review.reviewer.full_name}</span>
-                                    <span className="text-[10px] text-muted-foreground uppercase font-black">Verified Client</span>
+                                    <span className="text-[10px] text-muted-foreground uppercase font-black">{t('verifiedClient', 'Verified Client')}</span>
                                 </div>
                             </div>
                             <div className="flex text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-lg">
@@ -135,12 +135,12 @@ export default function ServiceDetail() {
                         <p className="text-muted-foreground text-sm leading-relaxed italic">"{review.comment}"</p>
                     </div>
                 ))}
-                {reviews.length === 0 && <p className="text-muted-foreground italic">No reviews yet. Be the first to share your experience!</p>}
+                {reviews.length === 0 && <p className="text-muted-foreground italic">{t('noReviewsYet', 'No reviews yet. Be the first to share your experience!')}</p>}
             </div>
 
             {user && (
                 <form onSubmit={handleAddReview} className="mt-10 pt-8 border-t border-white/5">
-                    <h3 className="text-lg font-black mb-4">Write a Review</h3>
+                    <h3 className="text-lg font-black mb-4">{t('writeAReview', 'Write a Review')}</h3>
                     <div className="flex gap-2 mb-6">
                         {[1, 2, 3, 4, 5].map(star => (
                             <button type="button" key={star} onClick={() => setRating(star)} className={`transition-all hover:scale-110 ${rating >= star ? 'text-yellow-400' : 'text-muted-foreground/30'}`}>
@@ -152,7 +152,7 @@ export default function ServiceDetail() {
                         <textarea 
                             value={comment} 
                             onChange={e => setComment(e.target.value)} 
-                            placeholder="Share your experience..." 
+                            placeholder={t('shareExperience', 'Share your experience...')} 
                             className="w-full bg-secondary/30 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary border-transparent text-foreground"
                             required
                         />
@@ -201,7 +201,7 @@ export default function ServiceDetail() {
                     <div className="p-3 bg-secondary/50 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-content transition-all"><Clock size={20}/></div>
                     <div>
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-0.5">{t('availability')}</p>
-                        <p className="font-bold text-foreground">{service.availability || 'Flexible'}</p>
+                        <p className="font-bold text-foreground">{service.availability || t('flexible')}</p>
                     </div>
                 </div>
             </div>

@@ -198,7 +198,7 @@ export default function ItemDetail() {
                     <h2 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                         {t('similarItems', 'Similar Items')}
                     </h2>
-                    <p className="text-muted-foreground">{t('moreInThisCategory', 'More from this category')}</p>
+                    <p className="text-muted-foreground">{t('moreInThisCategory', 'More in this category')}</p>
                 </div>
             </div>
             

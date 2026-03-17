@@ -564,7 +564,7 @@ const seedData = async () => {
 
             allServices.push({
                 title: asset.title_he || asset.title,
-                description: `Professional ${asset.title} with high quality and reliability. Looking for interesting trade offers for my services.`,
+                description: `שירות ${asset.title_he || asset.title} מקצועי באיכות גבוהה ואמינות ללא פשרות. מחפש הצעות החלפה מעניינות עבור השירותים שלי.`,
                 category: 'Professional Services',
                 hourly_rate: hourly_rate,
                 availability: '09:00 - 17:00',

@@ -268,6 +268,19 @@ const translations = {
     doNotShowAgain: "Do not show again",
     back: "Back",
     scheduleDate: "Schedule Date",
+    availability: 'Availability',
+    reviews: 'Reviews',
+    verifiedClient: 'Verified Client',
+    noReviewsYet: 'No reviews yet. Be the first to share your experience!',
+    writeAReview: 'Write a Review',
+    shareExperience: 'Share your experience...',
+    similarItems: 'Similar Items',
+    moreInThisCategory: 'More in this category',
+    owner: 'Owner',
+    website: 'Website',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    googleReviews: 'Google Reviews',
   },
   he: {
     brand: "SwapX",
@@ -532,12 +545,25 @@ const translations = {
     openToOtherOffersDesc: "סמן אם אתה מוכן לשמוע הצעות שאינן מהקטגוריות שבחרת.",
     timeToUpgrade: "הגיע הזמן להתחדש!",
     doNotShowAgain: "אל תראה שוב",
-    back: "חזור",
+    back: 'חזור',
     scheduleDate: "תיאום תאריך",
-  },
-};
+    availability: 'זמינות',
+    reviews: 'ביקורות',
+    verifiedClient: 'לקוח מאומת',
+    noReviewsYet: 'אין ביקורות עדיין. היו הראשונים לשתף את החוויה שלכם!',
+    writeAReview: 'כתיבת ביקורת',
+    shareExperience: 'שתף את החוויה שלך...',
+    similarItems: 'פריטים דומים',
+    moreInThisCategory: 'עוד בקטגוריה זו',
+    owner: 'בעלים',
+    website: 'אתר אינטרנט',
+    instagram: 'אינסטגרם',
+    facebook: 'פייסבוק',
+    googleReviews: 'ביקורות גוגל',
+    },
+    };
 
-export function LanguageProvider({ children }) {
+    export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'he');
   const [dir, setDir] = useState('rtl');
 
