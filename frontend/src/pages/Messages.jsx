@@ -13,7 +13,7 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { 
     Loader2, ChevronLeft, Search, Package, 
     ArrowRightLeft, MessageCircle, Check, X, Info, ExternalLink,
-    Clock, ShieldCheck
+    Clock, ShieldCheck, CircleDollarSign, Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -95,7 +95,7 @@ function OfferSummaryCard({ tradeId, onOpen }) {
                             )}
                             {offeredItems.length === 0 && trade.cash_offered > 0 && (
                                 <div className="w-14 h-14 rounded-2xl border-4 border-card bg-green-500/10 flex items-center justify-center text-green-500">
-                                    <DollarSign size={20} />
+                                    <CircleDollarSign size={20} />
                                 </div>
                             )}
                         </div>

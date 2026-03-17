@@ -33,7 +33,6 @@ const translations = {
     browseItems: 'Browse Items',
     browseServices: 'Browse Services',
     searchItems: 'Search items to swap...',
-    searchServices: 'Search services...',
     popularItems: 'Popular Items',
     popularServices: 'Popular Services',
     suggestedForYou: 'Suggested For You',
@@ -76,7 +75,6 @@ const translations = {
     theirItem: 'Their Item',
     addCash: 'Add Cash',
     requestCash: 'Request Cash',
-    sendOffer: 'Send Offer',
     viewOffer: 'View Offer',
     tradeOfferDetails: 'Trade Offer Details',
     offered: 'Offered',
@@ -225,7 +223,6 @@ const translations = {
     noItemsToList: "You have no items listed yet.",
     cashAdjustment: "Cash Adjustment",
     iWillAddCash: "I will add cash",
-    iRequestCash: "I request cash",
     sendOffer: "Send Offer",
     offerSent: "Offer sent successfully!",
     startConversation: "Start the conversation!",
@@ -362,7 +359,6 @@ const translations = {
     theirItem: 'הפריט שלהם',
     addCash: 'הוסף כסף',
     requestCash: 'בקש כסף',
-    sendOffer: 'שלח הצעה',
     viewOffer: 'צפה בהצעה',
     tradeOfferDetails: 'פרטי הצעת ההחלפה',
     offered: 'הוצע',
@@ -515,7 +511,7 @@ const translations = {
     noItemsToList: "עדיין לא פרסמת פריטים.",
     cashAdjustment: "התאמת כסף",
     iWillAddCash: "אני אוסיף כסף",
-    iRequestCash: "אני מבקש כסף",
+    iRequestCash: "אני מבקש כסף 🤲",
     sendOffer: "שלח הצעה",
     offerSent: "ההצעה נשלחה בהצלחה!",
     startConversation: "התחל את השיחה!",
@@ -530,7 +526,6 @@ const translations = {
     noMessagesFound: "לא נמצאו הודעות",
     yourItems: "הפריטים שלך",
     iAddCash: "אני מוסיף כסף 💸",
-    iRequestCash: "אני מבקש כסף 🤲",
     none: "ללא",
     clear: "נקה",
     offering: "מציע",
@@ -604,14 +599,7 @@ const translations = {
     offers: 'הצעות',
     supportChat: 'תמיכת SwapX',
     askHelp: 'צריך עזרה?',
-    viewOffer: 'צפה בהצעה',
-    offered: 'הוצע',
-    requested: 'נתבקש',
-    status: 'סטטוס',
     accept: 'קבל',
-    decline: 'דחה',
-    cancel: 'בטל',
-    tradeOffer: 'הצעת החלפה',
     counterOffer: 'הצעה נגדית',
     typing: 'מקליד/ה...',
     online: 'מחובר/ת',
@@ -628,9 +616,9 @@ const translations = {
     newOfferReceived: 'התקבלה הצעה חדשה!',
     openToViewAndChat: 'פתח כדי לצפות בפריטים ולדבר',
   },
-    };
+};
 
-    export function LanguageProvider({ children }) {
+export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'he');
   const [dir, setDir] = useState('rtl');
 
