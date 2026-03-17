@@ -313,7 +313,7 @@ const featureItem = asyncHandler(async (req, res) => {
   }
 
   // Check if the logged in user is the owner of the item
-  if (item.created_by !== user.email) {
+  if (item.created_by.toString() !== user._id.toString()) {
     res.status(403);
     throw new Error('Not authorized to feature this item');
   }

@@ -4,7 +4,7 @@ const Item = require('../models/Item');
 const User = require('../models/User');
 
 // Helper function to validate items and ownership
-const validateItems = async (itemIds, ownerEmail) => {
+const validateItems = async (itemIds, ownerId) => {
   if (!itemIds || itemIds.length === 0) return { valid: true, items: [] };
 
   const items = await Item.find({ _id: { $in: itemIds } });
@@ -19,9 +19,9 @@ const validateItems = async (itemIds, ownerEmail) => {
     return { valid: false, message: 'One or more items are not active' };
   }
 
-  // Ensure ownerEmail owns all items
-  if (ownerEmail) {
-    const foreignItems = items.filter(item => item.created_by !== ownerEmail);
+  // Ensure ownerId owns all items
+  if (ownerId) {
+    const foreignItems = items.filter(item => item.created_by.toString() !== ownerId.toString());
     if (foreignItems.length > 0) {
       return { valid: false, message: 'You can only offer your own items' };
     }
@@ -37,22 +37,31 @@ const createTrade = asyncHandler(async (req, res) => {
   const { receiver_email, offered_items, requested_items, cash_offered, cash_requested, message } = req.body;
   const initiator_email = req.user.email;
 
+  console.log('--- Trade Creation Debug ---');
+  console.log('Initiator:', initiator_email, '(_id:', req.user._id, ')');
+  console.log('Receiver:', receiver_email);
+  console.log('Offered Items:', offered_items);
+  console.log('Requested Items:', requested_items);
+
   // Validate receiver
   const receiver = await User.findOne({ email: receiver_email });
   if (!receiver) {
+    console.log('Error: Receiver not found');
     res.status(404);
     throw new Error('Receiver not found');
   }
 
   // Prevent trading with self
   if (initiator_email === receiver_email) {
+    console.log('Error: Cannot initiate a trade with yourself');
     res.status(400);
     throw new Error('Cannot initiate a trade with yourself');
   }
 
   // Validate offered items (must belong to initiator)
-  const offeredValidation = await validateItems(offered_items, req.user.email);
+  const offeredValidation = await validateItems(offered_items, req.user._id);
   if (!offeredValidation.valid) {
+    console.log('Error: Invalid offered items -', offeredValidation.message);
     res.status(400);
     throw new Error(`Invalid offered items: ${offeredValidation.message}`);
   }
@@ -60,13 +69,15 @@ const createTrade = asyncHandler(async (req, res) => {
   // Validate requested items (must belong to receiver and be active)
   const requestedValidation = await validateItems(requested_items, null); // No owner check for requested items
   if (!requestedValidation.valid) {
+    console.log('Error: Invalid requested items -', requestedValidation.message);
     res.status(400);
     throw new Error(`Invalid requested items: ${requestedValidation.message}`);
   }
 
   // Check if requested items are owned by the receiver
-  const foreignRequestedItems = requestedValidation.items.filter(item => item.created_by !== receiver.email);
+  const foreignRequestedItems = requestedValidation.items.filter(item => item.created_by.toString() !== receiver._id.toString());
   if (foreignRequestedItems.length > 0) {
+      console.log('Error: Requested items do not belong to receiver');
       res.status(400);
       throw new Error('One or more requested items do not belong to the receiver');
   }
