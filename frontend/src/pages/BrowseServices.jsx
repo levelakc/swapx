@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
@@ -14,12 +14,31 @@ export default function BrowseServices() {
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({
-    priceRange: [0, 500],
-    location: ''
+    priceRange: [
+        Number(searchParams.get('minPrice')) || 0,
+        Number(searchParams.get('maxPrice')) || 500
+    ],
+    location: searchParams.get('location') || ''
   });
 
+  // Sync filters to URL
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams);
+    
+    if (filters.priceRange[0] > 0) newParams.set('minPrice', filters.priceRange[0]);
+    else newParams.delete('minPrice');
+    
+    if (filters.priceRange[1] < 500) newParams.set('maxPrice', filters.priceRange[1]);
+    else newParams.delete('maxPrice');
+    
+    if (filters.location) newParams.set('location', filters.location);
+    else newParams.delete('location');
+
+    setSearchParams(newParams, { replace: true });
+  }, [filters]);
+
   const queryFilters = {
-    keyword,
+    keyword: searchParams.get('keyword') || '',
     location: filters.location,
     minPrice: filters.priceRange[0],
     maxPrice: filters.priceRange[1],
@@ -32,10 +51,14 @@ export default function BrowseServices() {
 
   const handleSearch = (e) => {
       e.preventDefault();
-      setSearchParams({ keyword });
+      const newParams = new URLSearchParams(searchParams);
       if (keyword) {
-        document.cookie = `last_service_search=${encodeURIComponent(keyword)}; path=/; max-age=604800`; // 7 days
+          newParams.set('keyword', keyword);
+          document.cookie = `last_service_search=${encodeURIComponent(keyword)}; path=/; max-age=604800`;
+      } else {
+          newParams.delete('keyword');
       }
+      setSearchParams(newParams);
   };
 
   const containerVariants = {
@@ -72,13 +95,6 @@ export default function BrowseServices() {
             </div>
 
             <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto items-center">
-                <button 
-                    type="button"
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="lg:hidden p-3 bg-secondary text-secondary-content rounded-lg hover:bg-secondary/90 transition-colors"
-                >
-                    <Filter size={20} />
-                </button>
                 <div className="relative flex-1 md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <input 
@@ -89,7 +105,28 @@ export default function BrowseServices() {
                         className="w-full bg-muted/50 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                     />
                 </div>
+                <button 
+                    type="submit"
+                    className="px-4 py-2 bg-primary text-primary-content rounded-full text-sm font-bold hover:shadow-lg transition-all active:scale-95"
+                >
+                    {t('navSearch', 'Search')}
+                </button>
             </form>
+        </div>
+
+        <div className="flex flex-wrap gap-4 justify-between items-center mb-6 bg-card p-4 rounded-xl shadow-sm border">
+          <div className="flex items-center gap-4">
+             <button 
+                onClick={() => setIsSidebarOpen(true)}
+                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-content rounded-lg font-medium hover:bg-secondary/90 transition-colors"
+             >
+                <Filter size={18} />
+                {t('filters', 'Filters')}
+             </button>
+             <p className="text-sm font-medium text-muted-foreground hidden sm:block">
+                {isLoading ? '...' : services.length} {t('itemsFoundSuffix', 'items found')}
+             </p>
+          </div>
         </div>
 
         {isLoading && <div className="flex justify-center mt-20"><Loader2 className="w-12 h-12 animate-spin text-primary"/></div>}

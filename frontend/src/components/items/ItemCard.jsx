@@ -1,12 +1,28 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
-import { Tag, MapPin, Edit, Trash2 } from 'lucide-react';
+import { Tag, MapPin, Edit, Trash2, Repeat, CircleDollarSign, Sparkles } from 'lucide-react';
 import FuturisticCard from '../futuristicCard/FuturisticCard';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '../../api/api';
 
-export default function ItemCard({ item, showActions = false, onEdit, onDelete }) {
-  const { t } = useLanguage();
+export default function ItemCard({ item, showActions = false, onEdit, onDelete, viewMode = 'grid' }) {
+  const { t, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+  });
+
+  const getCategoryName = (catId) => {
+    const cat = categories.find(c => c._id === catId);
+    if (cat) {
+        return cat[`label_${language}`] || cat.label_en;
+    }
+    return t(catId);
+  };
 
   const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
@@ -21,38 +37,65 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete }
     onDelete(item._id);
   };
 
+  const isList = viewMode === 'list';
+
   return (
-    <Link to={`/item/${item._id}`} className="block">
+    <Link to={`/item/${item._id}`} target="_blank" rel="noopener noreferrer" className="block h-full">
       <FuturisticCard className="h-full">
-        <div className="relative">
-          <img
-            src={item.images?.[0] || `https://placehold.co/400x300/6366f1/white?text=${encodeURIComponent(item.title)}`}
-            alt={t(item.title)}
-            className="w-full h-48 object-cover rounded-t-lg"
-          />
-          <div className="absolute top-2 right-2 bg-background/50 text-foreground px-2 py-1 rounded-full text-sm font-semibold">
-            {currencySymbol}{displayValue.toLocaleString()}
-          </div>
-        </div>
-        <div className="p-4">
-          <h3 className="text-lg font-semibold truncate text-foreground">{t(item.title)}</h3>          <div className="flex items-center text-sm text-muted-foreground mt-2">
-            <Tag className="w-4 h-4 mr-1" />
-            <span className="capitalize">{t(item.condition)}</span>
-          </div>
-          <div className="flex items-center text-sm text-muted-foreground mt-1">
-            <MapPin className="w-4 h-4 mr-1" />
-            <span>{item.location || t('notSpecified', 'Not specified')}</span>
-          </div>
-          {showActions && (
-            <div className="flex justify-end space-x-2 mt-4">
-              <button onClick={handleEdit} className="p-2 rounded-full hover:bg-muted">
-                <Edit className="w-5 h-5 text-blue-400" />
-              </button>
-              <button onClick={handleDelete} className="p-2 rounded-full hover:bg-muted">
-                <Trash2 className="w-5 h-5 text-red-400" />
-              </button>
+        <div className={`flex ${isList ? 'flex-row' : 'flex-col'} h-full`}>
+          <div className={`relative ${isList ? 'w-48 h-48 flex-shrink-0' : 'w-full h-48'}`}>
+            <img
+              src={item.images?.[0] || `https://placehold.co/400x300/6366f1/white?text=${encodeURIComponent(item.title)}`}
+              alt={t(item.title)}
+              className="w-full h-full object-cover rounded-t-lg"
+            />
+            <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm text-foreground px-2 py-1 rounded-full text-xs font-bold border border-white/10 shadow-lg">
+              {currencySymbol}{displayValue.toLocaleString()}
             </div>
-          )}
+            {item.open_to_other_offers && (
+               <div className="absolute bottom-2 left-2 bg-primary/90 text-primary-content px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-lg">
+                  <Sparkles size={10} /> {t('openToOtherOffers')}
+               </div>
+            )}
+          </div>
+          
+          <div className="p-4 flex-1 flex flex-col">
+            <h3 className="text-lg font-bold truncate text-foreground mb-1">{t(item.title)}</h3>
+            
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto">
+              <div className="flex items-center text-[11px] text-muted-foreground">
+                <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate capitalize">{t(item.condition)}</span>
+              </div>
+              <div className="flex items-center text-[11px] text-muted-foreground">
+                <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{item.location || t('notSpecified')}</span>
+              </div>
+              <div className="flex items-center text-[11px] text-blue-400 font-medium">
+                <Repeat className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">
+                  {item.looking_for?.length > 0 
+                    ? item.looking_for.map(id => getCategoryName(id)).join(', ')
+                    : t('Anything')}
+                </span>
+              </div>
+              <div className="flex items-center text-[11px] text-emerald-400 font-medium">
+                <CircleDollarSign className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{t(item.cash_flexibility)}</span>
+              </div>
+            </div>
+
+            {showActions && (
+              <div className="flex justify-end space-x-2 mt-3 pt-3 border-t border-white/5">
+                <button onClick={handleEdit} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                  <Edit className="w-4 h-4 text-blue-400" />
+                </button>
+                <button onClick={handleDelete} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                  <Trash2 className="w-4 h-4 text-red-400" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </FuturisticCard>
     </Link>

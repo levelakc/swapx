@@ -19,12 +19,37 @@ export default function Browse({ listingType = 'item' }) {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({
-    priceRange: [0, 1000000],
-    conditions: [],
-    cashOptions: [],
-    location: ''
+    priceRange: [
+        Number(searchParams.get('minPrice')) || 0,
+        Number(searchParams.get('maxPrice')) || 1000000
+    ],
+    conditions: searchParams.get('conditions') ? searchParams.get('conditions').split(',') : [],
+    cashOptions: searchParams.get('cashOptions') ? searchParams.get('cashOptions').split(',') : [],
+    location: searchParams.get('location') || ''
   });
   const [viewMode, setViewMode] = useState('grid');
+
+  // Sync filters to URL
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams);
+    
+    if (filters.priceRange[0] > 0) newParams.set('minPrice', filters.priceRange[0]);
+    else newParams.delete('minPrice');
+    
+    if (filters.priceRange[1] < 1000000) newParams.set('maxPrice', filters.priceRange[1]);
+    else newParams.delete('maxPrice');
+    
+    if (filters.conditions.length > 0) newParams.set('conditions', filters.conditions.join(','));
+    else newParams.delete('conditions');
+    
+    if (filters.cashOptions.length > 0) newParams.set('cashOptions', filters.cashOptions.join(','));
+    else newParams.delete('cashOptions');
+    
+    if (filters.location) newParams.set('location', filters.location);
+    else newParams.delete('location');
+
+    setSearchParams(newParams, { replace: true });
+  }, [filters]);
 
   const queryFilters = {
     status: 'active',
@@ -33,6 +58,7 @@ export default function Browse({ listingType = 'item' }) {
     minPrice: filters.priceRange[0],
     maxPrice: filters.priceRange[1],
     conditions: filters.conditions.join(','),
+    cashOptions: filters.cashOptions.join(','),
     location: filters.location,
     keyword: searchParams.get('keyword') || '',
     listing_type: listingType,

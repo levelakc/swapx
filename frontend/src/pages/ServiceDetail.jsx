@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getService, getMe, getReviews, addReview } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send } from 'lucide-react';
+import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 export default function ServiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const queryClient = useQueryClient();
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function ServiceDetail() {
 
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', id],
-    queryFn: () => getReviews(id),
+    queryFn: getReviews(id),
     enabled: !!service,
   });
 
@@ -57,16 +57,16 @@ export default function ServiceDetail() {
   }
 
   if (error) {
-    return <div className="text-center text-red-500">Error: {error.message}</div>;
+    return <div className="text-center text-red-500 py-20">Error: {error.message}</div>;
   }
 
   if (!service) {
-    return <div className="text-center">Service not found</div>;
+    return <div className="text-center py-20">Service not found</div>;
   }
 
   const onTradeSubmit = (tradeData) => {
     console.log('Trade Submitted', tradeData);
-    toast.success('Service offer sent successfully!');
+    toast.success('Service request sent successfully!');
     setIsTradeDeckOpen(false);
   }
 
@@ -74,69 +74,93 @@ export default function ServiceDetail() {
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
+    <div className="container mx-auto p-4 max-w-7xl">
+      {/* Navigation & Back Button */}
+      <div className="flex items-center justify-between mb-6">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border hover:bg-muted transition-all text-sm font-bold shadow-sm"
+        >
+          {dir === 'rtl' ? <ArrowRight size={18} /> : <ChevronLeft size={18} />}
+          {t('back', 'Back')}
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Image */}
-          <div className="bg-background rounded-2xl shadow-lg overflow-hidden border border-border">
-            <img src={service.images?.[0] || 'https://via.placeholder.com/800x500'} alt={service.title} className="w-full h-[400px] object-cover" />
+          <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10">
+            <img src={service.images?.[0] || 'https://via.placeholder.com/800x500'} alt={service.title} className="w-full h-auto object-cover max-h-[500px]" />
           </div>
           
           {/* Description */}
-          <div className="bg-background rounded-2xl shadow-lg p-8 border border-border">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Briefcase size={20}/> {t('description')}</h2>
-            <p className="text-muted-foreground whitespace-pre-wrap">{service.description}</p>
+          <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10">
+            <h2 className="text-2xl font-black mb-4 flex items-center gap-2">
+               <span className="w-2 h-8 bg-primary rounded-full inline-block"></span>
+               {t('description', 'Description')}
+            </h2>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{service.description}</p>
             
             {/* Social Links */}
-            <div className="mt-8 flex gap-4">
-                {service.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline"><Globe size={18}/> Website</a>}
-                {service.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-pink-500 hover:underline"><Instagram size={18}/> Instagram</a>}
-                {service.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline"><Facebook size={18}/> Facebook</a>}
-                {service.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-green-600 hover:underline"><Map size={18}/> Google Reviews</a>}
+            <div className="mt-8 flex flex-wrap gap-4">
+                {service.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-primary hover:bg-secondary transition-all font-bold text-sm"><Globe size={18}/> Website</a>}
+                {service.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-pink-500 hover:bg-secondary transition-all font-bold text-sm"><Instagram size={18}/> Instagram</a>}
+                {service.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-blue-600 hover:bg-secondary transition-all font-bold text-sm"><Facebook size={18}/> Facebook</a>}
+                {service.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-green-600 hover:bg-secondary transition-all font-bold text-sm"><Map size={18}/> Google Reviews</a>}
             </div>
           </div>
 
           {/* Reviews Section */}
-          <div className="bg-background rounded-2xl shadow-lg p-8 border border-border">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Star size={20}/> Reviews ({reviews.length})</h2>
+          <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10">
+            <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
+                <Star size={24} className="text-yellow-400 fill-current"/> 
+                Reviews ({reviews.length})
+            </h2>
             
             <div className="space-y-6">
                 {reviews.map(review => (
-                    <div key={review._id} className="border-b border-border pb-4 last:border-0">
-                        <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2">
-                                <img src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} className="w-8 h-8 rounded-full"/>
-                                <span className="font-semibold text-sm">{review.reviewer.full_name}</span>
+                    <div key={review._id} className="bg-secondary/20 p-6 rounded-2xl border border-white/5">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center gap-3">
+                                <img src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} className="w-10 h-10 rounded-full border-2 border-primary/20"/>
+                                <div>
+                                    <span className="font-bold block">{review.reviewer.full_name}</span>
+                                    <span className="text-[10px] text-muted-foreground uppercase font-black">Verified Client</span>
+                                </div>
                             </div>
-                            <div className="flex text-yellow-400">
+                            <div className="flex text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-lg">
                                 {[...Array(5)].map((_, i) => <Star key={i} size={14} fill={i < review.rating ? "currentColor" : "none"} />)}
                             </div>
                         </div>
-                        <p className="mt-2 text-muted-foreground text-sm">{review.comment}</p>
+                        <p className="text-muted-foreground text-sm leading-relaxed italic">"{review.comment}"</p>
                     </div>
                 ))}
-                {reviews.length === 0 && <p className="text-muted-foreground">No reviews yet.</p>}
+                {reviews.length === 0 && <p className="text-muted-foreground italic">No reviews yet. Be the first to share your experience!</p>}
             </div>
 
             {user && (
-                <form onSubmit={handleAddReview} className="mt-8 pt-6 border-t border-border">
-                    <h3 className="font-bold mb-4">Write a Review</h3>
-                    <div className="flex gap-2 mb-4">
+                <form onSubmit={handleAddReview} className="mt-10 pt-8 border-t border-white/5">
+                    <h3 className="text-lg font-black mb-4">Write a Review</h3>
+                    <div className="flex gap-2 mb-6">
                         {[1, 2, 3, 4, 5].map(star => (
-                            <button type="button" key={star} onClick={() => setRating(star)} className={`text-yellow-400 ${rating >= star ? 'fill-current' : 'text-gray-300'}`}>
-                                <Star size={24} fill={rating >= star ? "currentColor" : "none"}/>
+                            <button type="button" key={star} onClick={() => setRating(star)} className={`transition-all hover:scale-110 ${rating >= star ? 'text-yellow-400' : 'text-muted-foreground/30'}`}>
+                                <Star size={32} fill={rating >= star ? "currentColor" : "none"}/>
                             </button>
                         ))}
                     </div>
-                    <div className="flex gap-2">
-                        <input 
+                    <div className="relative">
+                        <textarea 
                             value={comment} 
                             onChange={e => setComment(e.target.value)} 
                             placeholder="Share your experience..." 
-                            className="flex-1 bg-input rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="w-full bg-secondary/30 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary border-transparent text-foreground"
                             required
                         />
-                        <button type="submit" disabled={reviewMutation.isLoading} className="bg-primary text-primary-content p-2 rounded-lg">
+                        <button 
+                            type="submit" 
+                            disabled={reviewMutation.isLoading} 
+                            className="absolute bottom-4 right-4 bg-primary text-primary-content p-3 rounded-xl hover:shadow-lg transition-all active:scale-95 disabled:opacity-50"
+                        >
                             {reviewMutation.isLoading ? <Loader2 className="animate-spin"/> : <Send size={20}/>}
                         </button>
                     </div>
@@ -147,34 +171,37 @@ export default function ServiceDetail() {
 
         <div className="space-y-6">
           {/* Info Card */}
-          <div className="bg-background rounded-2xl shadow-lg p-6 border border-border sticky top-24">
-            <div className="flex items-start justify-between mb-4">
+          <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10 sticky top-24">
+            <div className="flex items-start justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">{service.title}</h1>
-                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
-                        <User size={16} />
+                    <h1 className="text-3xl font-black text-foreground mb-2">{service.title}</h1>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
+                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary">
+                            <User size={14} />
+                        </div>
                         <span>{service.provider_name}</span>
                     </div>
                 </div>
-                <div className="text-right">
-                    <p className="text-3xl font-black text-primary">{currencySymbol}{displayRate.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">{t('perHour')}</p>
-                </div>
             </div>
 
-            <div className="space-y-4 py-6 border-t border-b border-border">
-                <div className="flex items-center gap-3 text-sm">
-                    <div className="p-2 bg-primary/10 text-primary rounded-lg"><MapPin size={18}/></div>
+            <div className="bg-primary/5 rounded-2xl p-6 mb-8 border border-primary/10">
+                <p className="text-4xl font-black text-primary mb-1">{currencySymbol}{displayRate.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">{t('hourlyRate')}</p>
+            </div>
+
+            <div className="space-y-4 py-6 border-t border-white/5">
+                <div className="flex items-center gap-4 group">
+                    <div className="p-3 bg-secondary/50 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-content transition-all"><MapPin size={20}/></div>
                     <div>
-                        <p className="font-medium">{t('location')}</p>
-                        <p className="text-muted-foreground">{service.location}</p>
+                        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-0.5">{t('location')}</p>
+                        <p className="font-bold text-foreground">{service.location}</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-3 text-sm">
-                    <div className="p-2 bg-primary/10 text-primary rounded-lg"><Clock size={18}/></div>
+                <div className="flex items-center gap-4 group">
+                    <div className="p-3 bg-secondary/50 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-content transition-all"><Clock size={20}/></div>
                     <div>
-                        <p className="font-medium">{t('availability')}</p>
-                        <p className="text-muted-foreground">{service.availability || 'Flexible'}</p>
+                        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-0.5">{t('availability')}</p>
+                        <p className="font-bold text-foreground">{service.availability || 'Flexible'}</p>
                     </div>
                 </div>
             </div>
@@ -188,27 +215,22 @@ export default function ServiceDetail() {
                 }
                 setIsTradeDeckOpen(true);
               }}
-              className="mt-6 w-full bg-gradient-to-r from-primary to-purple-600 text-white font-bold py-4 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all flex items-center justify-center gap-2"
+              className="mt-8 w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 text-lg active:scale-95"
             >
-              <DollarSign size={20} />
-              {t('makeOffer', 'Make Offer')}
+              <Calendar size={22} />
+              {t('scheduleDate')}
             </button>
           </div>
         </div>
       </div>
       
-      {/* 
-         TODO: TradeDeck needs update to handle Service object. 
-         Currently it expects item.estimated_value. Service has hourly_rate.
-         I will pass a normalized object to TradeDeck or update TradeDeck.
-      */}
       <TradeDeck 
         isOpen={isTradeDeckOpen} 
         onClose={() => setIsTradeDeckOpen(false)} 
         targetItem={{
             ...service,
-            estimated_value: service.hourly_rate, // Map for compatibility
-            is_service: true // Flag for TradeDeck
+            estimated_value: service.hourly_rate,
+            is_service: true
         }} 
         onSubmit={onTradeSubmit} 
       />

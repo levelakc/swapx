@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { getMe, getMyItems, createTrade } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
-import { Loader2, Info, Plus, DollarSign, Send, Package, MessageSquare } from 'lucide-react';
+import { Loader2, Info, Plus, DollarSign, Send, Package, MessageSquare, Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import FuturisticTradeDeck from './FuturisticTradeDeck';
@@ -46,8 +46,11 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     const [cashMode, setCashMode] = useState('none'); // 'none', 'add', 'request'
     const [cashAmount, setCashAmount] = useState(0);
     const [message, setMessage] = useState('');
+    const [preferredDate, setPreferredDate] = useState('');
     const [showNewOfferForm, setShowNewOfferForm] = useState(false);
     const [newOffer, setNewOffer] = useState({ title: '', description: '', estimated_value: '', image: null });
+
+    const isService = targetItem?.listing_type === 'service' || targetItem?.is_service;
 
     const { data: user, isLoading: isLoadingUser } = useQuery({
         queryKey: ['user', 'me'],
@@ -65,7 +68,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     const tradeMutation = useMutation({
         mutationFn: (tradeData) => createTrade(tradeData),
         onSuccess: (data) => {
-            toast.success(t('tradeOfferSentSuccessfully'));
+            toast.success(isService ? t('serviceRequestSentSuccessfully', 'Service request sent successfully!') : t('tradeOfferSentSuccessfully'));
             onSubmit();
             onClose();
             navigate(`/messages/${data.conversationId}`);
@@ -87,11 +90,11 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
         let currentCashRequested = cashMode === 'request' ? cashAmount : 0;
         let currentNewOffer = (showNewOfferForm && newOffer.title) ? newOffer : null;
         
-        let tradeType = 'item_only'; // Simplification for basic types, backend can refine
+        let tradeType = isService ? 'service_booking' : 'item_only';
 
         const tradeData = {
             initiator_email: user.email,
-            receiver_email: targetItem.created_by.email,
+            receiver_email: targetItem.user?.email || targetItem.created_by?.email,
             offered_items: currentOfferedItems,
             requested_items: [targetItem._id],
             cash_offered: currentCashOffered,
@@ -99,7 +102,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
             status: 'pending',
             messages: [{
                 sender: user.email,
-                content: message,
+                content: isService && preferredDate ? `[Requested Date: ${preferredDate}] ${message}` : message,
                 type: 'text'
             }],
             new_offer: currentNewOffer,
@@ -118,17 +121,34 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                 {/* Header */}
                 <div className="p-4 border-b flex items-center justify-between bg-muted/20">
                     <div>
-                        <h2 className="text-xl font-bold flex items-center gap-2">🤝 {t('makeOffer', 'Make an Offer')}</h2>
-                        <p className="text-xs text-muted-foreground mt-0.5">Trading for: <span className="font-medium text-foreground">{t(targetItem.title)}</span></p>
+                        <h2 className="text-xl font-bold flex items-center gap-2">
+                            {isService ? <><Calendar size={20} className="text-primary"/> {t('scheduleDate')}</> : <>🤝 {t('makeOffer')}</>}
+                        </h2>
+                        <p className="text-xs text-muted-foreground mt-0.5">{isService ? t('bookingFor', 'Booking for') : t('tradingFor')}: <span className="font-medium text-foreground">{t(targetItem.title)}</span></p>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 text-foreground">
                     
+                    {/* Date Selection for Services */}
+                    {isService && (
+                        <section className="bg-primary/5 p-4 rounded-2xl border border-primary/10">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
+                                <Calendar size={16} /> {t('preferredDate', 'Preferred Date & Time')}
+                            </h3>
+                            <input 
+                                type="datetime-local" 
+                                value={preferredDate}
+                                onChange={(e) => setPreferredDate(e.target.value)}
+                                className="w-full bg-background border border-primary/20 rounded-xl p-3 text-sm focus:ring-2 ring-primary outline-none"
+                            />
+                        </section>
+                    )}
+
                     {/* Section 1: Select Items */}
                     <section>
                         <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-                            <Package size={16} /> {t('yourItems', 'Your Items')}
+                            <Package size={16} /> {isService ? t('offerItemsInExchange', 'Offer Items in Exchange (Optional)') : t('yourItems')}
                         </h3>
                         
                         {(isLoadingUser || isLoadingMyItems) ? (
@@ -149,7 +169,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                             onClick={() => setShowNewOfferForm(!showNewOfferForm)}
                             className="mt-4 text-xs font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1"
                         >
-                            <Plus size={14} /> {showNewOfferForm ? 'Cancel Custom Item' : 'Or create a custom offer'}
+                            <Plus size={14} /> {showNewOfferForm ? t('cancelCustomItem') : t('orCreateCustomOffer')}
                         </button>
 
                         <AnimatePresence>
@@ -161,9 +181,9 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                     className="overflow-hidden"
                                 >
                                     <div className="mt-3 p-4 bg-muted/30 rounded-xl space-y-3 border">
-                                        <input type="text" placeholder={t('title')} className="w-full bg-background p-2 rounded-lg text-sm border focus:ring-2 ring-purple-500 outline-none" onChange={e => setNewOffer({...newOffer, title: e.target.value})}/>
+                                        <input type="text" placeholder={t('title')} className="w-full bg-background p-2 rounded-lg text-sm border focus:ring-2 ring-purple-500 outline-none text-foreground" onChange={e => setNewOffer({...newOffer, title: e.target.value})}/>
                                         <div className="flex gap-2">
-                                            <input type="number" placeholder={t('estimatedValue')} className="w-1/3 bg-background p-2 rounded-lg text-sm border outline-none" onChange={e => setNewOffer({...newOffer, estimated_value: e.target.value})}/>
+                                            <input type="number" placeholder={t('estimatedValue')} className="w-1/3 bg-background p-2 rounded-lg text-sm border outline-none text-foreground" onChange={e => setNewOffer({...newOffer, estimated_value: e.target.value})}/>
                                             <input type="file" className="flex-1 text-xs pt-1.5" onChange={e => setNewOffer({...newOffer, image: e.target.files[0]})}/>
                                         </div>
                                     </div>
@@ -200,7 +220,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                                 type="number" 
                                                 value={cashAmount} 
                                                 onChange={(e) => setCashAmount(Number(e.target.value))}
-                                                className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors"
+                                                className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors text-foreground"
                                                 placeholder="0"
                                             />
                                         </div>
@@ -230,8 +250,8 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                         <textarea
                             value={message}
                             onChange={e => setMessage(e.target.value)}
-                            placeholder={t('sendMessagePlaceholder', "Hey! I'm interested in your item...")}
-                            className="w-full bg-muted/30 p-3 rounded-xl text-sm border focus:ring-2 ring-purple-500 outline-none resize-none h-24"
+                            placeholder={isService ? t('serviceMessagePlaceholder', "Describe what you need help with...") : t('sendMessagePlaceholder')}
+                            className="w-full bg-muted/30 p-3 rounded-xl text-sm border focus:ring-2 ring-purple-500 outline-none resize-none h-24 text-foreground"
                         />
                     </section>
 
@@ -240,7 +260,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                 {/* Footer / Summary */}
                 <div className="p-4 border-t bg-background">
                     <div className="flex items-center justify-between mb-4 text-xs text-muted-foreground px-1">
-                        <span>Offering: <b className="text-foreground">{selectedItemIds.length} items</b> {showNewOfferForm && '+ 1 custom'}</span>
+                        <span>{isService ? t('totalOffered', 'Offering') : t('offering')}: <b className="text-foreground">{selectedItemIds.length} items</b> {showNewOfferForm && '+ 1 custom'}</span>
                         {cashMode !== 'none' && cashAmount > 0 && (
                             <span className={cashMode === 'add' ? 'text-green-600 font-bold' : 'text-blue-600 font-bold'}>
                                 {cashMode === 'add' ? '+' : '-'}{currencySymbol}{cashAmount.toLocaleString()}
@@ -252,7 +272,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                         disabled={tradeMutation.isLoading}
                         className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {tradeMutation.isLoading ? <Loader2 className="animate-spin" /> : <><Send size={18} /> {t('sendOffer', 'Send Offer')}</>}
+                        {tradeMutation.isLoading ? <Loader2 className="animate-spin" /> : <><Send size={18} /> {isService ? t('sendRequest', 'Send Request') : t('sendOffer')}</>}
                     </button>
                 </div>
             </div>

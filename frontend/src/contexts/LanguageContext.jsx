@@ -65,7 +65,7 @@ const translations = {
     condition: 'Condition',
     location: 'Location',
     lookingFor: 'Looking For',
-    cashFlexibility: 'Cash Flexibility',
+    cashFlexibility: 'Cash Option',
     estimated: 'Estimated',
     makeOffer: 'Make Offer',
     yourOffer: 'Your Offer',
@@ -266,6 +266,8 @@ const translations = {
     openToOtherOffersDesc: "Check this if you are willing to hear offers outside your preferred categories.",
     timeToUpgrade: "Time to upgrade!",
     doNotShowAgain: "Do not show again",
+    back: "Back",
+    scheduleDate: "Schedule Date",
   },
   he: {
     brand: "SwapX",
@@ -319,7 +321,7 @@ const translations = {
     condition: 'מצב',
     location: 'מיקום',
     lookingFor: 'מחפש/ת',
-    cashFlexibility: 'גמישות במזומן',
+    cashFlexibility: 'אפשרות למזומן',
     estimated: 'שווי מוערך',
     makeOffer: 'הצע הצעה',
     yourOffer: 'ההצעה שלך',
@@ -527,6 +529,8 @@ const translations = {
     openToOtherOffersDesc: "סמן אם אתה מוכן לשמוע הצעות שאינן מהקטגוריות שבחרת.",
     timeToUpgrade: "הגיע הזמן להתחדש!",
     doNotShowAgain: "אל תראה שוב",
+    back: "חזור",
+    scheduleDate: "תיאום תאריך",
   },
 };
 
