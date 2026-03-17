@@ -3,7 +3,7 @@ import { getCategories } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Loader2, LayoutGrid, Search, ChevronLeft } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 const Icon = ({ name, className }) => {
   // Convert kebab-case (e.g. "shopping-bag") to PascalCase (e.g. "ShoppingBag") for Lucide
@@ -28,9 +28,18 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
     return { mainCats: main, subCats: sub };
   }, [categories]);
 
+  const lastSelectedCategoryRef = useRef();
+
   // Sync active main category from selectedCategory
   useEffect(() => {
-    if (selectedCategory && selectedCategory !== 'all' && !activeMainCategory) {
+    if (categories.length > 0 && selectedCategory !== lastSelectedCategoryRef.current) {
+        lastSelectedCategoryRef.current = selectedCategory;
+
+        if (selectedCategory === 'all') {
+            setActiveMainCategory(null);
+            return;
+        }
+
         // Check if selectedCategory is a main category that has subcategories
         const isMainWithSubs = mainCats.some(m => m._id === selectedCategory) && 
                                subCats.some(s => s.parent === selectedCategory);
@@ -44,7 +53,7 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
             }
         }
     }
-  }, [selectedCategory, mainCats, subCats, activeMainCategory]);
+  }, [selectedCategory, mainCats, subCats, categories]);
 
   // Handle Search Mode (Flattened list)
   if (searchTerm) {
