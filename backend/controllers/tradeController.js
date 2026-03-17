@@ -228,7 +228,7 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
       if (otherConversation) {
         await Message.create({
           conversation_id: otherConversation._id.toString(),
-          sender_email: 'system@swapx.com',
+          sender_email: 'system@ahlafot.com',
           content: 'This trade was cancelled because one of the items was traded in another offer.',
           type: 'system'
         });

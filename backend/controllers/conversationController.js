@@ -205,8 +205,8 @@ const startSupportChat = asyncHandler(async (req, res) => {
 
   if (!conversation) {
     const welcomeMessage = {
-      en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
-      he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+      en: `Hello ${user.full_name}, welcome to Ahlafot! I'm ${chatbot.name}, your personal assistant.`,
+      he: `שלום ${user.full_name}, ברוך הבא ל-Ahlafot! אני ${chatbot.name}, העוזרת האישית שלך.`,
     };
     const content = welcomeMessage[user.language] || welcomeMessage.en;
 

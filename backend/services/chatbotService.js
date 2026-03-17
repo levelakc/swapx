@@ -6,10 +6,10 @@ const Trade = require('../models/Trade');
 const { getIO } = require('../socket');
 
 const CHATBOTS = {
-  en: { name: 'Sona', email: 'sona_en@swapx.com', greeting: "Hello! I'm Sona, your SwapX assistant. I'm here to help you trade safely and efficiently." },
-  he: { name: 'Rona', email: 'rona_he@swapx.com', greeting: "שלום! אני רונה, העוזרת האישית שלך ב-SwapX. אני כאן כדי לעזור לך לסחור בצורה בטובה ויעילה." },
-  ar: { name: 'Sona', email: 'sona_ar@swapx.com', greeting: "מرحباً! أنا سونا، مساعدتك في SwapX. أنا هنا למסאעדתך פי אלתדאול באמאן וכפאעה." },
-  ru: { name: 'Sona', email: 'sona_ru@swapx.com', greeting: "Привет! Я Сона, ваш помощник в SwapX. Я здесь, чтобы помочь вам торговать безопасно и эффективно." },
+  en: { name: 'Sona', email: 'sona_en@ahlafot.com', greeting: "Hello! I'm Sona, your Ahlafot assistant. I'm here to help you trade safely and efficiently." },
+  he: { name: 'Rona', email: 'rona_he@ahlafot.com', greeting: "שלום! אני רונה, העוזרת האישית שלך ב-Ahlafot. אני כאן כדי לעזור לך לסחור בצורה בטובה ויעילה." },
+  ar: { name: 'Sona', email: 'sona_ar@ahlafot.com', greeting: "מرحباً! أنا سونا، مساعدتك في Ahlafot. أنا هنا למסאעדתך פי אלתדאול באמאן וכפאעה." },
+  ru: { name: 'Sona', email: 'sona_ru@ahlafot.com', greeting: "Привет! Я Сона, ваш помощник в Ahlafot. Я здесь, чтобы помочь вам торговать безопасно и эффективно." },
 };
 
 const CHATBOT_USERS = Object.values(CHATBOTS).map(bot => bot.email);
@@ -49,8 +49,8 @@ const handleIncomingMessage = async (message) => {
   if (text.includes('coin') || text.includes('money') || text.includes('balance') || text.includes('מטבע') || text.includes('כסף') || text.includes('יתרה')) {
       const balance = senderUser.coins || 0;
       responseContent = isHebrew
-          ? `היתרה הנוכחית שלך היא ${balance} מטבעות SwapX. ניתן להשתמש בהם כדי להקפיץ פריטים או כתוספת להצעות טרייד!`
-          : `Your current balance is ${balance} SwapX coins. You can use them to feature your items or add them to trade offers!`;
+          ? `היתרה הנוכחית שלך היא ${balance} מטבעות Ahlafot. ניתן להשתמש בהם כדי להקפיץ פריטים או כתוספת להצעות טרייד!`
+          : `Your current balance is ${balance} Ahlafot coins. You can use them to feature your items or add them to trade offers!`;
       
       responseType = 'buttons';
       responseButtons = isHebrew 

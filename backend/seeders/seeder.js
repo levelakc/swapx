@@ -452,10 +452,10 @@ const seedData = async () => {
     const usersToCreate = [
       {
         full_name: 'Admin User',
-        email: 'admin@swapx.com',
+        email: 'admin@ahlafot.com',
         password: 'password', 
         role: 'admin',
-        bio: 'מנהל המערכת הראשי של SwapX.',
+        bio: 'מנהל המערכת הראשי של Ahlafot.',
         avatar: 'https://i.pravatar.cc/150?u=admin',
         phone: '050-0000000',
         location: 'Tel Aviv, Israel',
@@ -540,8 +540,8 @@ const seedData = async () => {
         const chatbot = getChatbotForLanguage(user.language || 'en');
         if (chatbot) {
             const welcomeMessage = {
-                en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
-                he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+                en: `Hello ${user.full_name}, welcome to Ahlafot! I'm ${chatbot.name}, your personal assistant.`,
+                he: `שלום ${user.full_name}, ברוך הבא ל-Ahlafot! אני ${chatbot.name}, העוזרת האישית שלך.`,
             };
             const msgContent = welcomeMessage[user.language] || welcomeMessage.en;
 

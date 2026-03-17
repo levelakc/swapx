@@ -28,7 +28,7 @@ export default function WelcomeTour() {
 
   const steps = [
     {
-      title: language === 'he' ? 'ברוכים הבאים ל-SwapX!' : 'Welcome to SwapX!',
+      title: language === 'he' ? 'ברוכים הבאים ל-Ahlafot!' : 'Welcome to Ahlafot!',
       description: language === 'he' ? 'הגרסה החדשה והמשופרת כאן! הנה מה שאתם יכולים לעשות:' : 'The new and improved version is here! Here is what you can do:',
       icon: <Rocket className="w-12 h-12 text-primary" />,
       color: 'bg-primary/10',

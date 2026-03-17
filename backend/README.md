@@ -1,6 +1,6 @@
-# SwapX Backend
+# Ahlafot Backend
 
-This is the backend for the SwapX peer-to-peer trading platform.
+This is the backend for the Ahlafot peer-to-peer trading platform.
 
 ## Prerequisites
 

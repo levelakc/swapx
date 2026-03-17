@@ -182,9 +182,9 @@ const createItem = asyncHandler(async (req, res) => {
     cash_flexibility,
     listing_type: listing_type || 'item',
     created_by: req.user._id,
-    seller_full_name: req.user.full_name || 'SwapX User',
+    seller_full_name: req.user.full_name || 'Ahlafot User',
     seller_avatar: req.user.avatar || `https://placehold.co/100x100/6366f1/white?text=${encodeURIComponent(req.user.full_name || 'U')}`,
-    seller_bio: req.user.bio || 'Professional trader on SwapX',
+    seller_bio: req.user.bio || 'Professional trader on Ahlafot',
     seller_location: req.user.location || location || 'Israel',
   });
 

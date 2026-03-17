@@ -5,7 +5,7 @@ const LanguageContext = createContext();
 
 const translations = {
   en: {
-    brand: "SwapX",
+    brand: "Ahlafot",
     tagline: "Connect. Trade. Swap.",
     heroTitle: "The Modern Way to Trade and Swap",
     heroSubtitle: "Join our community to trade items, services, and discover new opportunities every day.",
@@ -43,6 +43,8 @@ const translations = {
     signIn: 'Sign In',
     register: 'Register',
     editProfile: 'Edit Profile',
+    signInToAccount: 'Sign in to your account',
+    orContinueWith: 'Or continue with',
     cars: 'Cars',
     motorcycles: 'Motorcycles',
     boats: 'Boats',
@@ -121,7 +123,7 @@ const translations = {
     navLogin: 'Login',
     navRegister: 'Register',
     howItWorks: {
-      title: 'How SwapX Works',
+      title: 'How Ahlafot Works',
       step1: {
         title: '1. List Your Item',
         description: "Snap some pics, write a catchy description, and set an estimated value for your item. Make it shine!",
@@ -298,8 +300,8 @@ const translations = {
     googleReviews: 'Google Reviews',
   },
   he: {
-    brand: "SwapX",
-    tagline: "שדרג את העולם שלך. סוואפ-אקס.",
+    brand: "Ahlafot",
+    tagline: "שדרג את העולם שלך. החלפות.",
     heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
     explore: "חקור עסקאות",
     listItem: "הוסף פריט",
@@ -327,6 +329,8 @@ const translations = {
     signIn: 'התחבר',
     register: 'הירשם',
     editProfile: 'ערוך פרופיל',
+    signInToAccount: 'התחבר לחשבונך',
+    orContinueWith: 'או המשך באמצעות',
     heroTitle: "מסחר חכם לאנשים חכמים",
     cars: 'מכוניות',
     motorcycles: 'אופנועים',
@@ -407,7 +411,7 @@ const translations = {
     navLogin: 'התחברות',
     navRegister: 'הרשמה',
     howItWorks: {
-      title: 'איך סוואפ-אקס עובד',
+      title: 'איך החלפות עובד',
       step1: {
         title: '1. הציגו את הפריט שלכם',
         description: "צלמו כמה תמונות, כתבו תיאור מושך וקבעו שווי מוערך לפריט שלכם. גרמו לו לבלוט!",
@@ -599,7 +603,7 @@ const translations = {
     startChatPrompt: 'אין עדיין הודעות בהצעה זו',
     searchOffers: 'סינון הצעות...',
     offers: 'הצעות',
-    supportChat: 'תמיכת SwapX',
+    supportChat: 'תמיכת Ahlafot',
     askHelp: 'צריך עזרה?',
     accept: 'קבל',
     counterOffer: 'הצעה נגדית',

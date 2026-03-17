@@ -46,7 +46,7 @@ const port = process.env.PORT || 5000;
 app.use(errorHandler);
 
 server.listen(port, () => {
-  console.log(`SwapX Backend listening on port ${port}`);
+  console.log(`Ahlafot Backend listening on port ${port}`);
 });
 
 module.exports = { io };

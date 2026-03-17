@@ -1,7 +1,7 @@
 {
-  "name": "swapx-backend",
+  "name": "ahlafot-backend",
   "version": "1.0.0",
-  "description": "Backend for SwapX project",
+  "description": "Backend for Ahlafot project",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

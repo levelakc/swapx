@@ -39,10 +39,10 @@ const registerUser = asyncHandler(async (req, res) => {
     // Create a conversation with the chatbot
     const chatbot = getChatbotForLanguage(user.language);
     const welcomeMessage = {
-      en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant. Feel free to ask me anything about the platform.`,
-      he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך. אל תהסס לשאול אותי כל דבר על הפלטפורמה.`,
-      ar: `مرحباً ${user.full_name}، أهلاً بك في SwapX! أنا ${chatbot.name}، مساعدك الشخصي. لا تتردد في أن تسألني أي شيء عن المنصة.`,
-      ru: `Здравствуйте ${user.full_name}, добро пожаловать в SwapX! Я ${chatbot.name}, ваш личный помощник. Не стесняйтесь задавать мне любые вопросы о платформе.`,
+      en: `Hello ${user.full_name}, welcome to Ahlafot! I'm ${chatbot.name}, your personal assistant. Feel free to ask me anything about the platform.`,
+      he: `שלום ${user.full_name}, ברוך הבא ל-Ahlafot! אני ${chatbot.name}, העוזרת האישית שלך. אל תהסס לשאול אותי כל דבר על הפלטפורמה.`,
+      ar: `مرحباً ${user.full_name}، أهلاً بك في Ahlafot! أنا ${chatbot.name}، مساعدك الشخصي. لا تتردد في أن تسألني أي شيء عن المنصة.`,
+      ru: `Здравствуйте ${user.full_name}, добро пожаловать в Ahlafot! Я ${chatbot.name}, ваш личный помощник. Не стесняйтесь задавать мне любые вопросы о платформе.`,
     };
 
     const conversation = await Conversation.create({

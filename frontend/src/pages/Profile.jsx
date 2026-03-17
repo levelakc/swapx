@@ -77,10 +77,10 @@ export default function Profile() {
   if (error) return <p className="text-red-500 text-center mt-8">Please log in to view your profile.</p>
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 overflow-x-hidden">
       {/* Profile Card */}
       <div className="bg-background shadow-lg rounded-lg p-8">
-        <div className="flex flex-col items-center md:flex-row md:items-start md:space-x-8">
+        <div className="flex flex-col items-center md:flex-row md:items-start md:gap-8">
           <div className="relative">
             <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="avatar" className="w-32 h-32 rounded-full ring-4 ring-primary ring-offset-4 ring-offset-background" />
             <button className="absolute bottom-0 right-0 bg-primary text-primary-content p-2 rounded-full">

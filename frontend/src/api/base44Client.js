@@ -5,7 +5,7 @@ const LOCAL_STORAGE_KEY = 'base44_user';
 // --- MOCK DATABASE ---
 let mockDb = {
   users: [
-    { id: '1', email: 'admin@swapx.com', full_name: 'Admin User', role: 'admin', avatar: '/uploads/avatars/default-admin.png' },
+    { id: '1', email: 'admin@ahlafot.com', full_name: 'Admin User', role: 'admin', avatar: '/uploads/avatars/default-admin.png' },
     { id: '2', email: 'adam.c@example.com', full_name: 'Adam Cohen', role: 'user', avatar: '/uploads/avatars/adam-cohen.png' },
     { id: '3', email: 'fatima.as@example.com', full_name: 'Fatima Al-Sayed', role: 'user', avatar: '/uploads/avatars/fatima-alsayed.png' },
     { id: '4', email: 'sergei.i@example.com', full_name: 'Sergei Ivanov', role: 'user', avatar: '/uploads/avatars/sergei-ivanov.png' },

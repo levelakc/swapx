@@ -7,7 +7,7 @@ import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X, Package } f
 import { toast } from 'sonner';
 import AudioRecorder from '../components/common/AudioRecorder';
 import MakeOfferModal from '../components/trade/MakeOfferModal';
-import TradeDetailsModal from '../components/trade/TradeDetailsModal';
+import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MessageScreen() {
@@ -297,11 +297,11 @@ export default function MessageScreen() {
       />
 
       {selectedTradeId && (
-        <TradeDetailsModal
+        <TradeNegotiationModal
           isOpen={isTradeDetailsOpen}
           onClose={() => setIsTradeDetailsOpen(false)}
           tradeId={selectedTradeId}
-          isReceiver={messages.find(m => m.trade_data?.trade_id === selectedTradeId)?.sender_email !== user.email}
+          conversationId={conversationId}
         />
       )}
     </div>

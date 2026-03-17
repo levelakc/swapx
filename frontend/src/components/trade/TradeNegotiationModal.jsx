@@ -178,6 +178,8 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     );
   };
 
+  const [activeTab, setActiveTab] = useState('chat'); // 'details' or 'chat' for mobile
+
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   return (
@@ -188,8 +190,24 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         className="bg-background w-full max-w-6xl h-full md:h-[90vh] rounded-none md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-white/10"
       >
         
+        {/* Mobile Tabs */}
+        <div className="md:hidden flex border-b border-white/10">
+            <button 
+                onClick={() => setActiveTab('details')}
+                className={`flex-1 py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'details' ? 'bg-primary/10 text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
+            >
+                {t('tradeSummary')}
+            </button>
+            <button 
+                onClick={() => setActiveTab('chat')}
+                className={`flex-1 py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'chat' ? 'bg-primary/10 text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
+            >
+                {t('negotiationRoom')}
+            </button>
+        </div>
+
         {/* Left Side: Trade Details (Items) */}
-        <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 flex flex-col bg-card/20 overflow-y-auto">
+        <div className={`w-full md:w-1/3 border-b md:border-b-0 md:border-r border-white/10 flex flex-col bg-card/20 overflow-y-auto ${activeTab !== 'details' && 'hidden md:flex'}`}>
             <div className="p-6 border-b border-white/10 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <ArrowRightLeft className="text-primary w-6 h-6" />
@@ -256,18 +274,31 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
             {/* Actions Footer */}
             <div className="p-6 border-t border-white/10 bg-black/20">
                 {isReceiver && trade?.status === 'pending' && (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-3">
+                        <div className="grid grid-cols-2 gap-3">
+                            <button 
+                                onClick={() => statusMutation.mutate({ id: tradeId, status: 'rejected' })}
+                                className="py-3 px-4 rounded-2xl border-2 border-red-500/50 text-red-500 font-black text-xs uppercase hover:bg-red-500/10 transition-all active:scale-95"
+                            >
+                                {t('decline')}
+                            </button>
+                            <button 
+                                onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
+                                className="py-3 px-4 rounded-2xl bg-green-500 text-white font-black text-xs uppercase shadow-xl shadow-green-500/20 hover:bg-green-600 transition-all active:scale-95"
+                            >
+                                {t('accept')}
+                            </button>
+                        </div>
                         <button 
-                            onClick={() => statusMutation.mutate({ id: tradeId, status: 'rejected' })}
-                            className="py-3 px-4 rounded-2xl border-2 border-red-500/50 text-red-500 font-black text-xs uppercase hover:bg-red-500/10 transition-all active:scale-95"
+                            onClick={() => {
+                                // Close negotiation and open offer modal logic could be here
+                                // For now, we'll just toast that it's coming soon or use a shared state
+                                toast.info("Use the chat to discuss changes, then send a new offer if needed.");
+                            }}
+                            className="w-full py-3 rounded-2xl border-2 border-primary/50 text-primary font-black text-xs uppercase hover:bg-primary/10 transition-all active:scale-95 flex items-center justify-center gap-2"
                         >
-                            {t('decline')}
-                        </button>
-                        <button 
-                            onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
-                            className="py-3 px-4 rounded-2xl bg-green-500 text-white font-black text-xs uppercase shadow-xl shadow-green-500/20 hover:bg-green-600 transition-all active:scale-95"
-                        >
-                            {t('accept')}
+                            <ArrowRightLeft size={14} />
+                            {t('counterOffer')}
                         </button>
                     </div>
                 )}
@@ -283,7 +314,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         </div>
 
         {/* Right Side: Chat Interface (Restored Previous Look) */}
-        <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
+        <div className={`flex-1 flex flex-col bg-background relative overflow-hidden ${activeTab !== 'chat' && 'hidden md:flex'}`}>
             <div className="p-6 border-b border-white/10 flex justify-between items-center bg-card/10">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">

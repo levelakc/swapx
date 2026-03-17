@@ -12,8 +12,8 @@ dotenv.config();
 const initChatbot = async (user) => {
     const chatbot = getChatbotForLanguage(user.language || 'en');
     const welcomeMessage = {
-      en: `Hello ${user.full_name}, welcome to SwapX! I'm ${chatbot.name}, your personal assistant.`,
-      he: `שלום ${user.full_name}, ברוך הבא ל-SwapX! אני ${chatbot.name}, העוזרת האישית שלך.`,
+      en: `Hello ${user.full_name}, welcome to Ahlafot! I'm ${chatbot.name}, your personal assistant.`,
+      he: `שלום ${user.full_name}, ברוך הבא ל-Ahlafot! אני ${chatbot.name}, העוזרת האישית שלך.`,
     };
     const content = welcomeMessage[user.language] || welcomeMessage.en;
 
@@ -73,7 +73,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails ? profile.emails[0].value : `facebook_${profile.id}@swapx.com`;
+        const email = profile.emails ? profile.emails[0].value : `facebook_${profile.id}@ahlafot.com`;
         let user = await User.findOne({ email });
 
         if (user) {
