@@ -134,7 +134,7 @@ export default function WelcomeTour() {
     <AnimatePresence>
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm cursor-pointer"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/10 backdrop-blur-[1px] cursor-pointer"
           onClick={nextStep}
         >
           
@@ -155,14 +155,14 @@ export default function WelcomeTour() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-primary/20 m-4 cursor-default"
+            className="relative bg-white/95 dark:bg-slate-900/95 backdrop-blur-md w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-primary/20 m-4 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-10 md:p-16">
               <div className="flex justify-between items-start mb-8">
                 <div className={`p-6 rounded-3xl ${steps[currentStep].target ? 'bg-primary/10' : 'bg-yellow-100 dark:bg-yellow-900/20'}`}>
                     {steps[currentStep].icon ? 
-                        <div className="scale-150">{steps[currentStep].icon}</div> : 
+                        <div className="scale-[2] text-primary">{steps[currentStep].icon}</div> : 
                         <span className="text-6xl">{steps[currentStep].emoji}</span>
                     }
                 </div>
