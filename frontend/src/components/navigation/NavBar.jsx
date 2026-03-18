@@ -105,10 +105,10 @@ export default function NavBar() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1">
              
-             {/* Browse Icons */}
-             <div className="flex items-center gap-1 sm:gap-2">
+             {/* Browse Icons - Desktop Only */}
+             <div className="hidden sm:flex items-center gap-1 sm:gap-2">
                 <NavLink 
                     id="tour-explore"
                     to="/browse" 
@@ -131,7 +131,7 @@ export default function NavBar() {
                 </NavLink>
              </div>
 
-             {/* Search - Expandable for Desktop, Icon for Mobile */}
+             {/* Search - Icon only for mobile */}
              <div className={`relative transition-all duration-300 ${isSearchOpen ? 'w-full md:w-64 absolute md:relative left-0 right-0 px-4 md:px-0 bg-background md:bg-transparent z-20 flex items-center' : 'w-auto'}`}>
                 {isSearchOpen ? (
                     <>
@@ -173,7 +173,7 @@ export default function NavBar() {
 
             {/* User Profile / Auth */}
             {user ? (
-              <div className="flex items-center gap-1 sm:gap-2">
+              <div className="flex items-center gap-1">
                 {/* Coins Badge */}
                 <Link 
                     id="tour-coins"
@@ -219,7 +219,7 @@ export default function NavBar() {
                     <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                   </Link>
                   
-                  {/* Dropdown (Rest of your existing desktop code...) */}
+                  {/* Dropdown */}
                   <div className="hidden md:block absolute right-0 mt-2 w-56 bg-background rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right border border-border">
                     <div className="px-4 py-2 border-b border-border mb-2">
                         <p className="font-semibold text-sm truncate">{user.full_name}</p>
@@ -245,7 +245,7 @@ export default function NavBar() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-1">
+              <div className="hidden sm:flex items-center gap-1">
                 <Link to="/login" className="px-3 py-2 text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors uppercase">
                   {t('signIn', 'Sign In')}
                 </Link>
@@ -258,7 +258,7 @@ export default function NavBar() {
             {/* Mobile Menu Button */}
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden p-2 text-muted-foreground hover:text-foreground focus:outline-none"
+                className="lg:hidden p-2 text-muted-foreground hover:text-foreground focus:outline-none z-30"
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -275,30 +275,58 @@ export default function NavBar() {
             exit={{ opacity: 0, y: -20 }}
             className="lg:hidden bg-background border-b border-border overflow-hidden shadow-xl"
           >
-            <div className="px-6 py-8 flex justify-center items-center gap-12">
-                <button onClick={handleThemeChange} className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground active:scale-95 transition-all">
-                        {theme === 'dark' ? <Sun size={24}/> : <Moon size={24}/>}
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest">{theme === 'dark' ? t('light') : t('dark')}</span>
-                </button>
-
-                <div className="scale-125">
-                    <LanguageSwitcher />
-                </div>
-
-                <div className="scale-125">
-                    <CurrencySwitcher />
-                </div>
+            <div className="px-6 py-8 flex flex-col items-center gap-8">
                 
-                {user && (
-                    <button onClick={handleLogout} className="flex flex-col items-center gap-2 text-red-500">
-                        <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center active:scale-95 transition-all">
-                            <LogOut size={24}/>
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest">{t('logout')}</span>
-                    </button>
+                {/* Auth for Mobile */}
+                {!user && (
+                    <div className="flex flex-col w-full gap-3 sm:hidden border-b border-border pb-8">
+                        <Link to="/login" onClick={() => setIsOpen(false)} className="w-full py-4 text-center rounded-2xl bg-muted/50 font-black uppercase tracking-widest text-sm">
+                            {t('signIn')}
+                        </Link>
+                        <Link to="/register" onClick={() => setIsOpen(false)} className="w-full py-4 text-center rounded-2xl bg-primary text-white font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20">
+                            {t('register')}
+                        </Link>
+                    </div>
                 )}
+
+                {/* Quick Navigation for Mobile */}
+                <div className="flex items-center justify-center gap-8 sm:hidden w-full border-b border-border pb-8">
+                    <Link to="/browse" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-2">
+                        <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center text-primary"><Compass size={24}/></div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{t('navBrowse')}</span>
+                    </Link>
+                    <Link to="/services" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-2">
+                        <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center text-blue-500"><Briefcase size={24}/></div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{t('navServices')}</span>
+                    </Link>
+                </div>
+
+                {/* Settings Controls */}
+                <div className="flex justify-center items-center gap-10">
+                    <button onClick={handleThemeChange} className="flex flex-col items-center gap-2">
+                        <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground active:scale-95 transition-all">
+                            {theme === 'dark' ? <Sun size={24}/> : <Moon size={24}/>}
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{theme === 'dark' ? t('light') : t('dark')}</span>
+                    </button>
+
+                    <div className="scale-125">
+                        <LanguageSwitcher />
+                    </div>
+
+                    <div className="scale-125">
+                        <CurrencySwitcher />
+                    </div>
+                    
+                    {user && (
+                        <button onClick={handleLogout} className="flex flex-col items-center gap-2 text-red-500">
+                            <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center active:scale-95 transition-all">
+                                <LogOut size={24}/>
+                            </div>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{t('logout')}</span>
+                        </button>
+                    )}
+                </div>
             </div>
           </motion.div>
         )}
