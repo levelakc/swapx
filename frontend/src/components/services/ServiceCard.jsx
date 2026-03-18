@@ -3,6 +3,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { MapPin, Clock, User, Calendar } from 'lucide-react';
 import FuturisticCard from '../futuristicCard/FuturisticCard';
+import ImageWithFallback from '../common/ImageWithFallback';
 
 export default function ServiceCard({ service }) {
   const { t } = useLanguage();
@@ -16,8 +17,8 @@ export default function ServiceCard({ service }) {
       <FuturisticCard className="h-full">
         <div className="flex flex-col h-full">
           <div className="relative w-full h-48">
-            <img
-              src={service.images?.[0] || `https://picsum.photos/seed/${service._id}/400/300`}
+            <ImageWithFallback
+              src={service.images?.[0]}
               alt={service.title}
               className="w-full h-full object-cover rounded-t-lg"
             />
@@ -30,7 +31,7 @@ export default function ServiceCard({ service }) {
             <div className="flex items-center gap-2 mb-2">
                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary overflow-hidden border border-primary/20">
                   {service.provider_avatar ? (
-                    <img src={service.provider_avatar} alt="P" className="w-full h-full object-cover"/>
+                    <ImageWithFallback src={service.provider_avatar} alt="P" className="w-full h-full object-cover"/>
                   ) : (
                     service.provider_name?.[0] || 'P'
                   )}

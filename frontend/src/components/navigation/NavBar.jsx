@@ -11,8 +11,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logoIcon from '../../imgs/1.jpg';
 
 const Logo = () => (
-  <div className="flex items-center gap-3 group cursor-pointer relative">
-    <div className="relative flex items-center justify-center w-16 h-16">
+  <div className="flex items-center gap-2 group cursor-pointer relative">
+    <div className="relative flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16">
       {/* Background Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
@@ -28,14 +28,14 @@ const Logo = () => (
         </text>
       </svg>
       
-      {/* Central Icon - Using the image if it's the infinity one */}
-      <div className="relative z-10 flex items-center justify-center w-12 h-12 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
+      {/* Central Icon */}
+      <div className="relative z-10 flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
         <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
       </div>
     </div>
     
     <div className="flex flex-col leading-none">
-      <span className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 group-hover:scale-105 transition-transform duration-300 uppercase">
+      <span className="text-xl sm:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 group-hover:scale-105 transition-transform duration-300 uppercase">
         Ahlafot
       </span>
     </div>
@@ -43,7 +43,7 @@ const Logo = () => (
 );
 
 export default function NavBar() {
-  const { t, setLanguage, language } = useLanguage();
+  const { t, setLanguage, language, dir } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,7 +60,7 @@ export default function NavBar() {
     queryKey: ['conversations'],
     queryFn: getConversations,
     enabled: !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
+    refetchInterval: 10000,
   });
 
   const totalUnread = conversations.reduce((acc, conv) => {
@@ -93,11 +93,11 @@ export default function NavBar() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
-      <div className="w-full px-2 sm:px-4">
-        <div className="flex items-center justify-between">
+      <div className="w-full px-2 sm:px-6">
+        <div className={`flex items-center justify-between ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
           
-          {/* Logo - Pushed to the edge for mobile */}
-          <div className="flex-shrink-0 scale-[0.6] sm:scale-100 origin-left -ml-2 sm:ml-0">
+          {/* Logo - Pushed to edge */}
+          <div className="flex-shrink-0 origin-left">
             <Link to="/" className="block">
               <Logo />
               <span className="sr-only">{t('brand')}</span>
@@ -105,7 +105,7 @@ export default function NavBar() {
           </div>
 
           {/* Right Section - App Toolbar Look */}
-          <div className="flex items-center gap-0 sm:gap-1">
+          <div className={`flex items-center gap-0.5 sm:gap-1 ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
              
              {/* Main Navigation Icons */}
              <div className="flex items-center">
@@ -114,8 +114,8 @@ export default function NavBar() {
                     to="/browse" 
                     className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
-                    <Compass size={18} className="sm:w-5 sm:h-5" />
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    <Compass size={18} />
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {t('navBrowse', 'Browse')}
                     </span>
                 </NavLink>
@@ -124,8 +124,8 @@ export default function NavBar() {
                     to="/services" 
                     className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
-                    <Briefcase size={18} className="sm:w-5 sm:h-5" />
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    <Briefcase size={18} />
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {t('navServices', 'Services')}
                     </span>
                 </NavLink>
@@ -135,18 +135,18 @@ export default function NavBar() {
                     onClick={() => setIsSearchOpen(true)} 
                     className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
-                    <Search size={18} className="sm:w-5 sm:h-5"/>
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    <Search size={18}/>
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {t('navSearch', 'Search')}
                     </span>
                 </button>
              </div>
 
-             {/* Theme/Lang/Curr - Now always visible */}
+             {/* Theme/Lang/Curr */}
              <div className="flex items-center">
                 <button onClick={handleThemeChange} className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-                    {theme === 'dark' ? <Sun size={18} className="sm:w-5 sm:h-5"/> : <Moon size={18} className="sm:w-5 sm:h-5"/>}
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    {theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {theme === 'dark' ? t('light') : t('dark')}
                     </span>
                 </button>
@@ -165,10 +165,10 @@ export default function NavBar() {
                     className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
                 >
                     <div className="flex items-center gap-1">
-                        <Coins size={16} className="sm:w-[18px] sm:h-[18px]" />
-                        <span className="text-[10px] sm:text-xs font-bold">{user.coins}</span>
+                        <Coins size={16} />
+                        <span className="text-[10px] font-bold">{user.coins}</span>
                     </div>
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
                 </Link>
 
                 {/* Offers Badge */}
@@ -178,15 +178,15 @@ export default function NavBar() {
                     className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
                 >
                     <div className="relative">
-                        <ArrowRightLeft size={18} className="sm:w-5 sm:h-5" />
+                        <ArrowRightLeft size={18} />
                         {totalUnread > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
+                            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
                             </span>
                         )}
                     </div>
-                    <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
                 </Link>
 
                 {/* Profile Avatar */}
@@ -198,17 +198,17 @@ export default function NavBar() {
                   <img 
                       src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
                       alt="Avatar" 
-                      className="h-5 w-5 sm:h-7 sm:w-7 rounded-full object-cover ring-1 ring-border group-hover:ring-primary transition-all cursor-pointer"
+                      className="h-5 w-5 sm:h-7 sm:w-7 rounded-full object-cover ring-1 ring-border"
                   />
-                  <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
+                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                 </Link>
               </div>
             ) : null}
             
-            {/* Burger Menu - Pushed to the very edge */}
+            {/* Burger Menu */}
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none -mr-2 sm:mr-0"
+                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none"
             >
                 {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -241,7 +241,7 @@ export default function NavBar() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu Overlay - Simplified */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div 
