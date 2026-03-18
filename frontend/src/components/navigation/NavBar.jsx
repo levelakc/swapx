@@ -93,11 +93,11 @@ export default function NavBar() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
-      <div className="container mx-auto px-2 sm:px-4">
+      <div className="w-full px-2 sm:px-4">
         <div className="flex items-center justify-between">
           
-          {/* Logo - Smaller on mobile */}
-          <div className="flex-shrink-0 scale-75 sm:scale-100 origin-left">
+          {/* Logo - Pushed to the edge for mobile */}
+          <div className="flex-shrink-0 scale-[0.6] sm:scale-100 origin-left -ml-2 sm:ml-0">
             <Link to="/" className="block">
               <Logo />
               <span className="sr-only">{t('brand')}</span>
@@ -105,14 +105,14 @@ export default function NavBar() {
           </div>
 
           {/* Right Section - App Toolbar Look */}
-          <div className="flex items-center gap-0.5 sm:gap-1">
+          <div className="flex items-center gap-0 sm:gap-1">
              
              {/* Main Navigation Icons */}
              <div className="flex items-center">
                 <NavLink 
                     id="tour-explore"
                     to="/browse" 
-                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                    className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Compass size={18} className="sm:w-5 sm:h-5" />
                     <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -122,7 +122,7 @@ export default function NavBar() {
                 <NavLink 
                     id="tour-services"
                     to="/services" 
-                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                    className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Briefcase size={18} className="sm:w-5 sm:h-5" />
                     <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -133,7 +133,7 @@ export default function NavBar() {
                 {/* Search */}
                 <button 
                     onClick={() => setIsSearchOpen(true)} 
-                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                     <Search size={18} className="sm:w-5 sm:h-5"/>
                     <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -144,7 +144,7 @@ export default function NavBar() {
 
              {/* Theme/Lang/Curr - Now always visible */}
              <div className="flex items-center">
-                <button onClick={handleThemeChange} className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                <button onClick={handleThemeChange} className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
                     {theme === 'dark' ? <Sun size={18} className="sm:w-5 sm:h-5"/> : <Moon size={18} className="sm:w-5 sm:h-5"/>}
                     <span className="hidden sm:block text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {theme === 'dark' ? t('light') : t('dark')}
@@ -162,7 +162,7 @@ export default function NavBar() {
                 <Link 
                     id="tour-coins"
                     to="/coins" 
-                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
+                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
                 >
                     <div className="flex items-center gap-1">
                         <Coins size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -175,7 +175,7 @@ export default function NavBar() {
                 <Link 
                     id="tour-offers"
                     to="/messages" 
-                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
+                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
                 >
                     <div className="relative">
                         <ArrowRightLeft size={18} className="sm:w-5 sm:h-5" />
@@ -193,7 +193,7 @@ export default function NavBar() {
                 <Link 
                   id="tour-profile"
                   to="/profile" 
-                  className="flex flex-col items-center p-1.5 sm:p-2"
+                  className="flex flex-col items-center p-1 sm:p-2"
                 >
                   <img 
                       src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
@@ -205,10 +205,10 @@ export default function NavBar() {
               </div>
             ) : null}
             
-            {/* Burger Menu - Now only for special actions */}
+            {/* Burger Menu - Pushed to the very edge */}
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-1.5 sm:p-2 text-muted-foreground hover:text-foreground focus:outline-none"
+                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none -mr-2 sm:mr-0"
             >
                 {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -281,6 +281,5 @@ export default function NavBar() {
         )}
       </AnimatePresence>
     </header>
-
   );
 }

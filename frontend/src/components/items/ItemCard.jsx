@@ -5,6 +5,7 @@ import { Tag, MapPin, Edit, Trash2, Repeat, CircleDollarSign, Sparkles } from 'l
 import FuturisticCard from '../futuristicCard/FuturisticCard';
 import { useQuery } from '@tanstack/react-query';
 import { getCategories } from '../../api/api';
+import ImageWithFallback from '../common/ImageWithFallback';
 
 export default function ItemCard({ item, showActions = false, onEdit, onDelete, viewMode = 'grid' }) {
   const { t, language } = useLanguage();
@@ -44,8 +45,8 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
       <FuturisticCard className="h-full">
         <div className={`flex ${isList ? 'flex-row' : 'flex-col'} h-full`}>
           <div className={`relative ${isList ? 'w-48 h-48 flex-shrink-0' : 'w-full h-48'}`}>
-            <img
-              src={item.images?.[0] || `https://placehold.co/400x300/6366f1/white?text=${encodeURIComponent(item.title)}`}
+            <ImageWithFallback
+              src={item.images?.[0]}
               alt={t(item.title)}
               className="w-full h-full object-cover rounded-t-lg"
             />
