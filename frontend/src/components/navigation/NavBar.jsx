@@ -186,9 +186,23 @@ export default function NavBar() {
                   <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                 </Link>
               </div>
-            ) : null}
+            ) : (
+              <div className="hidden md:flex items-center gap-1">
+                <Link to="/login" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                  <UserIcon size={18} />
+                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('signIn')}</span>
+                </Link>
+                <Link to="/register" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+                  <InfinityIcon size={18} />
+                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('register')}</span>
+                </Link>
+              </div>
+            )}
             
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className={`p-2 text-muted-foreground hover:text-foreground focus:outline-none ${!user ? 'md:hidden' : ''}`}
+            >
                 {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
@@ -201,9 +215,9 @@ export default function NavBar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 px-4 py-3 bg-background/95 backdrop-blur-md border-b border-border shadow-lg z-40"
+              className="absolute top-full left-0 right-0 px-4 py-2 z-40 flex justify-center pointer-events-none"
             >
-              <div className="max-w-xl mx-auto flex items-center bg-muted/50 rounded-2xl px-4 py-2 border border-border/50">
+              <div className="w-full max-w-md bg-background/80 backdrop-blur-md border border-border/50 shadow-xl rounded-2xl px-4 py-2 flex items-center pointer-events-auto">
                 <Search size={18} className="text-muted-foreground mr-3" />
                 <input 
                   type="text" 
@@ -228,7 +242,7 @@ export default function NavBar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="lg:hidden bg-background border-b border-border overflow-hidden shadow-xl"
+            className={`${!user ? 'md:hidden' : ''} bg-background border-b border-border overflow-hidden shadow-xl`}
           >
             <div className="px-6 py-8 flex flex-col gap-4 max-w-sm mx-auto">
                 {!user ? (
