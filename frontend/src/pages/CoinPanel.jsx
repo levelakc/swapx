@@ -76,7 +76,7 @@ export default function CoinPanel() {
                     {timeLeft ? (
                         <div className="flex items-center gap-2 text-orange-500 font-bold">
                             <Timer size={20} />
-                            <span>Next reward in: {timeLeft}</span>
+                            <span>{t('nextRewardIn', 'Next reward in:')} {timeLeft}</span>
                         </div>
                     ) : (
                         <button 

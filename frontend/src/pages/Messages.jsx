@@ -129,6 +129,67 @@ function OfferSummaryCard({ tradeId, onOpen }) {
     );
 }
 
+function ChatMessage({ msg, me, onOpenNegotiation, t }) {
+    const isMe = msg.sender_email === me?.email;
+    const isSystem = msg.sender_email === 'system@ahlafot.com' || msg.sender_email === 'system';
+
+    if (isSystem) {
+        return (
+            <div className="flex justify-center my-4">
+                <div className="px-4 py-2 bg-muted/50 rounded-full border border-border/50">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{msg.content}</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-4`}
+        >
+            <div className={`max-w-[85%] md:max-w-[70%] p-4 rounded-3xl shadow-sm ${
+                isMe 
+                ? 'bg-primary text-primary-foreground rounded-tr-none' 
+                : 'bg-card text-card-foreground border border-border rounded-tl-none'
+            }`}>
+                {msg.type === 'offer' ? (
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3 border-b border-white/10 pb-3 mb-2">
+                            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                                <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')}</p>
+                                <p className="text-sm font-bold">{msg.content}</p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={onOpenNegotiation}
+                            className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg ${
+                                isMe 
+                                ? 'bg-white/20 hover:bg-white/30 text-white' 
+                                : 'bg-primary text-white hover:opacity-90'
+                            }`}
+                        >
+                            <ExternalLink size={14} />
+                            {t('openNegotiation')}
+                        </button>
+                    </div>
+                ) : msg.type === 'image' ? (
+                    <img src={msg.content} alt="" className="w-full rounded-2xl cursor-pointer hover:opacity-90" onClick={() => window.open(msg.content, '_blank')} />
+                ) : (
+                    <p className="text-sm font-bold leading-relaxed">{msg.content}</p>
+                )}
+                <div className={`text-[9px] mt-2 font-black uppercase opacity-40 flex justify-end`}>
+                    {format(new Date(msg.createdAt), 'p')}
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+
 export default function Messages() {
   const { t, language } = useLanguage();
   const queryClient = useQueryClient();
@@ -137,14 +198,23 @@ export default function Messages() {
   const [showList, setShowList] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isNegotiationOpen, setIsNegotiationOpen] = useState(false);
+  const [message, setMessage] = useState('');
   
   const socket = useRef(null);
+  const messagesEndRef = useRef(null);
 
   const { data: me } = useQuery({ queryKey: ['user', 'me'], queryFn: getMe });
 
   const { data: conversations = [], isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: getConversations,
+  });
+
+  const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
+    queryKey: ['messages', selectedConversationId],
+    queryFn: () => getMessages(selectedConversationId),
+    enabled: !!selectedConversationId,
+    refetchInterval: 5000,
   });
 
   const tradeConversations = useMemo(() => {
@@ -164,26 +234,59 @@ export default function Messages() {
     [conversations, selectedConversationId]
   );
 
-  // Socket setup for online status
+  const sendMessageMutation = useMutation({
+    mutationFn: (msgData) => sendMessage(selectedConversationId, msgData),
+    onSuccess: (newMsg) => {
+        setMessage('');
+        queryClient.setQueryData(['messages', selectedConversationId], (old = []) => [...old, newMsg]);
+        queryClient.invalidateQueries(['conversations']);
+    }
+  });
+
+  // Socket setup
   useEffect(() => {
     const userData = localStorage.getItem('base44_user');
     if (!userData) return;
     const token = JSON.parse(userData)?.token;
     const newSocket = io(SOCKET_URL, { auth: { token } });
     socket.current = newSocket;
+    
     newSocket.on('onlineUsers', (users) => setOnlineUsers(users));
+    
+    newSocket.on('newMessage', (newMsg) => {
+        if (newMsg.conversation_id === selectedConversationId) {
+            queryClient.setQueryData(['messages', selectedConversationId], (old = []) => [...old, newMsg]);
+            queryClient.invalidateQueries(['conversations']);
+        }
+    });
+
     return () => newSocket.disconnect();
-  }, []);
+  }, [selectedConversationId, queryClient]);
+
+  useEffect(() => {
+    if (selectedConversationId && socket.current) {
+        socket.current.emit('joinConversation', { conversationId: selectedConversationId });
+    }
+  }, [selectedConversationId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSelectConversation = (id) => {
       setSelectedConversationId(id);
       setShowList(false);
   };
 
+  const handleSendMessage = () => {
+      if (!message.trim()) return;
+      sendMessageMutation.mutate({ content: message, type: 'text' });
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-6rem)] md:h-[calc(100vh-7rem)] bg-background border-none md:border rounded-none md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300">
       
-      {/* Sidebar */}
+      {/* Sidebar (Existing logic) */}
       <div className={`w-full md:w-80 lg:w-96 border-r flex flex-col bg-card/30 backdrop-blur-xl ${!showList && 'hidden md:flex'}`}>
         <div className="p-6 border-b space-y-4">
             <h2 className="text-2xl font-black flex items-center gap-3 tracking-tighter">
@@ -239,35 +342,79 @@ export default function Messages() {
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content Area (REFACTORED TO CHAT) */}
       <div className={`flex-1 flex flex-col bg-card/5 backdrop-blur-sm ${showList && 'hidden md:flex'}`}>
         {selectedConversationId ? (
-          <div className="flex-1 flex flex-col p-6 md:p-12 items-center justify-center space-y-12">
-            <div className="flex items-center gap-4 md:hidden self-start mb-8">
-                <button onClick={() => setShowList(true)} className="p-3 bg-muted/20 rounded-2xl"><ChevronLeft size={20}/></button>
-                <h3 className="font-black text-lg">{selectedConversation?.participants.find(p => p !== me?.email)}</h3>
+          <>
+            {/* Chat Header */}
+            <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between bg-card/20">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => setShowList(true)} className="p-2.5 bg-muted/20 rounded-xl md:hidden hover:bg-muted/40 transition-all">
+                        <ChevronLeft size={18}/>
+                    </button>
+                    <div className="flex items-center gap-3">
+                        <img src={`https://avatar.vercel.sh/${selectedConversation?.participants.find(p => p !== me?.email)}.svg`} className="w-10 h-10 rounded-xl" alt="" />
+                        <div>
+                            <p className="font-black text-sm uppercase tracking-tight">{selectedConversation?.participants.find(p => p !== me?.email)}</p>
+                            <div className="flex items-center gap-1.5">
+                                <div className={`w-1.5 h-1.5 rounded-full ${onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? 'bg-green-500' : 'bg-muted-foreground/30'}`} />
+                                <span className="text-[9px] font-black uppercase opacity-40">{onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? t('online') : t('offline')}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button 
+                    onClick={() => setIsNegotiationOpen(true)}
+                    className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/10"
+                >
+                    {t('negotiationRoom')}
+                </button>
             </div>
 
-            <div className="w-24 h-24 rounded-[2rem] bg-primary/10 flex items-center justify-center mb-4">
-                <MessageCircle size={40} className="text-primary opacity-40" />
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-none">
+                {isLoadingMessages ? (
+                    <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
+                ) : messages.length > 0 ? (
+                    messages.map((msg, idx) => (
+                        <ChatMessage 
+                            key={msg._id} 
+                            msg={msg} 
+                            me={me} 
+                            t={t} 
+                            onOpenNegotiation={() => setIsNegotiationOpen(true)} 
+                        />
+                    ))
+                ) : (
+                    <div className="h-full flex flex-col items-center justify-center opacity-20 grayscale">
+                        <MessageCircle size={64} />
+                        <p className="font-black text-xl uppercase mt-4">{t('startConversation')}</p>
+                    </div>
+                )}
+                <div ref={messagesEndRef} />
             </div>
 
-            <div className="text-center space-y-4">
-                <h2 className="text-4xl font-black tracking-tighter uppercase">{t('negotiationRoom')}</h2>
-                <p className="text-muted-foreground font-bold max-w-sm mx-auto">{t('selectOfferPrompt')}</p>
+            {/* Chat Input */}
+            <div className="p-6 border-t border-white/5 bg-card/20">
+                <div className="flex items-center gap-3 max-w-4xl mx-auto">
+                    <input 
+                        type="text" 
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        placeholder={t('typeAMessage')}
+                        className="flex-1 bg-muted/40 border-none rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    />
+                    <button 
+                        onClick={handleSendMessage}
+                        disabled={!message.trim() || sendMessageMutation.isLoading}
+                        className="p-4 bg-primary text-white rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                    >
+                        {sendMessageMutation.isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                    </button>
+                </div>
             </div>
-
-            <OfferSummaryCard 
-                tradeId={selectedConversation?.related_trade_id?._id || selectedConversation?.related_trade_id} 
-                onOpen={() => setIsNegotiationOpen(true)}
-            />
-
-            <div className="flex gap-8 opacity-20">
-                <div className="flex flex-col items-center gap-2"><Clock size={24}/><span className="text-[10px] font-black uppercase">{t('pending')}</span></div>
-                <div className="flex flex-col items-center gap-2"><Check size={24}/><span className="text-[10px] font-black uppercase">{t('accept')}</span></div>
-                <div className="flex flex-col items-center gap-2"><X size={24}/><span className="text-[10px] font-black uppercase">{t('decline')}</span></div>
-            </div>
-          </div>
+          </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-12 text-center space-y-8 animate-in fade-in duration-700">
             <div className="w-48 h-48 bg-primary/5 rounded-[4rem] flex items-center justify-center relative">
@@ -282,7 +429,7 @@ export default function Messages() {
         )}
       </div>
 
-      {/* Negotiation Room Popup */}
+      {/* Negotiation Room Popup (Logic remains same) */}
       {selectedConversation && (
           <TradeNegotiationModal 
             isOpen={isNegotiationOpen} 
@@ -294,3 +441,4 @@ export default function Messages() {
     </div>
   );
 }
+
