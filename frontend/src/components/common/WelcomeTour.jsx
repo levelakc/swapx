@@ -1,59 +1,99 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { X, ChevronRight, ChevronLeft, Rocket, Shield, Users, Zap, Search, Repeat, Coins, Sparkles } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, MessageSquare, User, Coins } from 'lucide-react';
+
+const PencilArrow = ({ className, rotation = 0 }) => (
+  <svg 
+    viewBox="0 0 100 100" 
+    className={`w-24 h-24 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-sm ${className}`}
+    style={{ transform: `rotate(${rotation}deg)` }}
+  >
+    <path 
+        d="M20,80 Q40,20 80,40 M80,40 L70,30 M80,40 L65,45" 
+        className="animate-[dash_2s_ease-in-out_infinite]"
+        strokeDasharray="200"
+        strokeDashoffset="200"
+    />
+    <style>{`
+      @keyframes dash {
+        to { stroke-dashoffset: 0; }
+      }
+    `}</style>
+  </svg>
+);
 
 export default function WelcomeTour() {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [doNotShowAgain, setDoNotShowAgain] = useState(false);
 
   useEffect(() => {
-    const hideTour = localStorage.getItem('hideTourV2');
-    
-    // Show tour if user hasn't checked "do not show again"
+    const hideTour = localStorage.getItem('hideTourV3');
     if (!hideTour) {
-      const timer = setTimeout(() => setIsOpen(true), 1500);
+      const timer = setTimeout(() => setIsOpen(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
 
   const closeTour = () => {
-    if (doNotShowAgain) {
-      localStorage.setItem('hideTourV2', 'true');
-    }
+    localStorage.setItem('hideTourV3', 'true');
     setIsOpen(false);
   };
 
   const steps = [
     {
-      title: language === 'he' ? 'ברוכים הבאים ל-Ahlafot!' : 'Welcome to Ahlafot!',
-      description: language === 'he' ? 'הגרסה החדשה והמשופרת כאן! הנה מה שאתם יכולים לעשות:' : 'The new and improved version is here! Here is what you can do:',
-      icon: <Rocket className="w-12 h-12 text-primary" />,
-      color: 'bg-primary/10',
-      gradient: 'from-primary/20 to-purple-500/20'
+      title: language === 'he' ? 'היי! ברוכים הבאים ל-Ahlafot 👋' : 'Hey! Welcome to Ahlafot 👋',
+      description: language === 'he' 
+        ? 'אנחנו כאן כדי לעזור לכם להחליף את מה שיש לכם במה שאתם באמת רוצים. בלי כסף (או עם קצת, אם בא לכם!), רק החלפות פשוטות וכיפיות.' 
+        : "We're here to help you swap what you have for what you actually want. No cash (or just a bit!), just simple and fun trading.",
+      emoji: "✨",
+      position: "center"
     },
     {
-      title: language === 'he' ? 'חיפוש חכם / Smart Search' : 'Smart Search',
-      description: language === 'he' ? 'חפשו פריטים ושירותים בקלות. הוספנו תתי-טקסט בשתי השפות כדי שיהיה לכם קל לנווט!' : 'Search for items and services with ease. We added bilingual labels to help you navigate!',
-      icon: <Search className="w-12 h-12 text-blue-500" />,
-      color: 'bg-blue-500/10',
-      gradient: 'from-blue-500/20 to-cyan-500/20'
+      title: language === 'he' ? 'גלו פריטים חדשים 🔍' : 'Discover New Items 🔍',
+      description: language === 'he'
+        ? 'כפתור ה-Explore למעלה הוא השער שלכם לעולם של פריטים. מכוניות, שעונים, או אפילו קלפים - הכל נמצא שם!'
+        : "The Explore button at the top is your gateway to a world of items. Cars, watches, or even cards - it's all there!",
+      icon: <Compass className="w-8 h-8 text-primary" />,
+      arrowPos: "top-left",
+      target: "explore"
     },
     {
-      title: language === 'he' ? 'החלפות מהירות / Fast Swaps' : 'Fast Swaps',
-      description: language === 'he' ? 'מצאו מישהו שרוצה את מה שיש לכם והציעו טרייד בשניות. אפשר להוסיף כסף כדי לאזן את העסקה!' : 'Find someone who wants what you have and offer a trade in seconds. You can add cash to balance the deal!',
-      icon: <Repeat className="w-12 h-12 text-emerald-500" />,
-      color: 'bg-emerald-500/10',
-      gradient: 'from-emerald-500/20 to-teal-500/20'
+      title: language === 'he' ? 'צריכים עזרה מקצועית? 🛠️' : 'Need Professional Help? 🛠️',
+      description: language === 'he'
+        ? 'תחת כפתור ה-Services תמצאו מומחים שיעזרו לכם - מעיצוב גרפי ועד תיקונים. הכל בשיטת הטרייד!'
+        : "Under the Services button, you'll find experts to help you - from graphic design to repairs. All via trade!",
+      icon: <Briefcase className="w-8 h-8 text-blue-500" />,
+      arrowPos: "top-left",
+      target: "services"
     },
     {
-      title: language === 'he' ? 'העוזרת האישית / AI Assistant' : 'AI Assistant',
-      description: language === 'he' ? 'הצ\'אט בוט שלנו שודרג! הוא יענה לכם על שאלות, ייתן לכם כפתורי פעולה מהירים ויוביל אתכם לתמיכה אם תצטרכו.' : 'Our chatbot is upgraded! It will answer your questions, give you quick action buttons, and lead you to support if needed.',
-      icon: <Zap className="w-12 h-12 text-yellow-500" />,
-      color: 'bg-yellow-500/10',
-      gradient: 'from-yellow-500/20 to-orange-500/20'
+      title: language === 'he' ? 'הצעות ומשא ומתן 🤝' : 'Offers & Negotiation 🤝',
+      description: language === 'he'
+        ? 'כאן קורה הקסם! ב-Offers תוכלו לנהל את כל הטריידים שלכם, לדבר עם אנשים ולסגור עסקאות.'
+        : "This is where the magic happens! In Offers, you can manage all your trades, talk to people, and close deals.",
+      icon: <MessageSquare className="w-8 h-8 text-emerald-500" />,
+      arrowPos: "top-right",
+      target: "offers"
+    },
+    {
+        title: language === 'he' ? 'מטבעות Ahlafot 💰' : 'Ahlafot Coins 💰',
+        description: language === 'he'
+          ? 'השתמשו במטבעות כדי להקפיץ את הפריטים שלכם לראש הרשימה ולקבל יותר חשיפה!'
+          : "Use coins to boost your items to the top of the list and get more visibility!",
+        icon: <Coins className="w-8 h-8 text-yellow-500" />,
+        arrowPos: "top-right",
+        target: "coins"
+      },
+    {
+      title: language === 'he' ? 'הפרופיל שלכם 👤' : 'Your Profile 👤',
+      description: language === 'he'
+        ? 'כאן תוכלו לערוך את הפרטים שלכם, לראות את הפריטים שהעליתם ולנהל את החשבון.'
+        : "Here you can edit your details, see the items you've uploaded, and manage your account.",
+      icon: <User className="w-8 h-8 text-purple-500" />,
+      arrowPos: "top-right",
+      target: "profile"
     }
   ];
 
@@ -65,139 +105,81 @@ export default function WelcomeTour() {
     }
   };
 
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 40 }}
-            className="relative bg-background w-full max-w-lg rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10"
-          >
-            {/* Background Gradient Orbs */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-                <div className={`absolute -top-24 -left-24 w-64 h-64 rounded-full blur-[80px] opacity-30 bg-gradient-to-br ${steps[currentStep].gradient}`} />
-                <div className={`absolute -bottom-24 -right-24 w-64 h-64 rounded-full blur-[80px] opacity-30 bg-gradient-to-br ${steps[currentStep].gradient}`} />
-            </div>
-
-            <button 
-              onClick={closeTour}
-              className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/10 transition-colors z-20 text-muted-foreground"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+          
+          {/* Arrow Logic */}
+          {steps[currentStep].arrowPos === "top-left" && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute top-20 left-[20%] z-50 pointer-events-none"
             >
-              <X size={24} />
-            </button>
+              <PencilArrow rotation={-140} />
+            </motion.div>
+          )}
 
-            <div className="p-10 flex flex-col items-center text-center">
-              <motion.div
-                key={`icon-${currentStep}`}
-                initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                className={`p-8 rounded-[2rem] ${steps[currentStep].color} mb-8 shadow-inner border border-white/5 relative`}
-              >
-                {steps[currentStep].icon}
-                <motion.div 
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="absolute -top-2 -right-2 text-primary"
-                >
-                    <Sparkles size={20} />
-                </motion.div>
-              </motion.div>
+          {steps[currentStep].arrowPos === "top-right" && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute top-20 right-[25%] z-50 pointer-events-none"
+            >
+              <PencilArrow rotation={-40} />
+            </motion.div>
+          )}
 
-              <motion.h2
-                key={`title-${currentStep}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-3xl font-black mb-4 tracking-tight"
-              >
-                {steps[currentStep].title}
-              </motion.h2>
-
-              <motion.p
-                key={`desc-${currentStep}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-muted-foreground text-xl leading-relaxed mb-10 font-medium px-4"
-              >
-                {steps[currentStep].description}
-              </motion.p>
-
-              <div className="flex items-center justify-between w-full mt-auto">
-                <button
-                  onClick={prevStep}
-                  disabled={currentStep === 0}
-                  className={`flex items-center gap-2 font-black text-sm transition-all ${currentStep === 0 ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 scale-100 hover:text-primary'}`}
-                >
-                  <ChevronLeft size={20} /> {language === 'he' ? 'הקודם' : 'Back'}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 m-4"
+          >
+            <div className="p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div className={`p-4 rounded-2xl ${steps[currentStep].target ? 'bg-primary/10' : 'bg-yellow-100 dark:bg-yellow-900/20'}`}>
+                    {steps[currentStep].icon || <span className="text-3xl">{steps[currentStep].emoji}</span>}
+                </div>
+                <button onClick={closeTour} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                  <X size={20} className="text-slate-400" />
                 </button>
+              </div>
 
-                <div className="flex gap-2">
+              <h2 className="text-2xl font-black mb-4 dark:text-white">
+                {steps[currentStep].title}
+              </h2>
+
+              <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
+                {steps[currentStep].description}
+              </p>
+
+              <div className="flex items-center justify-between">
+                <div className="flex gap-1.5">
                   {steps.map((_, i) => (
-                    <button 
-                      key={i}
-                      onClick={() => setCurrentStep(i)}
-                      className={`h-2 rounded-full transition-all duration-500 ${i === currentStep ? 'w-10 bg-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]' : 'w-2 bg-muted hover:bg-muted-foreground/30'}`}
+                    <div 
+                      key={i} 
+                      className={`h-1.5 rounded-full transition-all duration-300 ${i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-slate-200 dark:bg-slate-700'}`} 
                     />
                   ))}
                 </div>
 
                 <button
                   onClick={nextStep}
-                  className="flex items-center gap-2 font-black text-sm text-primary hover:opacity-80 group"
+                  className="px-6 py-3 bg-primary text-white font-black rounded-xl hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                   {currentStep === steps.length - 1 
-                    ? (language === 'he' ? 'סיום' : 'Finish') 
-                    : (language === 'he' ? 'הבא' : 'Next')
+                    ? (language === 'he' ? 'יאללה לדרך!' : "Let's Go!") 
+                    : (language === 'he' ? 'הבנתי, הלאה' : 'Got it, next')
                   }
-                  {currentStep !== steps.length - 1 && (
-                    <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                        <ChevronRight size={20} />
-                    </motion.div>
-                  )}
+                  <ChevronRight size={18} />
                 </button>
               </div>
             </div>
 
-            <AnimatePresence>
-                {currentStep === steps.length - 1 && (
-                <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 40 }}
-                    className="bg-primary/5 p-8 flex flex-col gap-6 border-t border-white/5 backdrop-blur-sm"
-                >
-                    <label className="flex items-center justify-center gap-3 cursor-pointer group">
-                        <div className="relative">
-                            <input 
-                                type="checkbox" 
-                                checked={doNotShowAgain}
-                                onChange={(e) => setDoNotShowAgain(e.target.checked)}
-                                className="peer sr-only"
-                            />
-                            <div className="w-5 h-5 border-2 border-muted rounded-md peer-checked:bg-primary peer-checked:border-primary transition-all" />
-                            <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform">
-                                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
-                            </div>
-                        </div>
-                        <span className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">{t('doNotShowAgain')}</span>
-                    </label>
-                    <button 
-                    onClick={closeTour}
-                    className="w-full py-5 bg-primary text-primary-content font-black rounded-2xl shadow-[0_20px_40px_-10px_rgba(var(--primary-rgb),0.5)] hover:shadow-[0_25px_50px_-12px_rgba(var(--primary-rgb),0.6)] hover:scale-[1.02] transition-all active:scale-[0.98] text-lg uppercase tracking-wider"
-                    >
-                    {language === 'he' ? 'בואו נתחיל!' : "Let's Get Started!"}
-                    </button>
-                </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Scribble Effect Bottom */}
+            <div className="h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           </motion.div>
         </div>
       )}
