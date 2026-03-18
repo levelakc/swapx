@@ -6,14 +6,16 @@ import {
     getMe, 
     startSupportChat, 
     getTradeById, 
-    getItem
+    getItem,
+    getMessages,
+    sendMessage
 } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { 
     Loader2, ChevronLeft, Search, Package, 
     ArrowRightLeft, MessageCircle, Check, X, Info, ExternalLink,
-    Clock, ShieldCheck, CircleDollarSign, Trash2
+    Clock, ShieldCheck, CircleDollarSign, Trash2, Send
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -310,6 +312,10 @@ export default function Messages() {
                 <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
             ) : filteredConversations.map(convo => {
                 const otherParticipant = convo.participants.find(p => p !== me?.email);
+                const otherParticipantDetails = convo.participant_details?.[otherParticipant];
+                const displayName = otherParticipantDetails?.full_name || otherParticipant;
+                const displayAvatar = otherParticipantDetails?.avatar || `https://avatar.vercel.sh/${otherParticipant}.svg`;
+                
                 const isOnline = onlineUsers.some(u => u.email === otherParticipant);
                 const isSelected = selectedConversationId === convo._id;
                 const unreadCount = convo.unread_count?.[me?.email] || 0;
@@ -323,12 +329,12 @@ export default function Messages() {
                         }`}
                     >
                         <div className="relative">
-                            <img src={`https://avatar.vercel.sh/${otherParticipant}.svg`} className="w-12 h-12 rounded-2xl shadow-md" alt="" />
+                            <img src={displayAvatar} className="w-12 h-12 rounded-2xl shadow-md object-cover" alt="" />
                             {isOnline && <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-4 border-card shadow-lg" />}
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-center mb-1">
-                                <p className="font-black text-sm truncate">{otherParticipant}</p>
+                                <p className="font-black text-sm truncate">{displayName}</p>
                                 <span className="text-[10px] font-bold opacity-40">{format(new Date(convo.last_message_at), 'p')}</span>
                             </div>
                             <p className="text-xs text-muted-foreground truncate font-bold">{convo.last_message || t('noMessagesYet')}</p>
@@ -353,14 +359,26 @@ export default function Messages() {
                         <ChevronLeft size={18}/>
                     </button>
                     <div className="flex items-center gap-3">
-                        <img src={`https://avatar.vercel.sh/${selectedConversation?.participants.find(p => p !== me?.email)}.svg`} className="w-10 h-10 rounded-xl" alt="" />
-                        <div>
-                            <p className="font-black text-sm uppercase tracking-tight">{selectedConversation?.participants.find(p => p !== me?.email)}</p>
-                            <div className="flex items-center gap-1.5">
-                                <div className={`w-1.5 h-1.5 rounded-full ${onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? 'bg-green-500' : 'bg-muted-foreground/30'}`} />
-                                <span className="text-[9px] font-black uppercase opacity-40">{onlineUsers.some(u => u.email === selectedConversation?.participants.find(p => p !== me?.email)) ? t('online') : t('offline')}</span>
-                            </div>
-                        </div>
+                        {(() => {
+                            const otherParticipant = selectedConversation?.participants.find(p => p !== me?.email);
+                            const otherDetails = selectedConversation?.participant_details?.[otherParticipant];
+                            const displayName = otherDetails?.full_name || otherParticipant;
+                            const displayAvatar = otherDetails?.avatar || `https://avatar.vercel.sh/${otherParticipant}.svg`;
+                            const isOnline = onlineUsers.some(u => u.email === otherParticipant);
+
+                            return (
+                                <>
+                                    <img src={displayAvatar} className="w-10 h-10 rounded-xl object-cover" alt="" />
+                                    <div>
+                                        <p className="font-black text-sm uppercase tracking-tight">{displayName}</p>
+                                        <div className="flex items-center gap-1.5">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-muted-foreground/30'}`} />
+                                            <span className="text-[9px] font-black uppercase opacity-40">{isOnline ? t('online') : t('offline')}</span>
+                                        </div>
+                                    </div>
+                                </>
+                            );
+                        })()}
                     </div>
                 </div>
                 <button 

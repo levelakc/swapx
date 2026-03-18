@@ -15,7 +15,27 @@ const getUserConversations = asyncHandler(async (req, res) => {
     .populate('related_trade_id')
     .sort({ last_message_at: -1 });
 
-  res.json(conversations);
+  // Manually "populate" participant details
+  const conversationsWithDetails = await Promise.all(conversations.map(async (convo) => {
+    const participantDetails = await User.find({ email: { $in: convo.participants } })
+      .select('email full_name avatar');
+    
+    // Create a map for easy lookup
+    const detailsMap = {};
+    participantDetails.forEach(p => {
+        detailsMap[p.email] = {
+            full_name: p.full_name,
+            avatar: p.avatar
+        };
+    });
+
+    return {
+      ...convo.toObject(),
+      participant_details: detailsMap
+    };
+  }));
+
+  res.json(conversationsWithDetails);
 });
 
 // @desc    Create a new conversation
@@ -245,7 +265,21 @@ const getConversationById = asyncHandler(async (req, res) => {
     throw new Error('Not authorized to view this conversation');
   }
 
-  res.json(conversation);
+  const participantDetails = await User.find({ email: { $in: conversation.participants } })
+    .select('email full_name avatar');
+
+  const detailsMap = {};
+  participantDetails.forEach(p => {
+      detailsMap[p.email] = {
+          full_name: p.full_name,
+          avatar: p.avatar
+      };
+  });
+
+  res.json({
+    ...conversation.toObject(),
+    participant_details: detailsMap
+  });
 });
 
 module.exports = {
