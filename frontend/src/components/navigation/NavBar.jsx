@@ -110,6 +110,7 @@ export default function NavBar() {
              {/* Browse Icons */}
              <div className="flex items-center gap-1 sm:gap-2">
                 <NavLink 
+                    id="tour-explore"
                     to="/browse" 
                     className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
@@ -119,6 +120,7 @@ export default function NavBar() {
                     </span>
                 </NavLink>
                 <NavLink 
+                    id="tour-services"
                     to="/services" 
                     className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
@@ -173,7 +175,11 @@ export default function NavBar() {
             {user ? (
               <div className="flex items-center gap-1 sm:gap-2">
                 {/* Coins Badge */}
-                <Link to="/coins" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors">
+                <Link 
+                    id="tour-coins"
+                    to="/coins" 
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
+                >
                     <div className="flex items-center gap-1">
                         <Coins size={18} />
                         <span className="text-xs font-bold">{user.coins}</span>
@@ -182,7 +188,11 @@ export default function NavBar() {
                 </Link>
 
                 {/* Offers Badge */}
-                <Link to="/messages" className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative">
+                <Link 
+                    id="tour-offers"
+                    to="/messages" 
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
+                >
                     <div className="relative">
                         <ArrowRightLeft size={20} />
                         {totalUnread > 0 && (
@@ -196,7 +206,11 @@ export default function NavBar() {
                 </Link>
 
                 <div className="relative group">
-                  <Link to="/profile" className="flex flex-col items-center p-1.5 sm:p-2">
+                  <Link 
+                    id="tour-profile"
+                    to="/profile" 
+                    className="flex flex-col items-center p-1.5 sm:p-2"
+                  >
                     <img 
                         src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
                         alt="Avatar" 

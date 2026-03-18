@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, MessageSquare, User, Coins } from 'lucide-react';
@@ -6,7 +6,7 @@ import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, Mes
 const PencilArrow = ({ className, rotation = 0 }) => (
   <svg 
     viewBox="0 0 100 100" 
-    className={`w-24 h-24 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-sm ${className}`}
+    className={`w-32 h-32 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-lg ${className}`}
     style={{ transform: `rotate(${rotation}deg)` }}
   >
     <path 
@@ -27,6 +27,7 @@ export default function WelcomeTour() {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [arrowStyles, setArrowStyles] = useState({});
 
   useEffect(() => {
     const hideTour = localStorage.getItem('hideTourV3');
@@ -35,11 +36,6 @@ export default function WelcomeTour() {
       return () => clearTimeout(timer);
     }
   }, []);
-
-  const closeTour = () => {
-    localStorage.setItem('hideTourV3', 'true');
-    setIsOpen(false);
-  };
 
   const steps = [
     {
@@ -56,8 +52,8 @@ export default function WelcomeTour() {
         ? 'כפתור ה-Explore למעלה הוא השער שלכם לעולם של פריטים. מכוניות, שעונים, או אפילו קלפים - הכל נמצא שם!'
         : "The Explore button at the top is your gateway to a world of items. Cars, watches, or even cards - it's all there!",
       icon: <Compass className="w-8 h-8 text-primary" />,
-      arrowPos: "top-left",
-      target: "explore"
+      target: "tour-explore",
+      rotation: -140
     },
     {
       title: language === 'he' ? 'צריכים עזרה מקצועית? 🛠️' : 'Need Professional Help? 🛠️',
@@ -65,17 +61,8 @@ export default function WelcomeTour() {
         ? 'תחת כפתור ה-Services תמצאו מומחים שיעזרו לכם - מעיצוב גרפי ועד תיקונים. הכל בשיטת הטרייד!'
         : "Under the Services button, you'll find experts to help you - from graphic design to repairs. All via trade!",
       icon: <Briefcase className="w-8 h-8 text-blue-500" />,
-      arrowPos: "top-left",
-      target: "services"
-    },
-    {
-      title: language === 'he' ? 'הצעות ומשא ומתן 🤝' : 'Offers & Negotiation 🤝',
-      description: language === 'he'
-        ? 'כאן קורה הקסם! ב-Offers תוכלו לנהל את כל הטריידים שלכם, לדבר עם אנשים ולסגור עסקאות.'
-        : "This is where the magic happens! In Offers, you can manage all your trades, talk to people, and close deals.",
-      icon: <MessageSquare className="w-8 h-8 text-emerald-500" />,
-      arrowPos: "top-right",
-      target: "offers"
+      target: "tour-services",
+      rotation: -140
     },
     {
         title: language === 'he' ? 'מטבעות Ahlafot 💰' : 'Ahlafot Coins 💰',
@@ -83,21 +70,59 @@ export default function WelcomeTour() {
           ? 'השתמשו במטבעות כדי להקפיץ את הפריטים שלכם לראש הרשימה ולקבל יותר חשיפה!'
           : "Use coins to boost your items to the top of the list and get more visibility!",
         icon: <Coins className="w-8 h-8 text-yellow-500" />,
-        arrowPos: "top-right",
-        target: "coins"
+        target: "tour-coins",
+        rotation: -40
       },
+    {
+      title: language === 'he' ? 'הצעות ומשא ומתן 🤝' : 'Offers & Negotiation 🤝',
+      description: language === 'he'
+        ? 'כאן קורה הקסם! ב-Offers תוכלו לנהל את כל הטריידים שלכם, לדבר עם אנשים ולסגור עסקאות.'
+        : "This is where the magic happens! In Offers, you can manage all your trades, talk to people, and close deals.",
+      icon: <MessageSquare className="w-8 h-8 text-emerald-500" />,
+      target: "tour-offers",
+      rotation: -40
+    },
     {
       title: language === 'he' ? 'הפרופיל שלכם 👤' : 'Your Profile 👤',
       description: language === 'he'
         ? 'כאן תוכלו לערוך את הפרטים שלכם, לראות את הפריטים שהעליתם ולנהל את החשבון.'
         : "Here you can edit your details, see the items you've uploaded, and manage your account.",
       icon: <User className="w-8 h-8 text-purple-500" />,
-      arrowPos: "top-right",
-      target: "profile"
+      target: "tour-profile",
+      rotation: -40
     }
   ];
 
-  const nextStep = () => {
+  useEffect(() => {
+    if (isOpen && steps[currentStep].target) {
+      const updatePosition = () => {
+        const element = document.getElementById(steps[currentStep].target);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          setArrowStyles({
+            top: rect.bottom + 10,
+            left: rect.left + (rect.width / 2) - 64, // Center arrow (w-32 = 128px / 2 = 64)
+            position: 'fixed'
+          });
+        }
+      };
+      
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      return () => window.removeEventListener('resize', updatePosition);
+    } else {
+      setArrowStyles({});
+    }
+  }, [isOpen, currentStep]);
+
+  const closeTour = (e) => {
+    if (e) e.stopPropagation();
+    localStorage.setItem('hideTourV3', 'true');
+    setIsOpen(false);
+  };
+
+  const nextStep = (e) => {
+    if (e) e.stopPropagation();
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -108,78 +133,80 @@ export default function WelcomeTour() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-[2px]">
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm cursor-pointer"
+          onClick={nextStep}
+        >
           
-          {/* Arrow Logic */}
-          {steps[currentStep].arrowPos === "top-left" && (
+          {/* Dynamic Arrow */}
+          {steps[currentStep].target && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute top-20 left-[20%] z-50 pointer-events-none"
+              key={`arrow-${currentStep}`}
+              initial={{ opacity: 0, scale: 0.5, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="z-[110] pointer-events-none"
+              style={arrowStyles}
             >
-              <PencilArrow rotation={-140} />
-            </motion.div>
-          )}
-
-          {steps[currentStep].arrowPos === "top-right" && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute top-20 right-[25%] z-50 pointer-events-none"
-            >
-              <PencilArrow rotation={-40} />
+              <PencilArrow rotation={steps[currentStep].rotation} />
             </motion.div>
           )}
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 m-4"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-primary/20 m-4 cursor-default"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-8">
-              <div className="flex justify-between items-start mb-6">
-                <div className={`p-4 rounded-2xl ${steps[currentStep].target ? 'bg-primary/10' : 'bg-yellow-100 dark:bg-yellow-900/20'}`}>
-                    {steps[currentStep].icon || <span className="text-3xl">{steps[currentStep].emoji}</span>}
+            <div className="p-10 md:p-16">
+              <div className="flex justify-between items-start mb-8">
+                <div className={`p-6 rounded-3xl ${steps[currentStep].target ? 'bg-primary/10' : 'bg-yellow-100 dark:bg-yellow-900/20'}`}>
+                    {steps[currentStep].icon ? 
+                        <div className="scale-150">{steps[currentStep].icon}</div> : 
+                        <span className="text-6xl">{steps[currentStep].emoji}</span>
+                    }
                 </div>
-                <button onClick={closeTour} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                  <X size={20} className="text-slate-400" />
+                <button 
+                  onClick={closeTour} 
+                  className="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors group"
+                >
+                  <X size={32} className="text-slate-400 group-hover:text-primary transition-colors" />
                 </button>
               </div>
 
-              <h2 className="text-2xl font-black mb-4 dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-black mb-6 dark:text-white leading-tight">
                 {steps[currentStep].title}
               </h2>
 
-              <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
+              <p className="text-slate-600 dark:text-slate-400 text-xl md:text-2xl leading-relaxed mb-12">
                 {steps[currentStep].description}
               </p>
 
-              <div className="flex items-center justify-between">
-                <div className="flex gap-1.5">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="flex gap-3">
                   {steps.map((_, i) => (
                     <div 
                       key={i} 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-slate-200 dark:bg-slate-700'}`} 
+                      className={`h-3 rounded-full transition-all duration-300 ${i === currentStep ? 'w-12 bg-primary' : 'w-3 bg-slate-200 dark:bg-slate-700'}`} 
                     />
                   ))}
                 </div>
 
                 <button
                   onClick={nextStep}
-                  className="px-6 py-3 bg-primary text-white font-black rounded-xl hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center gap-2"
+                  className="w-full md:w-auto px-10 py-5 bg-primary text-white text-xl font-black rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-xl shadow-primary/30 flex items-center justify-center gap-3 group"
                 >
                   {currentStep === steps.length - 1 
                     ? (language === 'he' ? 'יאללה לדרך!' : "Let's Go!") 
                     : (language === 'he' ? 'הבנתי, הלאה' : 'Got it, next')
                   }
-                  <ChevronRight size={18} />
+                  <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
 
             {/* Scribble Effect Bottom */}
-            <div className="h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            <div className="h-2 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           </motion.div>
         </div>
       )}
