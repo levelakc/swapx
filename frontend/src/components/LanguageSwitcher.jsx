@@ -1,42 +1,35 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'he' : 'en');
+  };
 
   return (
-    <div className="flex items-center bg-muted/50 rounded-full p-1 border border-border/50 shadow-inner w-24">
-      <div className="relative flex items-center w-full h-7">
-        {/* Animated Background Highlighting Active */}
-        <motion.div
-          className="absolute top-0 bottom-0 bg-background rounded-full shadow-sm"
-          initial={false}
-          animate={{
-            left: language === 'en' ? '0%' : '50%',
-          }}
-          style={{ width: '50%' }}
-          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-        />
-        
-        <button
-          onClick={() => setLanguage('en')}
-          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
-            language === 'en' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          EN
-        </button>
-        
-        <button
-          onClick={() => setLanguage('he')}
-          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
-            language === 'he' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          HE
-        </button>
+    <button 
+        onClick={toggleLanguage}
+        className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all group"
+    >
+      <div className="relative w-5 h-5 flex items-center justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+            <motion.span
+                key={language}
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -10, opacity: 0 }}
+                className="text-lg leading-none"
+            >
+                {language === 'en' ? '🇺🇸' : '🇮🇱'}
+            </motion.span>
+        </AnimatePresence>
       </div>
-    </div>
+      <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+        {language === 'en' ? 'EN' : 'HE'}
+      </span>
+    </button>
   );
 }

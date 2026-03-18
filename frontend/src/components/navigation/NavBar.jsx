@@ -159,7 +159,7 @@ export default function NavBar() {
             </div>
 
             {/* Desktop Only Actions */}
-            <div className="hidden lg:flex items-center gap-3 ml-2">
+            <div className="hidden lg:flex items-center gap-1 ml-2">
                 <button onClick={handleThemeChange} className="flex flex-col items-center p-1.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
                     {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
                     <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -184,7 +184,7 @@ export default function NavBar() {
                         <Coins size={18} />
                         <span className="text-xs font-bold">{user.coins}</span>
                     </div>
-                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
                 </Link>
 
                 {/* Offers Badge */}
@@ -202,7 +202,7 @@ export default function NavBar() {
                             </span>
                         )}
                     </div>
-                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
                 </Link>
 
                 <div className="relative group">
@@ -216,10 +216,10 @@ export default function NavBar() {
                         alt="Avatar" 
                         className="h-6 w-6 sm:h-7 sm:w-7 rounded-full object-cover ring-2 ring-transparent group-hover:ring-primary transition-all cursor-pointer"
                     />
-                    <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
+                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                   </Link>
                   
-                  {/* Dropdown */}
+                  {/* Dropdown (Rest of your existing desktop code...) */}
                   <div className="hidden md:block absolute right-0 mt-2 w-56 bg-background rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right border border-border">
                     <div className="px-4 py-2 border-b border-border mb-2">
                         <p className="font-semibold text-sm truncate">{user.full_name}</p>
@@ -246,16 +246,16 @@ export default function NavBar() {
               </div>
             ) : (
               <div className="flex items-center gap-1">
-                <Link to="/login" className="px-3 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors uppercase">
+                <Link to="/login" className="px-3 py-2 text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors uppercase">
                   {t('signIn', 'Sign In')}
                 </Link>
-                <Link to="/register" className="px-4 py-2 rounded-full bg-primary text-primary-content text-xs font-bold hover:shadow-lg hover:shadow-primary/30 transition-all uppercase">
+                <Link to="/register" className="px-4 py-2 rounded-full bg-primary text-primary-content text-[10px] font-bold hover:shadow-lg hover:shadow-primary/30 transition-all uppercase">
                   {t('register', 'Register')}
                 </Link>
               </div>
             )}
             
-            {/* Mobile Menu Button - for Settings/Theme */}
+            {/* Mobile Menu Button */}
             <button 
                 onClick={() => setIsOpen(!isOpen)}
                 className="lg:hidden p-2 text-muted-foreground hover:text-foreground focus:outline-none"
@@ -270,28 +270,35 @@ export default function NavBar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-background border-b border-border overflow-hidden"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="lg:hidden bg-background border-b border-border overflow-hidden shadow-xl"
           >
-            <div className="px-4 pt-2 pb-6 space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                    <button onClick={handleThemeChange} className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted/50 hover:bg-muted transition-all">
-                        {theme === 'dark' ? <Sun className="h-5 w-5 mb-1"/> : <Moon className="h-5 w-5 mb-1"/>}
-                        <span className="text-xs font-black uppercase tracking-widest">
-                            {theme === 'dark' ? t('light') : t('dark')}
-                        </span>
-                    </button>
-                    <div className="flex items-center justify-center p-3 rounded-lg bg-muted/50">
-                        <CurrencySwitcher />
+            <div className="px-6 py-8 flex justify-center items-center gap-12">
+                <button onClick={handleThemeChange} className="flex flex-col items-center gap-2">
+                    <div className="w-12 h-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground active:scale-95 transition-all">
+                        {theme === 'dark' ? <Sun size={24}/> : <Moon size={24}/>}
                     </div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <span className="text-sm font-black uppercase tracking-widest">{t('language')}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">{theme === 'dark' ? t('light') : t('dark')}</span>
+                </button>
+
+                <div className="scale-125">
                     <LanguageSwitcher />
                 </div>
+
+                <div className="scale-125">
+                    <CurrencySwitcher />
+                </div>
+                
+                {user && (
+                    <button onClick={handleLogout} className="flex flex-col items-center gap-2 text-red-500">
+                        <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center active:scale-95 transition-all">
+                            <LogOut size={24}/>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{t('logout')}</span>
+                    </button>
+                )}
             </div>
           </motion.div>
         )}

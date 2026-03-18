@@ -1,42 +1,36 @@
 import React from 'react';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DollarSign } from 'lucide-react';
 
 export default function CurrencySwitcher() {
   const { currency, setCurrency } = useCurrency();
 
+  const toggleCurrency = () => {
+    setCurrency(currency === 'USD' ? 'ILS' : 'USD');
+  };
+
   return (
-    <div className="flex items-center bg-muted/50 rounded-full p-1 border border-border/50 shadow-inner w-24">
-      <div className="relative flex items-center w-full h-7">
-        {/* Animated Background Highlighting Active */}
-        <motion.div
-          className="absolute top-0 bottom-0 bg-background rounded-full shadow-sm"
-          initial={false}
-          animate={{
-            left: currency === 'USD' ? '0%' : '50%',
-          }}
-          style={{ width: '50%' }}
-          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-        />
-        
-        <button
-          onClick={() => setCurrency('USD')}
-          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
-            currency === 'USD' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          USD
-        </button>
-        
-        <button
-          onClick={() => setCurrency('ILS')}
-          className={`relative z-10 flex-1 text-[10px] font-black transition-colors duration-200 uppercase tracking-widest ${
-            currency === 'ILS' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          ILS
-        </button>
+    <button 
+        onClick={toggleCurrency}
+        className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all group"
+    >
+      <div className="relative w-5 h-5 flex items-center justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={currency}
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.5, opacity: 0 }}
+                className="font-black text-sm text-primary flex items-center justify-center"
+            >
+                {currency === 'USD' ? '$' : '₪'}
+            </motion.div>
+        </AnimatePresence>
       </div>
-    </div>
+      <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+        {currency}
+      </span>
+    </button>
   );
 }
