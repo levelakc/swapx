@@ -3,24 +3,40 @@ import { useLanguage, languages } from '../../contexts/LanguageContext';
 import { useQuery } from '@tanstack/react-query';
 import { getMe, getConversations } from '../../api/api';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase, ArrowRightLeft } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu, X, Sun, Moon, Search, Coins, MessageCircle, LayoutDashboard, Compass, Briefcase, ArrowRightLeft, Infinity as InfinityIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CurrencySwitcher from '../CurrencySwitcher';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoIcon from '../../imgs/1.jpg';
 
 const Logo = () => (
-  <div className="flex items-center gap-2 group">
-    <div className="relative flex items-center justify-center w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-primary via-purple-500 to-secondary rounded-xl shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-      <ArrowRightLeft className="text-white w-6 h-6 md:w-7 md:h-7 transition-transform duration-500 group-hover:rotate-180" />
-      <div className="absolute -inset-1 bg-gradient-to-br from-primary via-purple-500 to-secondary opacity-20 blur-sm rounded-xl group-hover:opacity-40 transition-opacity" />
+  <div className="flex items-center gap-3 group cursor-pointer relative">
+    <div className="relative flex items-center justify-center w-12 h-12">
+      {/* Background Glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Circular Text SVG */}
+      <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100">
+        <defs>
+          <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+        </defs>
+        <text className="text-[10px] font-black uppercase tracking-[0.3em] fill-foreground/30 group-hover:fill-primary transition-colors duration-300">
+          <textPath href="#circlePath" startOffset="0%">
+            AHLAFOT • AHLAFOT • AHLAFOT •
+          </textPath>
+        </text>
+      </svg>
+      
+      {/* Central Icon - Using the image if it's the infinity one */}
+      <div className="relative z-10 flex items-center justify-center w-8 h-8 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
+        <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
+      </div>
     </div>
+    
     <div className="flex flex-col leading-none">
-      <span className="text-xl md:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300">
-        AHLAFOT
-      </span>
-      <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase opacity-80">
-        SWAPX
+      <span className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 group-hover:scale-105 transition-transform duration-300 uppercase">
+        Ahlafot
       </span>
     </div>
   </div>
