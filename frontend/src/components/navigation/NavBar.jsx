@@ -94,9 +94,10 @@ export default function NavBar() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
       <div className="w-full px-2 sm:px-6">
-        <div className={`flex items-center justify-between ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Flipped alignment logic: LTR now uses row-reverse, RTL now uses row */}
+        <div className={`flex items-center justify-between ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse'}`}>
           
-          {/* Logo - Pushed to edge */}
+          {/* Logo */}
           <div className="flex-shrink-0 origin-left">
             <Link to="/" className="block">
               <Logo />
@@ -105,14 +106,14 @@ export default function NavBar() {
           </div>
 
           {/* Right Section - App Toolbar Look */}
-          <div className={`flex items-center gap-0.5 sm:gap-1 ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div className={`flex items-center gap-0.5 sm:gap-1 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse'}`}>
              
              {/* Main Navigation Icons */}
              <div className="flex items-center">
                 <NavLink 
                     id="tour-explore"
                     to="/browse" 
-                    className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Compass size={18} />
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -122,7 +123,7 @@ export default function NavBar() {
                 <NavLink 
                     id="tour-services"
                     to="/services" 
-                    className={({ isActive }) => `flex flex-col items-center p-1 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                    className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Briefcase size={18} />
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -133,7 +134,7 @@ export default function NavBar() {
                 {/* Search */}
                 <button 
                     onClick={() => setIsSearchOpen(true)} 
-                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                     <Search size={18}/>
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -144,7 +145,7 @@ export default function NavBar() {
 
              {/* Theme/Lang/Curr */}
              <div className="flex items-center">
-                <button onClick={handleThemeChange} className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                <button onClick={handleThemeChange} className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
                     {theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                         {theme === 'dark' ? t('light') : t('dark')}
@@ -162,7 +163,7 @@ export default function NavBar() {
                 <Link 
                     id="tour-coins"
                     to="/coins" 
-                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
                 >
                     <div className="flex items-center gap-1">
                         <Coins size={16} />
@@ -175,7 +176,7 @@ export default function NavBar() {
                 <Link 
                     id="tour-offers"
                     to="/messages" 
-                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
                 >
                     <div className="relative">
                         <ArrowRightLeft size={18} />
@@ -193,7 +194,7 @@ export default function NavBar() {
                 <Link 
                   id="tour-profile"
                   to="/profile" 
-                  className="flex flex-col items-center p-1 sm:p-2"
+                  className="flex flex-col items-center p-1.5 sm:p-2"
                 >
                   <img 
                       src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
