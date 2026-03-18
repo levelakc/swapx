@@ -3,6 +3,7 @@ import { useLanguage } from './contexts/LanguageContext'; // Corrected import pa
 import NavBar from './components/navigation/NavBar';
 import Footer from './components/common/Footer';
 import WelcomeTour from './components/common/WelcomeTour';
+import ScrollToTop from './components/common/ScrollToTop';
 
 function AppContent({ children }) {
   const { dir } = useLanguage();
@@ -11,6 +12,7 @@ function AppContent({ children }) {
       <Toaster richColors position="bottom-right" />
       <WelcomeTour />
       <NavBar />
+      <ScrollToTop />
       <main className="pt-20 flex-grow flex flex-col overflow-x-hidden">
         <div className={`${window.location.pathname.startsWith('/messages') ? 'flex-1' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {children}

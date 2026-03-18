@@ -16,20 +16,20 @@ const Logo = () => (
       {/* Background Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
-      {/* Circular Text SVG */}
+      {/* Circular Text SVG - Tighter Radius (38 instead of 42) */}
       <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
         <defs>
-          <path id="circlePath" d="M 50, 50 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
+          <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
         </defs>
-        <text className="text-[9px] font-black uppercase tracking-[0.3em] fill-foreground/30 group-hover:fill-primary transition-colors duration-300">
+        <text className="text-[10px] font-black uppercase tracking-[0.2em] fill-foreground/40 group-hover:fill-primary transition-colors duration-300">
           <textPath href="#circlePath" startOffset="0%">
             AHLAFOT • AHLAFOT • AHLAFOT •
           </textPath>
         </text>
       </svg>
       
-      {/* Central Icon */}
-      <div className="relative z-10 flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
+      {/* Central Icon - Larger (w-10/11 instead of w-9) */}
+      <div className="relative z-10 flex items-center justify-center w-10 h-10 sm:w-13 sm:h-13 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg">
         <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
       </div>
     </div>
