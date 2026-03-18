@@ -29,16 +29,14 @@ export default function ScrollToTop() {
     <AnimatePresence>
       {isVisible && (
         <motion.button
-          initial={{ opacity: 0, y: 20, scale: 0.5 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.5 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
           onClick={scrollToTop}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] p-4 rounded-2xl bg-primary text-white shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all group overflow-hidden"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] text-primary hover:text-primary/70 transition-colors focus:outline-none outline-none tap-highlight-transparent"
+          aria-label="Scroll to top"
         >
-          {/* Shine effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-          
-          <ChevronUp size={24} strokeWidth={3} />
+          <ChevronUp size={40} strokeWidth={2.5} />
         </motion.button>
       )}
     </AnimatePresence>

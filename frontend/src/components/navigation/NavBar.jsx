@@ -13,10 +13,7 @@ import logoIcon from '../../imgs/1.jpg';
 const Logo = () => (
   <div className="flex items-center gap-2 group cursor-pointer relative">
     <div className="relative flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16">
-      {/* Background Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Circular Text SVG - Tighter Radius (38 instead of 42) */}
       <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
         <defs>
           <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
@@ -27,13 +24,10 @@ const Logo = () => (
           </textPath>
         </text>
       </svg>
-      
-      {/* Central Icon - Larger (w-10/11 instead of w-9) */}
       <div className="relative z-10 flex items-center justify-center w-10 h-10 sm:w-13 sm:h-13 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg">
         <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
       </div>
     </div>
-    
     <div className="flex flex-col leading-none">
       <span className="text-xl sm:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 group-hover:scale-105 transition-transform duration-300 uppercase">
         Ahlafot
@@ -93,8 +87,7 @@ export default function NavBar() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
-      <div className="w-full px-2 sm:px-6">
-        {/* Flipped alignment logic: LTR now uses row-reverse, RTL now uses row */}
+      <div className="w-full px-2 sm:px-6 relative">
         <div className={`flex items-center justify-between ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse'}`}>
           
           {/* Logo */}
@@ -105,7 +98,7 @@ export default function NavBar() {
             </Link>
           </div>
 
-          {/* Right Section - App Toolbar Look */}
+          {/* Right Section */}
           <div className={`flex items-center gap-0.5 sm:gap-1 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse'}`}>
              
              {/* Main Navigation Icons */}
@@ -131,10 +124,10 @@ export default function NavBar() {
                     </span>
                 </NavLink>
 
-                {/* Search */}
+                {/* Search Toggle */}
                 <button 
-                    onClick={() => setIsSearchOpen(true)} 
-                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                    className={`flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                 >
                     <Search size={18}/>
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
@@ -159,7 +152,6 @@ export default function NavBar() {
              {/* User Section */}
              {user ? (
               <div className="flex items-center">
-                {/* Coins Badge */}
                 <Link 
                     id="tour-coins"
                     to="/coins" 
@@ -172,7 +164,6 @@ export default function NavBar() {
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('myCoins').split(' ')[1] || t('myCoins')}</span>
                 </Link>
 
-                {/* Offers Badge */}
                 <Link 
                     id="tour-offers"
                     to="/messages" 
@@ -190,57 +181,45 @@ export default function NavBar() {
                     <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers', 'Offers')}</span>
                 </Link>
 
-                {/* Profile Avatar */}
-                <Link 
-                  id="tour-profile"
-                  to="/profile" 
-                  className="flex flex-col items-center p-1.5 sm:p-2"
-                >
-                  <img 
-                      src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
-                      alt="Avatar" 
-                      className="h-5 w-5 sm:h-7 sm:w-7 rounded-full object-cover ring-1 ring-border"
-                  />
+                <Link id="tour-profile" to="/profile" className="flex flex-col items-center p-1.5 sm:p-2">
+                  <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-5 w-5 sm:h-7 sm:w-7 rounded-full object-cover ring-1 ring-border" />
                   <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
                 </Link>
               </div>
             ) : null}
             
-            {/* Burger Menu */}
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 text-muted-foreground hover:text-foreground focus:outline-none"
-            >
+            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
                 {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {isSearchOpen && (
+        {/* New Elegant Search Dropdown */}
+        <AnimatePresence>
+          {isSearchOpen && (
             <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute inset-x-0 top-0 h-full bg-background z-[60] flex items-center px-4"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-full left-0 right-0 px-4 py-3 bg-background/95 backdrop-blur-md border-b border-border shadow-lg z-40"
             >
-                <Search className="h-4 w-4 text-muted-foreground mr-3"/>
+              <div className="max-w-xl mx-auto flex items-center bg-muted/50 rounded-2xl px-4 py-2 border border-border/50">
+                <Search size={18} className="text-muted-foreground mr-3" />
                 <input 
-                    type="text" 
-                    placeholder={t('search')} 
-                    className="flex-1 bg-transparent border-none focus:outline-none text-sm font-bold"
-                    autoFocus
-                    onBlur={() => setIsSearchOpen(false)}
-                    onKeyDown={handleSearch}
+                  type="text" 
+                  placeholder={t('search')} 
+                  className="flex-1 bg-transparent border-none focus:outline-none text-sm font-bold py-1"
+                  autoFocus
+                  onKeyDown={handleSearch}
                 />
-                <button onClick={() => setIsSearchOpen(false)} className="p-2 hover:bg-muted rounded-full">
-                    <X className="h-4 w-4 text-muted-foreground"/>
+                <button onClick={() => setIsSearchOpen(false)} className="ml-2 text-muted-foreground hover:text-foreground">
+                  <X size={16} />
                 </button>
+              </div>
             </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
