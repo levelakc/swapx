@@ -12,16 +12,16 @@ import logoIcon from '../../imgs/1.jpg';
 
 const Logo = () => (
   <div className="flex items-center gap-3 group cursor-pointer relative">
-    <div className="relative flex items-center justify-center w-12 h-12">
+    <div className="relative flex items-center justify-center w-16 h-16">
       {/* Background Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Circular Text SVG */}
       <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100">
         <defs>
-          <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+          <path id="circlePath" d="M 50, 50 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
         </defs>
-        <text className="text-[10px] font-black uppercase tracking-[0.3em] fill-foreground/30 group-hover:fill-primary transition-colors duration-300">
+        <text className="text-[9px] font-black uppercase tracking-[0.3em] fill-foreground/30 group-hover:fill-primary transition-colors duration-300">
           <textPath href="#circlePath" startOffset="0%">
             AHLAFOT • AHLAFOT • AHLAFOT •
           </textPath>
@@ -29,7 +29,7 @@ const Logo = () => (
       </svg>
       
       {/* Central Icon - Using the image if it's the infinity one */}
-      <div className="relative z-10 flex items-center justify-center w-8 h-8 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
+      <div className="relative z-10 flex items-center justify-center w-12 h-12 overflow-hidden bg-background rounded-full border-2 border-primary/20 group-hover:border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md">
         <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
       </div>
     </div>

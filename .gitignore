@@ -7,3 +7,6 @@ coverage
 .vscode
 .idea
 *.log
+backend/seeders/seeder.js
+frontend/.env
+backend/.env
