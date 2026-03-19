@@ -495,7 +495,3 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     </div>
   );
 }
-      </motion.div>
-    </div>
-  );
-}
