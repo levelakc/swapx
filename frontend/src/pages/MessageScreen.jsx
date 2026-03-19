@@ -107,6 +107,7 @@ export default function MessageScreen() {
       setMessage('');
       queryClient.invalidateQueries(['messages', conversationId]);
       queryClient.invalidateQueries(['conversations']);
+      toast.success(t('messageSentSuccessfully', 'Message sent!'));
     },
     onError: (error) => {
       toast.error(error.message || t('failedToSendChatMessage'));

@@ -145,6 +145,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     onSuccess: () => {
         setMessageContent('');
         queryClient.invalidateQueries(['messages', conversationId]);
+        toast.success(t('messageSentSuccessfully', 'Message sent!'));
     }
   });
 

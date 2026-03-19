@@ -58,7 +58,7 @@ function App() {
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <ScrollToTopReset />
               <div className="min-h-screen">
-                <Toaster />
+                <Toaster position="bottom-right" expand={true} richColors />
                 <Layout>
                   <Routes>
                     <Route path="/" element={<Home />} />

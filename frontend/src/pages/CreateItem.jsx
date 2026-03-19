@@ -15,7 +15,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
   const id = propsId || paramId;
   const isEdit = !!id;
   const isModal = !!propsId;
-  const { register, handleSubmit, control, setValue, reset, formState: { errors, isDirty } } = useForm();
+  const { register, handleSubmit, control, setValue, reset, watch, formState: { errors, isDirty } } = useForm();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { currency } = useCurrency();
@@ -24,6 +24,10 @@ export default function CreateItem({ id: propsId, onSuccess }) {
   const [originalImages, setOriginalImages] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [listingType, setListingType] = useState('item'); // 'item' or 'service'
+  const [hasImageChanges, setHasImageChanges] = useState(false);
+
+  // Watch form values for change detection
+  const formValues = watch();
 
   // Fetch item data for editing
   const { data: itemToEdit, isLoading: isLoadingItem } = useQuery({
@@ -59,8 +63,16 @@ export default function CreateItem({ id: propsId, onSuccess }) {
         }));
         setImages(existingImages);
         setOriginalImages(JSON.stringify(existingImages.map(img => img.preview)));
+        setHasImageChanges(false);
     }
   }, [isEdit, itemToEdit, reset]);
+
+  useEffect(() => {
+    if (isEdit) {
+      const currentImagesStr = JSON.stringify(images.map(img => img.preview));
+      setHasImageChanges(currentImagesStr !== originalImages);
+    }
+  }, [images, originalImages, isEdit]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -176,6 +188,8 @@ export default function CreateItem({ id: propsId, onSuccess }) {
 
     saveMutation.mutate(itemData);
   };
+
+  const hasChanges = isEdit ? (isDirty || hasImageChanges) : true;
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -569,8 +583,12 @@ export default function CreateItem({ id: propsId, onSuccess }) {
             <div className="pt-4">
               <button 
                 type="submit" 
-                disabled={saveMutation.isLoading} 
-                className="w-full flex justify-center items-center gap-2 py-4 px-6 border border-transparent rounded-xl shadow-lg shadow-primary/25 text-lg font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all active:scale-[0.98]"
+                disabled={saveMutation.isLoading || (isEdit && !hasChanges)} 
+                className={`w-full flex justify-center items-center gap-2 py-4 px-6 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white transition-all active:scale-[0.98] ${
+                  (saveMutation.isLoading || (isEdit && !hasChanges))
+                    ? 'bg-gray-500 cursor-not-allowed opacity-50 shadow-none' 
+                    : 'bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 shadow-primary/25'
+                }`}
               >
                 {saveMutation.isLoading ? <Loader2 className="animate-spin" /> : (isEdit ? t('saveChanges', 'Save Changes') : t('listMyItem'))}
               </button>

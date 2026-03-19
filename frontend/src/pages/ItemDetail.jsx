@@ -198,6 +198,14 @@ export default function ItemDetail() {
                             setIsAuthModalOpen(true);
                             return;
                         }
+                        
+                        // Prevent self-offering
+                        const itemOwnerId = item.created_by?._id || item.user?._id || item.user;
+                        if (user._id === itemOwnerId) {
+                            toast.error(t('cannotOfferToSelf', 'You cannot make an offer on your own item!'));
+                            return;
+                        }
+                        
                         setIsTradeDeckOpen(true);
                     }}
                     className="mt-8 w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-95 text-lg"
