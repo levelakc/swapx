@@ -7,7 +7,7 @@ const translations = {
   // English placeholder: Your 't' function references 'translations.en',
   // so this object must exist to prevent runtime errors.
   en: {
-    brand: "Ahlafot",
+    brand: "AHLAFOT",
     tagline: "Swap anything for anything",
     heroTitle: "The Future of Trading",
     heroSubtitle: "Swap cars for tech, art for real estate...",
@@ -131,7 +131,7 @@ const translations = {
             availableNow: "Available Now",
           },
           he: {
-            brand: "Ahlafot",
+            brand: "AHLAFOT",
             tagline: "החלף כל דבר בכל דבר",
             heroSubtitle: "החלף מכוניות בטכנולוגיה, אמנות בנדלן...",
             explore: "חקור עסקאות",
@@ -254,7 +254,7 @@ const translations = {
             featureCost: "הבלטת פריט עולה 5 מטבעות ונמשכת 12 שעות. אתה יכול להבליט את הפריטים שלך מדף 'הפריטים שלי'.",
             availableNow: "זמין כעת",
           },  ar: {
-    brand: "Ahlafot",
+    brand: "AHLAFOT",
     tagline: "بادل أي شيء بأي شيء",
     heroTitle: "مستقبل التداول",
     heroSubtitle: "استبدل السيارات بالتكنولوجيا، والفن بالعقارات...",
@@ -351,7 +351,7 @@ const translations = {
     minimumValue: "الحد الأدنى للقيمة هو 1.",
   },
   ru: {
-    brand: "Ahlafot",
+    brand: "AHLAFOT",
     tagline: "Обменяй что угодно на что угодно",
     heroTitle: "Будущее Торговли",
     heroSubtitle: "Обменивайте машины на технику, искусство на недвижимость...",

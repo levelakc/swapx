@@ -39,7 +39,7 @@ export default function WelcomeTour() {
 
   const steps = [
     {
-      title: language === 'he' ? 'היי! ברוכים הבאים ל-Ahlafot 👋' : 'Hey! Welcome to Ahlafot 👋',
+      title: language === 'he' ? 'היי! ברוכים הבאים ל-AHLAFOT 👋' : 'Hey! Welcome to AHLAFOT 👋',
       description: language === 'he' 
         ? 'אנחנו כאן כדי לעזור לכם להחליף את מה שיש לכם במה שאתם באמת רוצים. בלי כסף (או עם קצת, אם בא לכם!), רק החלפות פשוטות וכיפיות.' 
         : "We're here to help you swap what you have for what you actually want. No cash (or just a bit!), just simple and fun trading.",
@@ -65,7 +65,7 @@ export default function WelcomeTour() {
       rotation: -140
     },
     {
-        title: language === 'he' ? 'מטבעות Ahlafot 💰' : 'Ahlafot Coins 💰',
+        title: language === 'he' ? 'מטבעות AHLAFOT 💰' : 'AHLAFOT Coins 💰',
         description: language === 'he'
           ? 'השתמשו במטבעות כדי להקפיץ את הפריטים שלכם לראש הרשימה ולקבל יותר חשיפה!'
           : "Use coins to boost your items to the top of the list and get more visibility!",

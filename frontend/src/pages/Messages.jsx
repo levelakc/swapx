@@ -403,7 +403,7 @@ export default function Messages() {
         <div className="flex-grow overflow-y-auto scrollbar-none">
             {isLoadingConversations ? (
                 <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
-            ) : filteredConversations.map(convo => {
+            ) : filteredConversations.length > 0 ? filteredConversations.map(convo => {
                 const otherParticipant = convo.participants.find(p => p !== me?.email);
                 const otherParticipantDetails = convo.participant_details?.[otherParticipant];
                 const displayName = otherParticipantDetails?.full_name || otherParticipant;
@@ -460,7 +460,12 @@ export default function Messages() {
                         </button>
                     </div>
                 );
-            })}
+            }) : (
+                <div className="flex flex-col items-center justify-center p-12 text-center space-y-4 opacity-40">
+                    <Clock size={48} className="text-muted-foreground" />
+                    <p className="font-black text-sm uppercase tracking-widest">{t('noAvailableOffers')}</p>
+                </div>
+            )}
         </div>
       </div>
 

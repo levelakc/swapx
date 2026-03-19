@@ -16,7 +16,7 @@ const Footer = () => {
                 <div className="h-10 w-10 shrink-0">
                     <ImageWithFallback src={logoIcon} alt="Ahlafot" className="w-full h-full object-contain rounded-lg transition-transform group-hover:scale-105" />
                 </div>
-                <h3 className="text-xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
+                <h3 className="text-xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform uppercase">
                     {t('brand')}
                 </h3>
             </Link>

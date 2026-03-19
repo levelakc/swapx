@@ -7,7 +7,7 @@ const translations = {
   en: {
     google: "Google",
     facebook: "Facebook",
-    brand: "Ahlafot",
+    brand: "AHLAFOT",
     tagline: "Connect. Trade. Swap.",
     heroTitle: "The Modern Way to Trade and Swap",
     heroSubtitle: "Join our community to trade items, services, and discover new opportunities every day.",
@@ -91,6 +91,7 @@ const translations = {
     decline: 'Decline',
     acceptOffer: 'Accept Offer',
     statusUpdated: 'Trade status updated!',
+    noAvailableOffers: 'No available offers yet ⌚',
     cancelOffer: 'Cancel Offer',
     cancel: 'Cancel',
     loadingTradeDetails: 'Loading trade details...',
@@ -337,7 +338,7 @@ const translations = {
   },
   he: {
     google: "Google",
-    brand: "Ahlafot",
+    brand: "AHLAFOT",
     tagline: "שדרג את העולם שלך. החלפות.",
     heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
     explore: "חקור עסקאות",
@@ -412,8 +413,10 @@ const translations = {
     status: 'סטטוס',
     decline: 'דחה',
     acceptOffer: 'קבל הצעה',
-    statusUpdated: 'סטטוס ההצעה עודכן!',
+    statusUpdated: 'סטטוס הטרייד עודכן!',
+    noAvailableOffers: 'אין הצעות זמינות כרגע ⌚',
     cancelOffer: 'בטל הצעה',
+
     cancel: 'ביטול',
     loadingTradeDetails: 'טוען פרטי הצעה...',
     errorLoadingTrade: 'שגיאה בטעינת פרטי ההצעה',
