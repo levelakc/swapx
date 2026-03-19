@@ -6,18 +6,18 @@ import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, Mes
 const PencilArrow = ({ className, rotation = 0 }) => (
   <svg 
     viewBox="0 0 100 100" 
-    className={`w-32 h-32 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-lg origin-center ${className}`}
+    className={`w-24 h-24 fill-none stroke-primary stroke-[4] stroke-linecap-round stroke-linejoin-round drop-shadow-lg origin-center ${className}`}
     style={{ transform: `rotate(${rotation}deg)` }}
   >
-    {/* A more curved arrow pointing to top-right corner of the SVG box */}
+    {/* Simple arrow pointing STRAIGHT UP by default (Tip at 50, 5) */}
     <path 
-        d="M20,90 Q30,40 85,15" 
+        d="M50,90 Q50,45 50,15" 
         className="animate-[dash_2s_ease-in-out_infinite]"
         strokeDasharray="200"
         strokeDashoffset="200"
     />
     <path 
-        d="M70,15 L85,15 L85,30" 
+        d="M35,35 L50,15 L65,35" 
         className="animate-[dash_2s_ease-in-out_infinite]"
         strokeDasharray="100"
         strokeDashoffset="100"
@@ -59,8 +59,7 @@ export default function WelcomeTour() {
         ? 'כפתור ה-Explore למעלה הוא השער שלכם לעולם של פריטים. מכוניות, שעונים, או אפילו קלפים - הכל נמצא שם!'
         : "The Explore button at the top is your gateway to a world of items. Cars, watches, or even cards - it's all there!",
       icon: <Compass className="w-8 h-8 text-primary" />,
-      target: "tour-explore",
-      rotation: -140 // Pointing UP towards the navbar
+      target: "tour-explore"
     },
     {
       title: language === 'he' ? 'צריכים עזרה מקצועית? 🛠️' : 'Need Professional Help? 🛠️',
@@ -68,8 +67,7 @@ export default function WelcomeTour() {
         ? 'תחת כפתור ה-Services תמצאו מומחים שיעזרו לכם - מעיצוב גרפי ועד תיקונים. הכל בשיטת הטרייד!'
         : "Under the Services button, you'll find experts to help you - from graphic design to repairs. All via trade!",
       icon: <Briefcase className="w-8 h-8 text-blue-500" />,
-      target: "tour-services",
-      rotation: -140
+      target: "tour-services"
     },
     {
         title: language === 'he' ? 'מטבעות AHLAFOT 💰' : 'AHLAFOT Coins 💰',
@@ -77,8 +75,7 @@ export default function WelcomeTour() {
           ? 'השתמשו במטבעות כדי להקפיץ את הפריטים שלכם לראש הרשימה ולקבל יותר חשיפה!'
           : "Use coins to boost your items to the top of the list and get more visibility!",
         icon: <Coins className="w-8 h-8 text-yellow-500" />,
-        target: "tour-coins",
-        rotation: -140
+        target: "tour-coins"
       },
     {
       title: language === 'he' ? 'הצעות ומשא ומתן 🤝' : 'Offers & Negotiation 🤝',
@@ -86,8 +83,7 @@ export default function WelcomeTour() {
         ? 'כאן קורה הקסם! ב-Offers תוכלו לנהל את כל הטריידים שלכם, לדבר עם אנשים ולסגור עסקאות.'
         : "This is where the magic happens! In Offers, you can manage all your trades, talk to people, and close deals.",
       icon: <MessageSquare className="w-8 h-8 text-emerald-500" />,
-      target: "tour-offers",
-      rotation: -140
+      target: "tour-offers"
     },
     {
       title: language === 'he' ? 'הפרופיל שלכם 👤' : 'Your Profile 👤',
@@ -95,34 +91,38 @@ export default function WelcomeTour() {
         ? 'כאן תוכלו לערוך את הפרטים שלכם, לראות את הפריטים שהעליתם ולנהל את החשבון.'
         : "Here you can edit your details, see the items you've uploaded, and manage your account.",
       icon: <User className="w-8 h-8 text-purple-500" />,
-      target: "tour-profile",
-      rotation: 20 // Profile is usually inside the burger menu or sidebar, pointing slightly different
+      target: "tour-menu" // Point to burger menu since profile is hidden inside it
     }
   ];
 
   useEffect(() => {
     if (isOpen && steps[currentStep].target) {
       const updatePosition = () => {
-        const element = document.getElementById(steps[currentStep].target);
+        const targetId = steps[currentStep].target;
+        const element = document.getElementById(targetId);
+        
         if (element) {
           const rect = element.getBoundingClientRect();
-          const isNavbarItem = steps[currentStep].target.startsWith('tour-');
+          const screenWidth = window.innerWidth;
+          const elementCenterX = rect.left + (rect.width / 2);
           
-          if (steps[currentStep].target === 'tour-profile') {
-              // Profile is in burger menu, we point from LEFT to RIGHT or so
-              setArrowStyles({
-                top: rect.top + (rect.height / 2) - 64,
-                left: rect.left - 100,
-                position: 'fixed'
-              });
-          } else {
-              // Navbar items - Pointing UP from below
-              setArrowStyles({
-                top: rect.bottom + 10,
-                left: rect.left + (rect.width / 2) - 80, // Point tip is at ~90% width of 128px
-                position: 'fixed'
-              });
-          }
+          // Determine if element is on left or right half of screen
+          const isOnRight = elementCenterX > (screenWidth / 2);
+          
+          // default pointed straight up (0 deg)
+          // We want to point from below the element.
+          // If it's on the right, the arrow should come from below-left and point up-right (45 deg)
+          // If it's on the left, it should come from below-right and point up-left (-45 deg)
+          
+          const rotation = isOnRight ? 45 : -45;
+          const leftOffset = isOnRight ? -60 : -40; // Adjust SVG position relative to its own center/tip
+          
+          setArrowStyles({
+            top: rect.bottom + 5,
+            left: elementCenterX + leftOffset,
+            rotation: rotation,
+            position: 'fixed'
+          });
         }
       };
       
@@ -164,9 +164,13 @@ export default function WelcomeTour() {
               initial={{ opacity: 0, scale: 0.5, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               className="z-[610] pointer-events-none"
-              style={arrowStyles}
+              style={{
+                  top: arrowStyles.top,
+                  left: arrowStyles.left,
+                  position: arrowStyles.position
+              }}
             >
-              <PencilArrow rotation={steps[currentStep].rotation} />
+              <PencilArrow rotation={arrowStyles.rotation} />
             </motion.div>
           )}
 

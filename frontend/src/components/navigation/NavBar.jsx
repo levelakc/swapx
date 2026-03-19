@@ -111,6 +111,7 @@ export default function NavBar() {
             
             {/* Burger Menu Button - Always at Start (Right in RTL, Left in LTR) */}
             <button 
+              id="tour-menu"
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center shrink-0"
             >
