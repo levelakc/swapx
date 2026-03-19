@@ -147,9 +147,9 @@ export default function NavBar() {
               <NavLink 
                   to="/services" 
                   id="tour-services"
-                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-blue-500' : 'text-muted-foreground hover:bg-muted hover:text-blue-500'}`}
+                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-primary'}`}
               >
-                  <Briefcase size={22} className="text-blue-500" />
+                  <Briefcase size={22} />
                   <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                       {t('navServices')}
                   </span>
@@ -160,7 +160,7 @@ export default function NavBar() {
                   id="tour-explore"
                   className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-primary'}`}
               >
-                  <Compass size={22} className="text-primary" />
+                  <Package size={22} />
                   <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                       {t('navBrowse')}
                   </span>

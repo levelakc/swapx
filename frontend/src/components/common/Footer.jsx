@@ -25,7 +25,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold">{t('quickLinks')}</h4>
             <ul className="mt-2 space-y-1">
-              <li><Link to="/browse" className="text-muted-foreground hover:text-primary">{t('explore')}</Link></li>
+              <li><Link to="/browse" className="text-muted-foreground hover:text-primary">{t('navBrowse')}</Link></li>
               <li><Link to="/create" className="text-muted-foreground hover:text-primary">{t('listItem')}</Link></li>
               <li><Link to="/my-items" className="text-muted-foreground hover:text-primary">{t('myItems')}</Link></li>
             </ul>

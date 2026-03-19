@@ -54,11 +54,11 @@ export default function WelcomeTour() {
       position: "center"
     },
     {
-      title: language === 'he' ? 'גלו פריטים חדשים 🔍' : 'Discover New Items 🔍',
+      title: language === 'he' ? 'גלו פריטים חדשים 📦' : 'Discover New Items 📦',
       description: language === 'he'
-        ? 'כפתור ה-Explore למעלה הוא השער שלכם לעולם של פריטים. מכוניות, שעונים, או אפילו קלפים - הכל נמצא שם!'
-        : "The Explore button at the top is your gateway to a world of items. Cars, watches, or even cards - it's all there!",
-      icon: <Compass className="w-8 h-8 text-primary" />,
+        ? 'כפתור ה-Items למעלה הוא השער שלכם לעולם של פריטים. מכוניות, שעונים, או אפילו קלפים - הכל נמצא שם!'
+        : "The Items button at the top is your gateway to a world of treasures. Cars, watches, or even cards - it's all there!",
+      icon: <Package className="w-8 h-8 text-primary" />,
       target: "tour-explore"
     },
     {
