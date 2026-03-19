@@ -63,10 +63,17 @@ export default function MessageScreen() {
     newSocket.on('newMessage', (newMsg) => {
         if (newMsg.conversation_id === conversationId) {
             queryClient.setQueryData(['messages', conversationId], (old = []) => {
-                // Prevent duplicates if query was already refetched
-                if (old.some(m => m._id === newMsg._id)) return old;
-                return [...old, newMsg];
+                // Ensure we are dealing with an array
+                const currentMessages = Array.isArray(old) ? old : [];
+                // Check if message already exists by ID
+                const exists = currentMessages.some(m => m._id === newMsg._id);
+                if (exists) return currentMessages;
+                
+                // Add new message and sort by creation time just in case
+                const updated = [...currentMessages, newMsg];
+                return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             });
+            // Update conversation list unread counts/last message
             queryClient.invalidateQueries(['conversations']);
         }
     });

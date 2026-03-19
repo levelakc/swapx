@@ -165,12 +165,15 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
     newSocket.on('connect', () => newSocket.emit('joinConversation', { conversationId }));
     
-    newSocket.on('newMessage', (newMessage) => {
-      if (newMessage.conversation_id === conversationId) {
+    newSocket.on('newMessage', (newMsg) => {
+      if (newMsg.conversation_id === conversationId) {
           queryClient.setQueryData(['messages', conversationId], (old) => {
-              const alreadyExists = old?.some(m => m._id === newMessage._id);
-              if (alreadyExists) return old;
-              return [...(old || []), newMessage];
+              const currentMessages = Array.isArray(old) ? old : [];
+              const alreadyExists = currentMessages.some(m => m._id === newMsg._id);
+              if (alreadyExists) return currentMessages;
+              
+              const updated = [...currentMessages, newMsg];
+              return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
           });
           queryClient.invalidateQueries(['conversations']);
       }
@@ -502,8 +505,12 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                             />
                         </div>
                         {messageContent.trim() ? (
-                            <button onClick={handleSendMessage} className="p-2 bg-primary text-white rounded-xl shadow-lg hover:opacity-90 transition-all">
-                                <Send size={16} />
+                            <button 
+                                onClick={handleSendMessage} 
+                                disabled={sendMessageMutation.isLoading}
+                                className="p-2 bg-primary text-white rounded-xl shadow-lg hover:opacity-90 transition-all disabled:opacity-50"
+                            >
+                                {sendMessageMutation.isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                             </button>
                         ) : (
                             <AudioRecorder onRecordingComplete={(file) => {

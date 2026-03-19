@@ -327,8 +327,12 @@ export default function Messages() {
     newSocket.on('newMessage', (newMsg) => {
         if (newMsg.conversation_id === selectedConversationId) {
             queryClient.setQueryData(['messages', selectedConversationId], (old = []) => {
-                if (old.some(m => m._id === newMsg._id)) return old;
-                return [...old, newMsg];
+                const currentMessages = Array.isArray(old) ? old : [];
+                const exists = currentMessages.some(m => m._id === newMsg._id);
+                if (exists) return currentMessages;
+                
+                const updated = [...currentMessages, newMsg];
+                return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             });
             queryClient.invalidateQueries(['conversations']);
         }
