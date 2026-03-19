@@ -348,7 +348,12 @@ export default function Messages() {
   }, [selectedConversationId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+        const container = messagesEndRef.current.parentElement;
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
   }, [messages]);
 
   const handleSelectConversation = (id) => {

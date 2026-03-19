@@ -22,6 +22,7 @@ import Login from './pages/Login';
 import Register from './pages/Register'; // Import Register component
 import PrivateRoute from './components/common/PrivateRoute';
 import StaticPage from './pages/StaticPages';
+import ScrollToTopReset from './components/common/ScrollToTopReset';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function App() {
         <ThemeProvider>
           <CurrencyProvider>
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+              <ScrollToTopReset />
               <div className="min-h-screen">
                 <Toaster />
                 <Layout>

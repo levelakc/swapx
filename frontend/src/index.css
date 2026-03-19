@@ -51,6 +51,7 @@ body {
   @apply bg-background text-foreground overflow-x-hidden;
   /* Prevent scroll to bottom on page load */
   scroll-behavior: auto !important;
+  overscroll-behavior-y: none;
 }
 
 /* Fix mobile zoom on focus */

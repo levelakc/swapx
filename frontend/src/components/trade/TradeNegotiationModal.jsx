@@ -191,7 +191,12 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   }, [isOpen, conversationId, queryClient]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+        const container = messagesEndRef.current.parentElement;
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
   }, [messages, isTyping]);
 
   if (!isOpen) return null;

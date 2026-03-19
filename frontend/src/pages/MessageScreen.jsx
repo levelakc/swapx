@@ -45,8 +45,13 @@ export default function MessageScreen() {
     refetchInterval: 10000, 
   });
 
-  const scrollToBottom = (behavior = "smooth") => {
-    messagesEndRef.current?.scrollIntoView({ behavior });
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+        const container = messagesEndRef.current.parentElement;
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
   };
 
   // Socket setup
