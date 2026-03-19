@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getService, getMe, getReviews, addReview } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -7,8 +7,8 @@ import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, 
 import { useState } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import AuthModal from '../components/common/AuthModal';
 
 export default function ServiceDetail() {
   const { id } = useParams();
@@ -17,6 +17,7 @@ export default function ServiceDetail() {
   const { currency, convertCurrency } = useCurrency();
   const queryClient = useQueryClient();
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
 
@@ -242,8 +243,7 @@ export default function ServiceDetail() {
             <button 
               onClick={() => {
                 if (!user) {
-                    toast.error(t('loginToTrade', 'Please log in to make an offer.'));
-                    navigate('/login');
+                    setIsAuthModalOpen(true);
                     return;
                 }
                 setIsTradeDeckOpen(true);
@@ -267,6 +267,15 @@ export default function ServiceDetail() {
             receiver_email: service.provider_email
         }} 
         onSubmit={onTradeSubmit} 
+      />
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={() => {
+            queryClient.invalidateQueries(['user', 'me']);
+            setIsTradeDeckOpen(true);
+        }}
       />
     </div>
   );

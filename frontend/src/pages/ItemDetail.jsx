@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getItem, getCategories, getMe, getItems } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -9,13 +9,16 @@ import TradeDeck from '../components/trade/TradeDeck';
 import ItemCard from '../components/items/ItemCard';
 import { toast } from 'sonner';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import AuthModal from '../components/common/AuthModal';
 
 export default function ItemDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { t, language, dir } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -191,8 +194,7 @@ export default function ItemDetail() {
                 <button 
                     onClick={() => {
                         if (!user) {
-                            toast.error(t('loginToTrade', 'Please log in to make a trade offer.'));
-                            navigate('/login');
+                            setIsAuthModalOpen(true);
                             return;
                         }
                         setIsTradeDeckOpen(true);
@@ -246,6 +248,15 @@ export default function ItemDetail() {
             receiver_email: item.created_by?.email
         }} 
         onSubmit={onTradeSubmit} 
+      />
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={() => {
+            queryClient.invalidateQueries(['user', 'me']);
+            setIsTradeDeckOpen(true);
+        }}
       />
     </div>
   );
