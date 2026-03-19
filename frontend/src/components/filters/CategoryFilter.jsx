@@ -151,7 +151,10 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
                 : t('categories', 'Categories')}
           </h3>
           {selectedCategory !== 'all' && (
-              <button onClick={resetAll} className="text-xs text-primary hover:underline">
+              <button 
+                onClick={resetAll} 
+                className="text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 hover:bg-primary hover:text-white transition-all shadow-sm"
+              >
                   {t('viewAll', 'View All')}
               </button>
           )}
