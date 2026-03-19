@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, MessageSquare, User, Coins } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, MessageSquare, User, Coins, Clock, Package } from 'lucide-react';
 
 const PencilArrow = ({ className, rotation = 0 }) => (
   <svg 
