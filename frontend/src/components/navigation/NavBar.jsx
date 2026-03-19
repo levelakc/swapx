@@ -18,7 +18,7 @@ const Logo = () => {
     <div className="flex items-center gap-1 group cursor-pointer relative">
       <div className="relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 shrink-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative z-10 flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 bg-background rounded-full border border-primary group-hover:scale-110 transition-all duration-700 shadow-md overflow-hidden">
+        <div className="relative z-10 flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 bg-background rounded-full border border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md overflow-hidden">
           <ImageWithFallback src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
