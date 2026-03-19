@@ -34,7 +34,7 @@ const Logo = () => {
         <span className="text-sm sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
           {t('brand')}
         </span>
-        <InfinityIcon className="w-7 h-7 sm:w-11 sm:h-11 text-primary" strokeWidth={3} />
+        <InfinityIcon className="w-4 h-4 sm:w-6 sm:h-6 text-primary" strokeWidth={3} />
       </div>
     </div>
   );
