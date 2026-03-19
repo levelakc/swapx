@@ -7,7 +7,7 @@ const translations = {
   en: {
     google: "Google",
     facebook: "Facebook",
-    brand: "SwapX",
+    brand: "Ahlafot",
     tagline: "Connect. Trade. Swap.",
     heroTitle: "The Modern Way to Trade and Swap",
     heroSubtitle: "Join our community to trade items, services, and discover new opportunities every day.",
@@ -331,7 +331,7 @@ const translations = {
   },
   he: {
     google: "Google",
-    brand: "SwapX",
+    brand: "Ahlafot",
     tagline: "שדרג את העולם שלך. החלפות.",
     heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
     explore: "חקור עסקאות",

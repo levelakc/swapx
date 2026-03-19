@@ -33,7 +33,6 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   
   const [messageContent, setMessageContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [activeTab, setActiveTab] = useState('details'); 
   const [isEditing, setIsEditing] = useState(false);
   
   const fileInputRef = useRef(null);
@@ -221,6 +220,13 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
       }
   };
 
+  const handleClose = () => {
+      if (trade?.status === 'pending') {
+          statusMutation.mutate({ id: tradeId, status: 'cancelled' });
+      }
+      onClose();
+  };
+
   const renderItemSmall = (item, isMine = false) => {
     const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
     const currencySymbol = currency === 'ILS' ? '₪' : '$';
@@ -228,14 +234,14 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
     return (
         <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${isEditing && isMine ? 'cursor-pointer hover:bg-muted' : ''}`} onClick={() => isEditing && isMine && toggleMyItem(item._id)}>
-            <img src={item.images?.[0]} alt="" className="w-10 h-10 object-cover rounded-lg shadow-sm" />
+            <img src={item.images?.[0]} alt="" className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-lg shadow-sm" />
             <div className="flex-1 min-w-0 text-left">
-                <p className="text-xs font-black truncate">{item.title}</p>
-                <p className="text-[10px] font-bold text-muted-foreground">{currencySymbol}{displayValue.toLocaleString()}</p>
+                <p className="text-[10px] md:text-xs font-black truncate">{item.title}</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground">{currencySymbol}{displayValue.toLocaleString()}</p>
             </div>
             {isEditing && isMine && (
-                <div className="mr-2">
-                    {isSelected ? <Minus size={16} className="text-red-500" /> : <Plus size={16} className="text-green-500" />}
+                <div className="mr-1">
+                    {isSelected ? <Minus size={14} className="text-red-500" /> : <Plus size={14} className="text-green-500" />}
                 </div>
             )}
         </div>
@@ -245,36 +251,19 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const currencySym = currency === 'ILS' ? '₪' : '$';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-background w-full max-w-5xl h-[90vh] md:h-[85vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-primary/20 relative"
+        className="bg-background w-full max-w-2xl h-[95vh] md:h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col border border-primary/20 relative"
       >
-        
-        {/* Mobile Tabs */}
-        <div className="md:hidden flex border-b border-white/10 shrink-0">
-            <button 
-                onClick={() => setActiveTab('details')}
-                className={`flex-1 py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'details' ? 'bg-primary/10 text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
-            >
-                {t('tradeSummary')}
-            </button>
-            <button 
-                onClick={() => setActiveTab('chat')}
-                className={`flex-1 py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'chat' ? 'bg-primary/10 text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
-            >
-                {t('negotiationRoom')}
-            </button>
-        </div>
-
-        {/* Trade Window (Game Like) */}
-        <div className={`w-full md:w-1/2 flex flex-col bg-card/10 border-r border-white/10 ${activeTab !== 'details' && 'hidden md:flex'}`}>
-            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-card/20 shrink-0">
-                <div className="flex items-center gap-2">
-                    <ArrowRightLeft className="text-primary w-5 h-5" />
-                    <h2 className="text-sm font-black tracking-tighter uppercase">{t('tradeOffer')}</h2>
-                </div>
+        {/* Header */}
+        <div className="p-4 border-b border-white/10 flex justify-between items-center bg-card/20 shrink-0">
+            <div className="flex items-center gap-2">
+                <ArrowRightLeft className="text-primary w-5 h-5" />
+                <h2 className="text-sm font-black tracking-tighter uppercase">{t('tradeOffer')}</h2>
+            </div>
+            <div className="flex items-center gap-3">
                 <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                     trade?.status === 'pending' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500' :
                     trade?.status === 'accepted' ? 'bg-green-500/10 border-green-500/20 text-green-500' :
@@ -283,233 +272,229 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                 }`}>
                     {t(trade?.status || 'pending')}
                 </div>
+                <button onClick={handleClose} className="p-2 hover:bg-red-500 hover:text-white rounded-full transition-all bg-muted/20 text-muted-foreground group">
+                    <X size={18} className="group-hover:scale-110 transition-transform" />
+                </button>
             </div>
+        </div>
 
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-4 h-full">
+        {/* Content Area - Scrollable */}
+        <div className="flex-1 overflow-y-auto flex flex-col min-h-0">
+            {/* Trade Windows (Stacked) */}
+            <div className="p-4 flex flex-col gap-4 bg-card/5">
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
                     {/* Left: MY OFFER */}
                     <div className="flex flex-col bg-black/20 rounded-2xl border border-white/5 overflow-hidden">
-                        <div className="p-3 bg-white/5 border-b border-white/5 text-center shrink-0">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-primary">{t('yourOffer')}</p>
+                        <div className="p-2 bg-white/5 border-b border-white/5 text-center shrink-0">
+                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary">{t('yourOffer')}</p>
                         </div>
-                        <div className="flex-1 p-3 overflow-y-auto space-y-2 scrollbar-none">
+                        <div className="p-2 space-y-2 max-h-40 overflow-y-auto scrollbar-none">
                             {isEditing ? (
                                 myInventory.map(item => renderItemSmall(item, true))
                             ) : (
                                 myFullItems.map(item => renderItemSmall(item, false))
                             )}
                             {(!isEditing && myFullItems.length === 0) && (
-                                <div className="text-center p-4 opacity-30 text-[10px] uppercase font-black">{t('none')}</div>
+                                <div className="text-center p-2 opacity-30 text-[9px] uppercase font-black">{t('none')}</div>
                             )}
                         </div>
-                        <div className="p-3 bg-white/5 border-t border-white/5 shrink-0 flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase">{t('addCash')}</span>
+                        <div className="p-2 bg-white/5 border-t border-white/5 shrink-0 flex items-center justify-between">
+                            <span className="text-[9px] font-bold text-muted-foreground uppercase">{t('addCash')}</span>
                             {isEditing ? (
                                 <div className="flex items-center gap-1">
-                                    <span className="text-xs text-green-500">{currencySym}</span>
+                                    <span className="text-[10px] text-green-500">{currencySym}</span>
                                     <input 
                                         type="number" 
                                         value={draftMyCashOffered} 
                                         onChange={e => setDraftMyCashOffered(Number(e.target.value))} 
-                                        className="w-16 bg-background border border-white/10 rounded px-2 py-1 text-xs font-bold text-green-500 text-right outline-none"
+                                        className="w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-green-500 text-right outline-none"
                                     />
                                 </div>
                             ) : (
-                                <span className="text-sm font-black text-green-500">{currencySym}{draftMyCashOffered.toLocaleString()}</span>
+                                <span className="text-xs font-black text-green-500">{currencySym}{draftMyCashOffered.toLocaleString()}</span>
                             )}
                         </div>
                     </div>
 
                     {/* Right: THEIR OFFER */}
                     <div className="flex flex-col bg-black/20 rounded-2xl border border-white/5 overflow-hidden">
-                        <div className="p-3 bg-white/5 border-b border-white/5 text-center shrink-0">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-purple-400">{t('theirItem')}</p>
+                        <div className="p-2 bg-white/5 border-b border-white/5 text-center shrink-0">
+                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-purple-400">{t('theirItem')}</p>
                         </div>
-                        <div className="flex-1 p-3 overflow-y-auto space-y-2 scrollbar-none">
+                        <div className="p-2 space-y-2 max-h-40 overflow-y-auto scrollbar-none">
                             {theirFullItems.map(item => renderItemSmall(item, false))}
                             {theirFullItems.length === 0 && (
-                                <div className="text-center p-4 opacity-30 text-[10px] uppercase font-black">{t('none')}</div>
+                                <div className="text-center p-2 opacity-30 text-[9px] uppercase font-black">{t('none')}</div>
                             )}
                         </div>
-                        <div className="p-3 bg-white/5 border-t border-white/5 shrink-0 flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase">{t('requestCash')}</span>
+                        <div className="p-2 bg-white/5 border-t border-white/5 shrink-0 flex items-center justify-between">
+                            <span className="text-[9px] font-bold text-muted-foreground uppercase">{t('requestCash')}</span>
                             {isEditing ? (
                                 <div className="flex items-center gap-1">
-                                    <span className="text-xs text-blue-500">{currencySym}</span>
+                                    <span className="text-[10px] text-blue-500">{currencySym}</span>
                                     <input 
                                         type="number" 
                                         value={draftMyCashRequested} 
                                         onChange={e => setDraftMyCashRequested(Number(e.target.value))} 
-                                        className="w-16 bg-background border border-white/10 rounded px-2 py-1 text-xs font-bold text-blue-500 text-right outline-none"
+                                        className="w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-blue-500 text-right outline-none"
                                     />
                                 </div>
                             ) : (
-                                <span className="text-sm font-black text-blue-500">{currencySym}{draftMyCashRequested.toLocaleString()}</span>
+                                <span className="text-xs font-black text-blue-500">{currencySym}{draftMyCashRequested.toLocaleString()}</span>
                             )}
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Actions */}
-            <div className="p-4 border-t border-white/10 bg-card/20 shrink-0 space-y-3">
-                {trade?.status === 'pending' || trade?.status === 'countered' ? (
-                    isEditing ? (
-                        <div className="grid grid-cols-2 gap-3">
-                            <button onClick={() => setIsEditing(false)} className="py-3 rounded-xl border border-white/10 font-black text-xs uppercase tracking-widest hover:bg-muted transition-all">
-                                {t('cancel')}
-                            </button>
-                            <button onClick={submitCounterOffer} disabled={counterMutation.isLoading} className="py-3 rounded-xl bg-primary text-white font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center">
-                                {counterMutation.isLoading ? <Loader2 size={16} className="animate-spin" /> : t('sendOffer')}
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-2 gap-3">
-                            <button 
-                                onClick={() => statusMutation.mutate({ id: tradeId, status: 'cancelled' })}
-                                className="py-3 rounded-xl border border-red-500/30 text-red-500 font-black text-xs uppercase tracking-widest hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
-                            >
-                                <Trash2 size={16} />
-                                {t('cancel')}
-                            </button>
-                            <button 
-                                onClick={() => setIsEditing(true)}
-                                className="py-3 rounded-xl bg-primary/20 text-primary font-black text-xs uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center justify-center gap-2"
-                            >
-                                <Edit3 size={16} />
-                                {t('counterOffer')}
-                            </button>
-                            {isReceiver && (
-                                <button 
-                                    onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
-                                    className="col-span-2 py-3 rounded-xl bg-green-500 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all"
-                                >
-                                    {t('acceptOffer')}
+                {/* Actions Bar */}
+                <div className="shrink-0 pt-2 border-t border-white/5">
+                    {trade?.status === 'pending' || trade?.status === 'countered' ? (
+                        isEditing ? (
+                            <div className="grid grid-cols-2 gap-2">
+                                <button onClick={() => setIsEditing(false)} className="py-2.5 rounded-xl border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-muted transition-all">
+                                    {t('cancel')}
                                 </button>
-                            )}
-                        </div>
-                    )
-                ) : (
-                    <div className="text-center py-2 text-sm font-black uppercase text-muted-foreground tracking-widest">
-                        {t('tradeOffer')} {t(trade?.status)}
-                    </div>
-                )}
-            </div>
-        </div>
-
-        {/* Right Side: Chat Interface */}
-        <div className={`w-full md:w-1/2 flex flex-col bg-background relative overflow-hidden ${activeTab !== 'chat' && 'hidden md:flex'}`}>
-            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-card/10 shrink-0">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Info className="text-primary w-4 h-4" />
-                    </div>
-                    <div>
-                        <h2 className="text-sm font-black uppercase tracking-tighter">{t('negotiationRoom')}</h2>
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                            <span className="text-[9px] font-bold text-muted-foreground uppercase">{t('chatWithUser')}</span>
-                        </div>
-                    </div>
-                </div>
-                <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-all bg-muted/20">
-                    <X size={20} />
-                </button>
-            </div>
-
-            {/* Chat List */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-none">
-                {isLoadingMessages ? (
-                    <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary" /></div>
-                ) : messages.length > 0 ? (
-                    messages.map((msg, idx) => {
-                        const isMe = msg.sender_email === me?.email;
-                        const isSystem = msg.type === 'system';
-                        
-                        if (isSystem) {
-                            return (
-                                <div key={msg._id} className="flex justify-center my-2">
-                                    <span className="px-3 py-1 bg-muted/50 rounded-full text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-                                        {msg.content}
-                                    </span>
-                                </div>
-                            );
-                        }
-
-                        return (
-                            <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mt-2`}>
-                                <div className={`max-w-[85%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                                    <div className={`p-3 shadow-md rounded-2xl transition-all ${
-                                        isMe 
-                                        ? 'bg-primary text-primary-foreground rounded-tr-sm' 
-                                        : 'bg-card text-card-foreground border border-white/5 rounded-tl-sm'
-                                    }`}>
-                                        {msg.type === 'image' ? (
-                                            <img src={msg.content} alt="" className="w-full max-w-xs rounded-xl" />
-                                        ) : msg.type === 'voice' ? (
-                                            <audio controls src={msg.content} className="w-full max-w-[200px] h-8 filter invert dark:invert-0" />
-                                        ) : msg.type === 'offer' || msg.type === 'counter' || msg.type === 'cancelled' ? (
-                                            <div className="flex items-center gap-2 opacity-80">
-                                                <HeartHandshake size={16} />
-                                                <p className="text-xs font-black uppercase tracking-wide">{msg.content}</p>
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm font-bold leading-relaxed">{msg.content}</p>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center mt-1 opacity-40 gap-1">
-                                        <span className="text-[8px] font-black">{format(new Date(msg.createdAt), 'p')}</span>
-                                    </div>
-                                </div>
+                                <button onClick={submitCounterOffer} disabled={counterMutation.isLoading} className="py-2.5 rounded-xl bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center">
+                                    {counterMutation.isLoading ? <Loader2 size={14} className="animate-spin" /> : t('sendOffer')}
+                                </button>
                             </div>
-                        );
-                    })
-                ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground/30 opacity-20">
-                        <Send size={48} />
-                        <p className="font-black text-sm uppercase mt-4 tracking-tighter">{t('startConversation')}</p>
-                    </div>
-                )}
-                <div ref={messagesEndRef} />
-            </div>
-
-            {/* Chat Input */}
-            <div className="p-4 border-t border-white/10 bg-background shrink-0">
-                <div className="flex items-center gap-2">
-                    <button onClick={() => fileInputRef.current.click()} className="p-3 text-muted-foreground hover:bg-muted hover:text-primary rounded-xl transition-all">
-                        <ImageIcon size={20} />
-                    </button>
-                    <div className="flex-1 relative">
-                        <input 
-                            type="text"
-                            value={messageContent}
-                            onChange={handleTyping}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                            placeholder={t('typeAMessage')}
-                            className="w-full bg-muted/40 border-none px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm font-bold transition-all"
-                        />
-                    </div>
-                    {messageContent.trim() ? (
-                        <button onClick={handleSendMessage} className="p-3 bg-primary text-white rounded-xl shadow-lg hover:opacity-90 transition-all">
-                            <Send size={18} />
-                        </button>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                <button 
+                                    onClick={() => statusMutation.mutate({ id: tradeId, status: 'cancelled' })}
+                                    className="py-2.5 rounded-xl border border-red-500/30 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Trash2 size={14} />
+                                    {t('cancel')}
+                                </button>
+                                <button 
+                                    onClick={() => setIsEditing(true)}
+                                    className="py-2.5 rounded-xl bg-primary/20 text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Edit3 size={14} />
+                                    {t('counterOffer')}
+                                </button>
+                                {isReceiver && (
+                                    <button 
+                                        onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
+                                        className="col-span-2 md:col-span-1 py-2.5 rounded-xl bg-green-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all"
+                                    >
+                                        {t('acceptOffer')}
+                                    </button>
+                                )}
+                            </div>
+                        )
                     ) : (
-                        <AudioRecorder onRecordingComplete={(file) => {
-                            const fd = new FormData();
-                            fd.append('media', file);
-                            mediaMutation.mutate(fd);
-                        }} isUploading={mediaMutation.isLoading} />
+                        <div className="text-center py-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                            {t('tradeOffer')} {t(trade?.status)}
+                        </div>
                     )}
                 </div>
-                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
-                    if (e.target.files[0]) {
-                        const fd = new FormData();
-                        fd.append('media', e.target.files[0]);
-                        mediaMutation.mutate(fd);
-                    }
-                }} />
+            </div>
+
+            {/* Chat Interface (Integrated) */}
+            <div className="flex-1 flex flex-col bg-background relative overflow-hidden min-h-[300px] border-t border-white/10">
+                <div className="p-3 bg-card/10 border-b border-white/10 flex items-center gap-2 shrink-0">
+                    <MessageCircle className="text-primary w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">{t('negotiationRoom')}</span>
+                </div>
+
+                {/* Chat List */}
+                <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-none bg-black/5">
+                    {isLoadingMessages ? (
+                        <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary" /></div>
+                    ) : messages.length > 0 ? (
+                        messages.map((msg, idx) => {
+                            const isMe = msg.sender_email === me?.email;
+                            const isSystem = msg.type === 'system';
+                            
+                            if (isSystem) {
+                                return (
+                                    <div key={msg._id} className="flex justify-center my-2">
+                                        <span className="px-3 py-1 bg-muted/50 rounded-full text-[8px] font-black uppercase tracking-widest text-muted-foreground">
+                                            {msg.content}
+                                        </span>
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mt-1`}>
+                                    <div className={`max-w-[85%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                                        <div className={`p-2.5 shadow-sm rounded-2xl transition-all ${
+                                            isMe 
+                                            ? 'bg-primary text-primary-foreground rounded-tr-sm' 
+                                            : 'bg-card text-card-foreground border border-white/5 rounded-tl-sm'
+                                        }`}>
+                                            {msg.type === 'image' ? (
+                                                <img src={msg.content} alt="" className="w-full max-w-[180px] rounded-xl" />
+                                            ) : msg.type === 'voice' ? (
+                                                <audio controls src={msg.content} className="w-full max-w-[160px] h-8 filter invert dark:invert-0" />
+                                            ) : msg.type === 'offer' || msg.type === 'counter' || msg.type === 'cancelled' ? (
+                                                <div className="flex items-center gap-2 opacity-80">
+                                                    <HeartHandshake size={14} />
+                                                    <p className="text-[10px] font-black uppercase tracking-wide">{msg.content}</p>
+                                                </div>
+                                            ) : (
+                                                <p className="text-xs font-bold leading-relaxed">{msg.content}</p>
+                                            )}
+                                        </div>
+                                        <span className="text-[7px] font-black mt-0.5 opacity-30">{format(new Date(msg.createdAt), 'p')}</span>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground/30 opacity-20">
+                            <Send size={32} />
+                            <p className="font-black text-[10px] uppercase mt-2 tracking-tighter">{t('startConversation')}</p>
+                        </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                </div>
+
+                {/* Chat Input */}
+                <div className="p-3 border-t border-white/10 bg-background shrink-0">
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => fileInputRef.current.click()} className="p-2 text-muted-foreground hover:bg-muted hover:text-primary rounded-xl transition-all">
+                            <ImageIcon size={18} />
+                        </button>
+                        <div className="flex-1 relative">
+                            <input 
+                                type="text"
+                                value={messageContent}
+                                onChange={handleTyping}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                placeholder={t('typeAMessage')}
+                                className="w-full bg-muted/40 border-none px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 text-xs font-bold transition-all"
+                            />
+                        </div>
+                        {messageContent.trim() ? (
+                            <button onClick={handleSendMessage} className="p-2 bg-primary text-white rounded-xl shadow-lg hover:opacity-90 transition-all">
+                                <Send size={16} />
+                            </button>
+                        ) : (
+                            <AudioRecorder onRecordingComplete={(file) => {
+                                const fd = new FormData();
+                                fd.append('media', file);
+                                mediaMutation.mutate(fd);
+                            }} isUploading={mediaMutation.isLoading} />
+                        )}
+                    </div>
+                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
+                        if (e.target.files[0]) {
+                            const fd = new FormData();
+                            fd.append('media', e.target.files[0]);
+                            mediaMutation.mutate(fd);
+                        }
+                    }} />
+                </div>
             </div>
         </div>
+      </motion.div>
+    </div>
+  );
+}
       </motion.div>
     </div>
   );
