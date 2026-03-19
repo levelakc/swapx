@@ -34,6 +34,7 @@ const translations = {
     admin: 'Admin',
     login: 'Login',
     logout: 'Logout',
+    menu: 'Menu',
     browseItems: 'Browse Items',
     browseServices: 'Browse Services',
     searchItems: 'Search items to swap...',
@@ -364,7 +365,9 @@ const translations = {
     admin: 'מנהל',
     login: 'התחבר',
     logout: 'התנתק',
-    browseItems: 'עיון בפריטים',
+    menu: 'תפריט',
+    browseItems: 'עיין בפריטים',
+
     browseServices: 'עיון בשירותים',
     signIn: 'התחבר',
     register: 'הירשם',
