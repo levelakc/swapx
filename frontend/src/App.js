@@ -70,6 +70,7 @@ function App() {
                     {/* Protected Routes */}
                     <Route element={<PrivateRoute />}>
                       <Route path="/create" element={<CreateItem />} />
+                      <Route path="/edit-item/:id" element={<CreateItem />} />
                       <Route path="/my-items" element={<MyItems />} />
                       <Route path="/messages" element={<Messages />} />
                       <Route path="/profile" element={<Profile />} />

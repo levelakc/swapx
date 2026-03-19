@@ -1,31 +1,68 @@
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCategories, createCategory, createItem as apiCreateItem } from '../api/api';
-import { useNavigate } from 'react-router-dom';
+import { getCategories, createCategory, createItem as apiCreateItem, getItem, updateItem as apiUpdateItem } from '../api/api';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { toast } from 'sonner';
-import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image as ImageIcon, Plus, Briefcase, Package, Globe, Instagram, Facebook, Map, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image as ImageIcon, Plus, Briefcase, Package, Globe, Instagram, Facebook, Map, ChevronLeft, ChevronRight, Save } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function CreateItem() {
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
+  const { id } = useParams();
+  const isEdit = !!id;
+  const { register, handleSubmit, control, setValue, reset, formState: { errors, isDirty } } = useForm();
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { currency } = useCurrency();
   const queryClient = useQueryClient();
-  const [images, setImages] = useState([]); // Array of { file, preview, isMain }
+  const [images, setImages] = useState([]); // Array of { file, preview, isMain, isExisting }
+  const [originalImages, setOriginalImages] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [listingType, setListingType] = useState('item'); // 'item' or 'service'
+
+  // Fetch item data for editing
+  const { data: itemToEdit, isLoading: isLoadingItem } = useQuery({
+    queryKey: ['item', id],
+    queryFn: () => getItem(id),
+    enabled: isEdit,
+    onSuccess: (data) => {
+        reset({
+            title: data.title,
+            description: data.description,
+            category: data.category?._id || data.category,
+            estimated_value: data.estimated_value,
+            condition: data.condition,
+            location: data.location,
+            looking_for: data.looking_for || [],
+            cash_flexibility: data.cash_flexibility,
+            open_to_other_offers: data.open_to_other_offers,
+            website: data.website,
+            social_instagram: data.social_instagram,
+            social_facebook: data.social_facebook,
+            google_reviews_link: data.google_reviews_link,
+        });
+        setListingType(data.listing_type || 'item');
+        const existingImages = (data.images || []).map((img, i) => ({
+            file: img,
+            preview: img,
+            isMain: i === 0,
+            isExisting: true
+        }));
+        setImages(existingImages);
+        setOriginalImages(JSON.stringify(existingImages.map(img => img.preview)));
+    }
+  });
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
       file,
       preview: URL.createObjectURL(file),
-      isMain: images.length === 0 // First image is main by default
+      isMain: images.length === 0, // First image is main by default
+      isExisting: false
     }));
     setImages(prev => [...prev, ...newImages]);
   };
@@ -92,21 +129,21 @@ export default function CreateItem() {
     });
   };
 
-  const createMutation = useMutation({
-    mutationFn: (itemData) => apiCreateItem(itemData),
+  const saveMutation = useMutation({
+    mutationFn: (itemData) => isEdit ? apiUpdateItem(id, itemData) : apiCreateItem(itemData),
     onSuccess: (newItem) => {
-      toast.success(t('itemListedSuccess', 'Item listed successfully!'));
+      toast.success(isEdit ? t('itemUpdatedSuccess', 'Item updated successfully!') : t('itemListedSuccess', 'Item listed successfully!'));
       queryClient.invalidateQueries(['items', 'my']);
+      queryClient.invalidateQueries(['item', id]);
       
-      // Set cookie for suggestions
-      if (newItem && newItem.category) {
+      if (!isEdit && newItem && newItem.category) {
         document.cookie = `last_category_search=${newItem.category}; path=/; max-age=${60 * 60 * 24 * 7}`;
       }
       
       navigate('/my-items');
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to list item');
+      toast.error(error.message || 'Failed to save item');
     }
   });
 
@@ -116,7 +153,7 @@ export default function CreateItem() {
       return;
     }
 
-    // Sort images so main is first
+    // Sort images so main is first, then extract either the File or the existing string URL
     const sortedImages = [...images].sort((a, b) => b.isMain - a.isMain).map(img => img.file);
     
     const itemData = {
@@ -127,12 +164,32 @@ export default function CreateItem() {
       price_type: listingType === 'service' ? 'hourly' : 'fixed',
     };
 
-    createMutation.mutate(itemData);
+    saveMutation.mutate(itemData);
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      const currentImagesStr = JSON.stringify(images.map(img => img.preview));
+      if (isDirty || currentImagesStr !== originalImages) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty, images, originalImages]);
 
   const conditionOptions = ['new', 'like_new', 'excellent', 'good', 'fair'];
   const cashOptions = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];  
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
+
+  if (isEdit && isLoadingItem) {
+    return (
+        <div className="flex justify-center items-center min-h-[60vh]">
+            <Loader2 className="animate-spin w-12 h-12 text-primary" />
+        </div>
+    );
+  }
 
   return (
     <motion.div 
@@ -144,37 +201,39 @@ export default function CreateItem() {
         <div className="p-8 md:p-10">
           <div className="flex items-center gap-3 mb-8">
             <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-              <Plus size={32} />
+              {isEdit ? <Save size={32} /> : <Plus size={32} />}
             </div>
             <div>
               <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                {t('listYourItem')}
+                {isEdit ? t('editItem', 'Edit Item') : t('listYourItem')}
               </h1>
-              <p className="text-muted-foreground">{t('createItemSubtitle')}</p>
+              <p className="text-muted-foreground">{isEdit ? t('editItemSubtitle', 'Update your listing details') : t('createItemSubtitle')}</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             
             {/* Listing Type Toggle */}
-            <div className="flex justify-center">
-                <div className="bg-secondary/50 p-1 rounded-xl flex gap-1">
-                    <button
-                        type="button"
-                        onClick={() => setListingType('item')}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'item' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                        <Package size={18} /> {t('item')}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setListingType('service')}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'service' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                        <Briefcase size={18} /> {t('service')}
-                    </button>
+            {!isEdit && (
+                <div className="flex justify-center">
+                    <div className="bg-secondary/50 p-1 rounded-xl flex gap-1">
+                        <button
+                            type="button"
+                            onClick={() => setListingType('item')}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'item' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                            <Package size={18} /> {t('item')}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setListingType('service')}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'service' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                            <Briefcase size={18} /> {t('service')}
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
             
             {/* Basic Info Section */}
             <div className="space-y-6">
@@ -498,10 +557,10 @@ export default function CreateItem() {
             <div className="pt-4">
               <button 
                 type="submit" 
-                disabled={createMutation.isLoading} 
+                disabled={saveMutation.isLoading} 
                 className="w-full flex justify-center items-center gap-2 py-4 px-6 border border-transparent rounded-xl shadow-lg shadow-primary/25 text-lg font-bold text-white bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all active:scale-[0.98]"
               >
-                {createMutation.isLoading ? <Loader2 className="animate-spin" /> : t('listMyItem')}
+                {saveMutation.isLoading ? <Loader2 className="animate-spin" /> : (isEdit ? t('saveChanges', 'Save Changes') : t('listMyItem'))}
               </button>
             </div>
           </form>

@@ -111,10 +111,29 @@ export const createItem = (itemData) => {
     }).then(res => res.json());
 };
 
-export const updateItem = (id, itemData) => request(`/items/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(itemData),
-});
+export const updateItem = (id, itemData) => {
+    const formData = new FormData();
+    Object.keys(itemData).forEach(key => {
+        if (key === 'images') {
+            itemData.images.forEach(image => {
+                // If it's a File object (new upload), append it
+                // If it's a string (existing image), append it too (backend handles both)
+                formData.append('images', image);
+            });
+        } else {
+            formData.append(key, itemData[key]);
+        }
+    });
+
+    return fetch(`${API_URL}/items/${id}`, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${getToken()}`,
+            'Accept-Language': localStorage.getItem('language') || 'en',
+        },
+    }).then(res => res.json());
+};
 
 export const deleteItem = (id) => request(`/items/${id}`, {
     method: 'DELETE',
