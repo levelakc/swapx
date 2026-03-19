@@ -12,7 +12,7 @@ const InitialLoader = () => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-[200] bg-background flex items-center justify-center flex-col gap-8"
+      className="fixed inset-0 z-[1000] bg-background flex items-center justify-center flex-col gap-8"
     >
       <div className="relative flex items-center justify-center w-48 h-48 sm:w-64 sm:h-48 shrink-0">
         <motion.div 

@@ -28,7 +28,7 @@ const FuturisticTradeDeck = ({ isOpen, onClose, children }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[700]"
           />
           
           {/* Side Panel */}
@@ -37,7 +37,7 @@ const FuturisticTradeDeck = ({ isOpen, onClose, children }) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full sm:max-w-xl bg-background shadow-2xl z-[101] flex flex-col overflow-hidden"
+            className="fixed top-0 right-0 h-full w-full sm:max-w-xl bg-background shadow-2xl z-[701] flex flex-col overflow-hidden"
           >
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-bold text-foreground">{t('makeOffer')}</h2>

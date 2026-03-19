@@ -278,14 +278,14 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const currencySym = currency === 'ILS' ? '₪' : '$';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
+    <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="bg-background w-full max-w-2xl h-[95vh] md:h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col border border-primary/20 relative"
       >
         {trade?.status === 'cancelled' && (
-            <div className="absolute inset-0 z-[110] bg-background/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
+            <div className="absolute inset-0 z-[710] bg-background/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
                 <div className="space-y-4">
                     <X size={48} className="mx-auto text-muted-foreground opacity-50" />
                     <p className="text-xl font-black uppercase tracking-tighter text-muted-foreground">{t('offerRemovedFromChat', 'Offer removed from the chat')}</p>

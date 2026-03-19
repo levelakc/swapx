@@ -134,7 +134,7 @@ export default function WelcomeTour() {
     <AnimatePresence>
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/10 backdrop-blur-[1px] cursor-pointer"
+          className="fixed inset-0 z-[600] flex items-center justify-center bg-slate-900/10 backdrop-blur-[1px] cursor-pointer"
           onClick={nextStep}
         >
           
@@ -144,7 +144,7 @@ export default function WelcomeTour() {
               key={`arrow-${currentStep}`}
               initial={{ opacity: 0, scale: 0.5, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="z-[110] pointer-events-none"
+              className="z-[610] pointer-events-none"
               style={arrowStyles}
             >
               <PencilArrow rotation={steps[currentStep].rotation} />
