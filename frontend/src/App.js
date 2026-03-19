@@ -23,6 +23,9 @@ import Register from './pages/Register'; // Import Register component
 import PrivateRoute from './components/common/PrivateRoute';
 import StaticPage from './pages/StaticPages';
 import ScrollToTopReset from './components/common/ScrollToTopReset';
+import InitialLoader from './components/common/InitialLoader';
+import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
 
 const queryClient = new QueryClient();
 
@@ -35,9 +38,21 @@ function AppTitleUpdater() {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider> {/* Wrap with LanguageProvider */}
+        <AnimatePresence>
+          {isLoading && <InitialLoader />}
+        </AnimatePresence>
         <AppTitleUpdater />
         <ThemeProvider>
           <CurrencyProvider>
