@@ -28,24 +28,28 @@ export default function CreateItem() {
     queryKey: ['item', id],
     queryFn: () => getItem(id),
     enabled: isEdit,
-    onSuccess: (data) => {
+  });
+
+  // Correctly populate form data when item is loaded
+  useEffect(() => {
+    if (isEdit && itemToEdit) {
         reset({
-            title: data.title,
-            description: data.description,
-            category: data.category?._id || data.category,
-            estimated_value: data.estimated_value,
-            condition: data.condition,
-            location: data.location,
-            looking_for: data.looking_for || [],
-            cash_flexibility: data.cash_flexibility,
-            open_to_other_offers: data.open_to_other_offers,
-            website: data.website,
-            social_instagram: data.social_instagram,
-            social_facebook: data.social_facebook,
-            google_reviews_link: data.google_reviews_link,
+            title: itemToEdit.title,
+            description: itemToEdit.description,
+            category: itemToEdit.category?._id || itemToEdit.category,
+            estimated_value: itemToEdit.estimated_value,
+            condition: itemToEdit.condition,
+            location: itemToEdit.location,
+            looking_for: itemToEdit.looking_for || [],
+            cash_flexibility: itemToEdit.cash_flexibility,
+            open_to_other_offers: itemToEdit.open_to_other_offers,
+            website: itemToEdit.website,
+            social_instagram: itemToEdit.social_instagram,
+            social_facebook: itemToEdit.social_facebook,
+            google_reviews_link: itemToEdit.google_reviews_link,
         });
-        setListingType(data.listing_type || 'item');
-        const existingImages = (data.images || []).map((img, i) => ({
+        setListingType(itemToEdit.listing_type || 'item');
+        const existingImages = (itemToEdit.images || []).map((img, i) => ({
             file: img,
             preview: img,
             isMain: i === 0,
@@ -54,7 +58,7 @@ export default function CreateItem() {
         setImages(existingImages);
         setOriginalImages(JSON.stringify(existingImages.map(img => img.preview)));
     }
-  });
+  }, [isEdit, itemToEdit, reset]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
