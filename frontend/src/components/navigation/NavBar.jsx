@@ -14,7 +14,7 @@ const Logo = () => {
   const { t } = useLanguage();
   return (
     <div className="flex items-center gap-1.5 group cursor-pointer relative">
-      <div className="relative flex items-center justify-center w-10 h-10 sm:w-16 sm:h-16 shrink-0">
+      <div className="relative flex items-center justify-center w-14 h-14 sm:w-24 sm:h-24 shrink-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
           <defs>
@@ -26,12 +26,12 @@ const Logo = () => {
             </textPath>
           </text>
         </svg>
-        <div className="relative z-10 flex items-center justify-center w-8 h-8 sm:w-13 sm:h-13 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg">
-          <InfinityIcon className="w-5 h-5 sm:w-8 sm:h-8 text-primary" strokeWidth={3} />
+        <div className="relative z-10 flex items-center justify-center w-11 h-11 sm:w-19 sm:h-19 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg overflow-hidden">
+          <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
       <div className="flex flex-col leading-none transition-transform duration-300 group-hover:scale-105">
-        <span className="text-lg sm:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
+        <span className="text-xl sm:text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
           {t('brand')}
         </span>
       </div>
