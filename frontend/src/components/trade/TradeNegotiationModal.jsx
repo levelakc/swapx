@@ -23,6 +23,7 @@ import { format } from 'date-fns';
 import io from 'socket.io-client';
 import AudioRecorder from '../common/AudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
+import ItemDetailsModal from './ItemDetailsModal';
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
@@ -34,6 +35,8 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const [messageContent, setMessageContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedItemForDetails, setSelectedItemForDetails] = useState(null);
+  const [isItemDetailsOpen, setIsItemDetailsOpen] = useState(false);
   
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -235,14 +238,23 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     const isSelected = isMine && draftMyItems.includes(item._id);
 
     return (
-        <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${isEditing && isMine ? 'cursor-pointer hover:bg-muted' : ''}`} onClick={() => isEditing && isMine && toggleMyItem(item._id)}>
-            <img src={item.images?.[0]} alt="" className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-lg shadow-sm" />
-            <div className="flex-1 min-w-0 text-left">
+        <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${isEditing && isMine ? 'cursor-pointer hover:bg-muted' : ''}`}>
+            <img 
+                src={item.images?.[0]} 
+                alt="" 
+                className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-lg shadow-sm cursor-zoom-in hover:scale-105 transition-transform" 
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedItemForDetails(item);
+                    setIsItemDetailsOpen(true);
+                }}
+            />
+            <div className="flex-1 min-w-0 text-left cursor-pointer" onClick={() => isEditing && isMine && toggleMyItem(item._id)}>
                 <p className="text-[10px] md:text-xs font-black truncate">{item.title}</p>
                 <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground">{currencySymbol}{displayValue.toLocaleString()}</p>
             </div>
             {isEditing && isMine && (
-                <div className="mr-1">
+                <div className="mr-1 cursor-pointer" onClick={() => toggleMyItem(item._id)}>
                     {isSelected ? <Minus size={14} className="text-red-500" /> : <Plus size={14} className="text-green-500" />}
                 </div>
             )}
@@ -512,6 +524,13 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
             </div>
         </div>
       </motion.div>
+
+      {/* Item Details Popup */}
+      <ItemDetailsModal 
+        isOpen={isItemDetailsOpen} 
+        onClose={() => setIsItemDetailsOpen(false)} 
+        item={selectedItemForDetails} 
+      />
     </div>
   );
 }

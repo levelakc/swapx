@@ -15,12 +15,37 @@ export default function CreateItem() {
   const { t, language } = useLanguage();
   const { currency } = useCurrency();
   const queryClient = useQueryClient();
-  const [mainImageFile, setMainImageFile] = useState(null);
-  const [mainImagePreview, setMainImagePreview] = useState(null);
-  const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
-  const [additionalImagePreviews, setAdditionalImagePreviews] = useState([]);
+  const [images, setImages] = useState([]); // Array of { file, preview, isMain }
   const [newCategory, setNewCategory] = useState('');
   const [listingType, setListingType] = useState('item'); // 'item' or 'service'
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+      isMain: images.length === 0 // First image is main by default
+    }));
+    setImages(prev => [...prev, ...newImages]);
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index);
+      // If we removed the main image, set the first remaining one as main
+      if (prev[index].isMain && newImages.length > 0) {
+        newImages[0].isMain = true;
+      }
+      return newImages;
+    });
+  };
+
+  const setMainImage = (index) => {
+    setImages(prev => prev.map((img, i) => ({
+      ...img,
+      isMain: i === index
+    })));
+  };
 
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories'],
@@ -70,32 +95,20 @@ export default function CreateItem() {
       toast.error(error.message || 'Failed to list item');
     }
   });
-  
-  const handleMainImageChange = (e) => {
-    const file = e.target.files[0];
-    setMainImageFile(file);
-    setMainImagePreview(file ? URL.createObjectURL(file) : null);
-  };
-
-  const handleAdditionalImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setAdditionalImageFiles(files);
-    const previews = files.map(file => URL.createObjectURL(file));
-    setAdditionalImagePreviews(previews);
-  };
 
   const onSubmit = (data) => {
-    if (!mainImageFile) {
-      toast.error(t('mainImageRequiredError', 'Please upload a main image for your item.'));
+    if (images.length === 0) {
+      toast.error(t('mainImageRequiredError', 'Please upload at least one image for your item.'));
       return;
     }
 
-    const images = [mainImageFile, ...additionalImageFiles];
+    // Sort images so main is first
+    const sortedImages = [...images].sort((a, b) => b.isMain - a.isMain).map(img => img.file);
     
     const itemData = {
       ...data,
       estimated_value: Number(data.estimated_value),
-      images,
+      images: sortedImages,
       listing_type: listingType,
       price_type: listingType === 'service' ? 'hourly' : 'fixed',
     };
@@ -104,7 +117,8 @@ export default function CreateItem() {
   };
 
   const conditionOptions = ['new', 'like_new', 'excellent', 'good', 'fair'];
-  const cashOptions = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];  const currencySymbol = currency === 'ILS' ? '₪' : '$';
+  const cashOptions = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];  
+  const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   return (
     <motion.div 
@@ -312,48 +326,52 @@ export default function CreateItem() {
                 <ImageIcon size={16} /> {t('media')}
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('mainImageRequired')}</label>
-                  <div className="relative group cursor-pointer">
-                    <div className={`border-2 border-dashed rounded-xl p-8 transition-colors flex flex-col items-center justify-center text-center ${mainImagePreview ? 'border-primary/50 bg-primary/5' : 'border-muted hover:border-primary/50 hover:bg-muted/50'}`}>
-                      {mainImagePreview ? (
-                        <img src={mainImagePreview} alt="Main Preview" className="h-48 w-full object-cover rounded-lg shadow-md" />
-                      ) : (
-                        <>
-                          <UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
-                          <p className="text-sm font-medium text-primary">{t('uploadAFile')}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{t('orDragAndDrop')}</p>
-                        </>
-                      )}
-                      <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onChange={handleMainImageChange} accept="image/*" />
-                    </div>
+              <div className="space-y-4">
+                <div className="relative group cursor-pointer">
+                  <div className="border-2 border-dashed border-muted hover:border-primary/50 hover:bg-muted/50 rounded-2xl p-10 transition-all flex flex-col items-center justify-center text-center">
+                    <UploadCloud className="h-12 w-12 text-muted-foreground mb-3 group-hover:scale-110 transition-transform" />
+                    <p className="text-sm font-black text-primary uppercase tracking-widest">{t('uploadFiles')}</p>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase font-bold">{t('orDragAndDrop')}</p>
+                    <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" multiple onChange={handleImageChange} accept="image/*" />
                   </div>
-                  {errors.mainImage && <p className="text-red-500 text-xs mt-1">{errors.mainImage.message}</p>}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('additionalImagesOptional')}</label>
-                  <div className="relative group cursor-pointer h-full">
-                    <div className="border-2 border-dashed border-muted hover:border-primary/50 hover:bg-muted/50 rounded-xl p-8 h-full transition-colors flex flex-col items-center justify-center text-center">
-                        <UploadCloud className="h-10 w-10 text-muted-foreground mb-3" />
-                        <p className="text-sm font-medium text-primary">{t('uploadFiles')}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{t('orDragAndDrop')}</p>
-                        <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" multiple onChange={handleAdditionalImageChange} accept="image/*" />
-                    </div>
+                {images.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {images.map((img, i) => (
+                      <div key={i} className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all group ${img.isMain ? 'border-primary shadow-lg shadow-primary/20' : 'border-white/5'}`}>
+                        <img src={img.preview} alt="" className="w-full h-full object-cover" />
+                        
+                        {/* Overlay Actions */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                          {!img.isMain && (
+                            <button 
+                              type="button"
+                              onClick={() => setMainImage(i)}
+                              className="px-2 py-1 bg-primary text-white text-[8px] font-black uppercase tracking-widest rounded-lg"
+                            >
+                              Set Main
+                            </button>
+                          )}
+                          <button 
+                            type="button"
+                            onClick={() => removeImage(i)}
+                            className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+
+                        {img.isMain && (
+                          <div className="absolute top-2 left-2 px-2 py-0.5 bg-primary text-white text-[8px] font-black uppercase tracking-widest rounded-md shadow-lg">
+                            Main
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
-              
-              {additionalImagePreviews.length > 0 && (
-                <div className="grid grid-cols-4 gap-4">
-                  {additionalImagePreviews.map((src, i) => (
-                    <div key={i} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-border">
-                        <img src={src} alt={`Preview ${i}`} className="w-full h-full object-cover" />
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Trading Preferences */}
