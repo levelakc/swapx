@@ -59,7 +59,7 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
               <div className="lg:w-1/2 relative bg-black flex items-center justify-center min-h-[300px] lg:min-h-0">
                 {item.images && item.images.length > 0 ? (
                   <>
-                    <img 
+                    <ImageWithFallback 
                       src={item.images[currentImageIndex]} 
                       alt={item.title} 
                       className="w-full h-full object-contain"

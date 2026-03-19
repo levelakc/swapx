@@ -9,6 +9,8 @@ import FuturisticTradeDeck from './FuturisticTradeDeck';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+import ImageWithFallback from '../common/ImageWithFallback';
+
 function ItemCarouselCard({ item, isSelected, onSelect }) {
     const { t } = useLanguage();
     const { currency, convertCurrency } = useCurrency();
@@ -26,7 +28,7 @@ function ItemCarouselCard({ item, isSelected, onSelect }) {
             whileTap={!isTraded ? { scale: 0.98 } : {}}
         >
             <div className="relative w-24 h-24 rounded-lg overflow-hidden shadow-sm">
-                <img src={item.images?.[0] || 'https://via.placeholder.com/150'} alt={t(item.title)} className="w-full h-full object-cover" />
+                <ImageWithFallback src={item.images?.[0]} alt={t(item.title)} className="w-full h-full object-cover" />
                 {isSelected && (
                     <div className="absolute inset-0 bg-purple-500/30 flex items-center justify-center">
                         <div className="bg-white text-purple-600 rounded-full p-1 shadow-sm">

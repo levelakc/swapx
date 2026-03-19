@@ -24,6 +24,7 @@ import io from 'socket.io-client';
 import AudioRecorder from '../common/AudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
 import ItemDetailsModal from './ItemDetailsModal';
+import ImageWithFallback from '../common/ImageWithFallback';
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
@@ -249,16 +250,18 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
     return (
         <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${isEditing && isMine ? 'cursor-pointer hover:bg-muted' : ''}`}>
-            <img 
-                src={item.images?.[0]} 
-                alt="" 
-                className="w-8 h-8 md:w-10 md:h-10 object-cover rounded-lg shadow-sm cursor-zoom-in hover:scale-105 transition-transform" 
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedItemForDetails(item);
-                    setIsItemDetailsOpen(true);
-                }}
-            />
+            <div className="w-8 h-8 md:w-10 md:h-10 shrink-0">
+                <ImageWithFallback 
+                    src={item.images?.[0]} 
+                    alt="" 
+                    className="w-full h-full object-cover rounded-lg shadow-sm cursor-zoom-in hover:scale-105 transition-transform" 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedItemForDetails(item);
+                        setIsItemDetailsOpen(true);
+                    }}
+                />
+            </div>
             <div className="flex-1 min-w-0 text-left cursor-pointer" onClick={() => isEditing && isMine && toggleMyItem(item._id)}>
                 <p className="text-[10px] md:text-xs font-black truncate">{item.title}</p>
                 <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground">{currencySymbol}{displayValue.toLocaleString()}</p>
@@ -460,7 +463,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                             : 'bg-card text-card-foreground border border-white/5 rounded-tl-sm'
                                         }`}>
                                             {msg.type === 'image' ? (
-                                                <img src={msg.content} alt="" className="w-full max-w-[180px] rounded-xl" />
+                                                <ImageWithFallback src={msg.content} alt="" className="w-full max-w-[180px] rounded-xl" />
                                             ) : msg.type === 'voice' ? (
                                                 <audio controls src={msg.content} className="w-full max-w-[160px] h-8 filter invert dark:invert-0" />
                                             ) : msg.type === 'offer' || msg.type === 'counter' || msg.type === 'cancelled' ? (

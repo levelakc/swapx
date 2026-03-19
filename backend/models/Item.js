@@ -23,7 +23,7 @@ const itemSchema = mongoose.Schema(
     },
     listing_type: {
       type: String,
-      enum: ['item', 'service'],
+      enum: ['item'],
       default: 'item',
     },
     price_type: {

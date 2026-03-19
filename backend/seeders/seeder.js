@@ -342,7 +342,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     description_translations: { en: description_en, he: description },
     category: category.name, 
     subcategory: category.name,
-    listing_type: 'item',
+    
     estimated_value: estimated_value,
     condition: randomCondition,
     images: [randomAsset.url],

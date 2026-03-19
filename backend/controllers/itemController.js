@@ -78,17 +78,10 @@ const getItems = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const listing_type = req.query.listing_type
-    ? {
-        listing_type: req.query.listing_type,
-      }
-    : {};
-
   const query = {
     ...keyword,
     ...categoryQuery,
     ...condition,
-    ...listing_type,
     status: 'active', // Only show active items
   };
 
@@ -148,7 +141,6 @@ const createItem = asyncHandler(async (req, res) => {
     attributes,
     looking_for,
     cash_flexibility,
-    listing_type,
   } = req.body;
 
   // Validate category by ID
@@ -180,7 +172,6 @@ const createItem = asyncHandler(async (req, res) => {
     attributes,
     looking_for,
     cash_flexibility,
-    listing_type: listing_type || 'item',
     created_by: req.user._id,
     seller_full_name: req.user.full_name || 'Ahlafot User',
     seller_avatar: req.user.avatar || `https://placehold.co/100x100/6366f1/white?text=${encodeURIComponent(req.user.full_name || 'U')}`,

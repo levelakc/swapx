@@ -10,6 +10,7 @@ import MakeOfferModal from '../components/trade/MakeOfferModal';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import io from 'socket.io-client';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
@@ -213,7 +214,7 @@ export default function MessageScreen() {
                             : 'bg-card text-card-foreground border border-border rounded-tl-none'
                         }`}>
                             {msg.type === 'image' ? (
-                                <img src={msg.content} alt="shared" className="w-full max-w-sm rounded-lg cursor-pointer hover:opacity-95 transition-opacity" onClick={() => window.open(msg.content, '_blank')} />
+                                <ImageWithFallback src={msg.content} alt="shared" className="w-full max-w-sm rounded-lg cursor-pointer hover:opacity-95 transition-opacity" onClick={() => window.open(msg.content, '_blank')} />
                             ) : msg.type === 'voice' ? (
                                 <div className="flex items-center gap-2 min-w-[200px]">
                                     <audio controls src={msg.content} className="w-full h-8" />

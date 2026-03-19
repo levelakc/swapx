@@ -8,6 +8,7 @@ import { useState } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function ServiceDetail() {
   const { id } = useParams();
@@ -115,8 +116,8 @@ export default function ServiceDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Image */}
-          <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10">
-            <img src={service.images?.[0] || 'https://via.placeholder.com/800x500'} alt={service.title} className="w-full h-auto object-cover max-h-[500px]" />
+          <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10 aspect-video">
+            <ImageWithFallback src={service.images?.[0]} alt={service.title} className="w-full h-full object-cover" />
           </div>
           
           {/* Description */}

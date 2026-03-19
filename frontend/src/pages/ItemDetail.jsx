@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import ItemCard from '../components/items/ItemCard';
 import { toast } from 'sonner';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function ItemDetail() {
   const { id } = useParams();
@@ -115,8 +116,8 @@ export default function ItemDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Image Carousel */}
-          <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10">
-            <img src={item.images?.[0] || 'https://via.placeholder.com/600x400'} alt={item.title} className="w-full h-auto object-cover max-h-[600px]" />
+          <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10 aspect-video">
+            <ImageWithFallback src={item.images?.[0]} alt={item.title} className="w-full h-full object-cover" />
           </div>
 
           {/* Description Section */}

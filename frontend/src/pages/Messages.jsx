@@ -22,6 +22,7 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
@@ -89,7 +90,7 @@ function OfferSummaryCard({ tradeId, onOpen }) {
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground opacity-50">{t('offered')}</p>
                         <div className="flex -space-x-3 overflow-hidden">
                             {offeredItems.slice(0, 3).map((item, i) => (
-                                <img key={i} src={item.images?.[0]} className="w-14 h-14 rounded-2xl border-4 border-card object-cover shadow-lg" alt="" />
+                                <ImageWithFallback key={i} src={item.images?.[0]} className="w-14 h-14 rounded-2xl border-4 border-card object-cover shadow-lg" alt="" />
                             ))}
                             {offeredItems.length > 3 && (
                                 <div className="w-14 h-14 rounded-2xl border-4 border-card bg-muted flex items-center justify-center text-xs font-black">
@@ -107,7 +108,7 @@ function OfferSummaryCard({ tradeId, onOpen }) {
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground opacity-50">{t('requested')}</p>
                         <div className="flex -space-x-3 overflow-hidden">
                             {requestedItems.slice(0, 3).map((item, i) => (
-                                <img key={i} src={item.images?.[0]} className="w-14 h-14 rounded-2xl border-4 border-card object-cover shadow-lg" alt="" />
+                                <ImageWithFallback key={i} src={item.images?.[0]} className="w-14 h-14 rounded-2xl border-4 border-card object-cover shadow-lg" alt="" />
                             ))}
                             {requestedItems.length > 3 && (
                                 <div className="w-14 h-14 rounded-2xl border-4 border-card bg-muted flex items-center justify-center text-xs font-black">
@@ -410,7 +411,7 @@ export default function Messages() {
                         }`}
                     >
                         <div className="relative">
-                            <img src={displayAvatar} className="w-12 h-12 rounded-2xl shadow-md object-cover" alt="" />
+                            <ImageWithFallback src={displayAvatar} className="w-12 h-12 rounded-2xl shadow-md object-cover" alt="" />
                             {isOnline && <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-4 border-card shadow-lg" />}
                         </div>
                         <div className="flex-1 min-w-0">
