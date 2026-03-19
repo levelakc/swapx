@@ -8,7 +8,8 @@ import {
     getTradeById, 
     getItem,
     getMessages,
-    sendMessage
+    sendMessage,
+    updateTradeStatus
 } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
