@@ -77,74 +77,126 @@ export default function Profile() {
   if (error) return <p className="text-red-500 text-center mt-8">Please log in to view your profile.</p>
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 overflow-x-hidden">
-      {/* Profile Card */}
-      <div className="bg-background shadow-lg rounded-lg p-8">
-        <div className="flex flex-col items-center md:flex-row md:items-start md:gap-8">
-          <div className="relative">
-            <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="avatar" className="w-32 h-32 rounded-full ring-4 ring-primary ring-offset-4 ring-offset-background" />
-            <button className="absolute bottom-0 right-0 bg-primary text-primary-content p-2 rounded-full">
-              <Edit className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="mt-6 md:mt-0 text-center md:text-left flex-grow">
-            <form onSubmit={handleSubmit(onUpdateSubmit)}>
-              <input {...register('full_name')} className="text-3xl font-bold bg-transparent focus:bg-input rounded-md"/>
-              <p className="text-muted-foreground flex items-center justify-center md:justify-start">
-                <Mail className="w-4 h-4 mr-2" />{user.email}
-              </p>
-              <textarea {...register('bio')} rows="3" className="w-full text-lg text-muted-foreground mt-2 bg-transparent focus:bg-input rounded-md p-2" placeholder="Your bio..."/>
-              <div className="flex gap-2 mt-2 justify-center md:justify-start">
-                <button type="submit" className="bg-secondary text-secondary-content px-4 py-2 rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors">
-                    {updateMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : 'Save Changes'}
-                </button>
-                <button 
-                    type="button" 
-                    onClick={() => supportMutation.mutate()} 
-                    disabled={supportMutation.isLoading}
-                    className="bg-blue-100 text-blue-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-200 transition-colors flex items-center"
-                >
-                    {supportMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <><MessageCircle className="w-4 h-4 mr-2"/> {t('contactSupport')}</>}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+    <div className="container mx-auto p-4 max-w-5xl space-y-12">
+      {/* Profile Header Section */}
+      <div className="relative group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-600 to-secondary rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+        <div className="relative bg-card rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-white/10 overflow-hidden">
+          {/* Background Decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/5 rounded-full -ml-24 -mb-24 blur-3xl"></div>
 
-        <div className="mt-8 pt-8 border-t grid grid-cols-1 md:grid-cols-3 text-center gap-4">
-          <div>
-            <h4 className="font-bold text-2xl">{user.total_trades || 0}</h4>
-            <p className="text-muted-foreground flex items-center justify-center"><Repeat className="w-4 h-4 mr-1"/> Total Trades</p>
+          <div className="relative flex flex-col items-center md:flex-row md:items-start md:gap-12">
+            <div className="relative shrink-0">
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-primary to-purple-500 rounded-full blur-sm opacity-50 animate-pulse"></div>
+              <img 
+                src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
+                alt="avatar" 
+                className="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-background shadow-2xl" 
+              />
+              <button className="absolute bottom-1 right-1 bg-primary text-primary-content p-2.5 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-background">
+                <Edit className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="mt-8 md:mt-2 text-center md:text-left flex-grow">
+              <form onSubmit={handleSubmit(onUpdateSubmit)} className="space-y-4">
+                <div className="space-y-1">
+                    <input 
+                        {...register('full_name')} 
+                        className="text-4xl md:text-5xl font-black bg-transparent border-none focus:ring-0 p-0 text-foreground w-full text-center md:text-left selection:bg-primary/30"
+                        placeholder={t('fullName')}
+                    />
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-muted-foreground font-bold text-sm uppercase tracking-widest">
+                        <Mail className="w-4 h-4 text-primary" />
+                        <span>{user.email}</span>
+                    </div>
+                </div>
+
+                <textarea 
+                    {...register('bio')} 
+                    rows="3" 
+                    className="w-full text-lg text-muted-foreground bg-muted/20 border border-white/5 focus:border-primary/30 focus:bg-muted/30 rounded-2xl p-4 transition-all resize-none outline-none" 
+                    placeholder={t('writeSomethingAboutYourself', 'Write something about yourself...')}
+                />
+
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                  <button 
+                    type="submit" 
+                    disabled={updateMutation.isLoading}
+                    className="bg-primary text-primary-content px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                  >
+                      {updateMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : t('saveChanges', 'Save Changes')}
+                  </button>
+                  <button 
+                      type="button" 
+                      onClick={() => supportMutation.mutate()} 
+                      disabled={supportMutation.isLoading}
+                      className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2"
+                  >
+                      {supportMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <><MessageCircle className="w-4 h-4"/> {t('contactSupport')}</>}
+                  </button>
+                  
+                  {/* Logout Button - Small and Curvy */}
+                  <button 
+                    type="button"
+                    onClick={handleLogout} 
+                    className="px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest text-red-500 bg-red-500/10 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all active:scale-95 flex items-center gap-2"
+                  >
+                      <LogOut size={16}/>
+                      {t('logout')}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold text-2xl flex items-center justify-center">{user.rating || 0} <Star className="w-5 h-5 ml-1 text-yellow-400"/></h4>
-            <p className="text-muted-foreground">Rating</p>
+
+          <div className="mt-12 pt-10 border-t border-white/5 grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="text-center group/stat">
+              <div className="inline-flex p-3 bg-purple-500/10 rounded-2xl text-purple-500 mb-3 group-hover/stat:scale-110 transition-transform">
+                <Repeat className="w-6 h-6" />
+              </div>
+              <h4 className="font-black text-3xl text-foreground block">{user.total_trades || 0}</h4>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('totalTrades', 'Total Trades')}</p>
+            </div>
+            <div className="text-center group/stat">
+              <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl text-yellow-500 mb-3 group-hover/stat:scale-110 transition-transform">
+                <Star className="w-6 h-6 fill-current" />
+              </div>
+              <div className="flex items-center justify-center gap-1">
+                <h4 className="font-black text-3xl text-foreground">{user.rating || 0}</h4>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('rating', 'Rating')}</p>
+            </div>
+            <div className="text-center group/stat">
+              <div className="inline-flex p-3 bg-blue-500/10 rounded-2xl text-blue-500 mb-3 group-hover/stat:scale-110 transition-transform">
+                <Plus className="w-6 h-6 rotate-45" />
+              </div>
+              <h4 className="font-black text-3xl text-foreground block">{new Date(user.createdAt).toLocaleDateString()}</h4>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('memberSince', 'Member Since')}</p>
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold text-2xl">{new Date(user.createdAt).toLocaleDateString()}</h4>
-            <p className="text-muted-foreground">Member Since</p>
-          </div>
-        </div>
-        
-        <div className="mt-8 pt-8 border-t">
-            <button onClick={handleLogout} className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-red-600 hover:bg-red-700">
-                <LogOut className="mr-2"/>
-                {t('logout')}
-            </button>
         </div>
       </div>
 
       {/* Inventory Section */}
-      <div className="bg-background shadow-lg rounded-lg p-8">
-        <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">{t('myItems', 'My Items')}</h2>
-            <Link to="/create" className="bg-primary text-primary-content px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors">
-                <Plus size={18} /> {t('listItem', 'List Item')}
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h2 className="text-4xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                    {t('myItems', 'My Items')}
+                </h2>
+                <p className="text-muted-foreground font-medium mt-1 text-center sm:text-left">{t('manageYourInventory', 'Manage your trade inventory')}</p>
+            </div>
+            <Link to="/create" className="w-full sm:w-auto bg-primary text-primary-content px-8 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-95 shadow-xl">
+                <Plus size={20} /> {t('listItem', 'List Item')}
             </Link>
         </div>
 
-        {isLoadingItems ? <Loader2 className="mx-auto animate-spin" /> : myItems.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoadingItems ? (
+            <div className="flex justify-center py-20"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>
+        ) : myItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {myItems.map(item => (
                     <ItemCard 
                         key={item._id} 
@@ -156,8 +208,13 @@ export default function Profile() {
                 ))}
             </div>
         ) : (
-            <div className="text-center text-muted-foreground py-8">
-                <p>You haven't listed any items yet.</p>
+            <div className="text-center bg-card rounded-[2.5rem] border border-dashed border-white/10 p-20">
+                <div className="inline-flex p-6 bg-muted/30 rounded-full text-muted-foreground mb-6">
+                    <Plus size={40} className="opacity-50" />
+                </div>
+                <h3 className="text-2xl font-black text-foreground mb-2">{t('noItemsYet', "No items yet")}</h3>
+                <p className="text-muted-foreground max-w-sm mx-auto mb-8">{t('startByListing', "Start by listing something you'd like to trade!")}</p>
+                <Link to="/create" className="text-primary font-black uppercase tracking-widest text-sm hover:underline">{t('listItemNow', "List Item Now")}</Link>
             </div>
         )}
       </div>
