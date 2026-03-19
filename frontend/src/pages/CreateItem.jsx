@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { toast } from 'sonner';
-import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image as ImageIcon, Plus, Briefcase, Package, Globe, Instagram, Facebook, Map } from 'lucide-react';
+import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image as ImageIcon, Plus, Briefcase, Package, Globe, Instagram, Facebook, Map, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithFallback from '../components/common/ImageWithFallback';
@@ -33,19 +33,32 @@ export default function CreateItem() {
   const removeImage = (index) => {
     setImages(prev => {
       const newImages = prev.filter((_, i) => i !== index);
-      // If we removed the main image, set the first remaining one as main
-      if (prev[index].isMain && newImages.length > 0) {
-        newImages[0].isMain = true;
+      // Ensure first image is main if we have images
+      if (newImages.length > 0) {
+        return newImages.map((img, i) => ({ ...img, isMain: i === 0 }));
       }
       return newImages;
     });
   };
 
+  const moveImage = (index, direction) => {
+    setImages(prev => {
+      const newImages = [...prev];
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= newImages.length) return prev;
+      
+      const temp = newImages[index];
+      newImages[index] = newImages[targetIndex];
+      newImages[targetIndex] = temp;
+      
+      // Keep main image as the first one
+      return newImages.map((img, i) => ({ ...img, isMain: i === 0 }));
+    });
+  };
+
   const setMainImage = (index) => {
-    setImages(prev => prev.map((img, i) => ({
-      ...img,
-      isMain: i === index
-    })));
+    if (index === 0) return;
+    moveImage(index, -index); // Move to front
   };
 
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
@@ -344,28 +357,41 @@ export default function CreateItem() {
                         <ImageWithFallback src={img.preview} alt="" className="w-full h-full object-cover" />
                         
                         {/* Overlay Actions */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 px-2">
+                          <div className="flex gap-2 w-full justify-center">
+                              {i > 0 && (
+                                <button type="button" onClick={() => moveImage(i, -1)} className="p-1.5 bg-white/20 hover:bg-white/40 text-white rounded-lg transition-colors">
+                                  <ChevronLeft size={16} />
+                                </button>
+                              )}
+                              {i < images.length - 1 && (
+                                <button type="button" onClick={() => moveImage(i, 1)} className="p-1.5 bg-white/20 hover:bg-white/40 text-white rounded-lg transition-all">
+                                  <ChevronRight size={16} />
+                                </button>
+                              )}
+                          </div>
+                          
                           {!img.isMain && (
                             <button 
                               type="button"
                               onClick={() => setMainImage(i)}
-                              className="px-2 py-1 bg-primary text-white text-[8px] font-black uppercase tracking-widest rounded-lg"
+                              className="w-full py-1.5 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg"
                             >
-                              Set Main
+                              Make Main
                             </button>
                           )}
                           <button 
                             type="button"
                             onClick={() => removeImage(i)}
-                            className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                            className="w-full py-1.5 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-red-600 transition-colors"
                           >
-                            <X size={14} />
+                            Remove
                           </button>
                         </div>
 
                         {img.isMain && (
-                          <div className="absolute top-2 left-2 px-2 py-0.5 bg-primary text-white text-[8px] font-black uppercase tracking-widest rounded-md shadow-lg">
-                            Main
+                          <div className="absolute top-2 left-2 px-3 py-1 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-xl border border-white/20 z-10">
+                            ★ Main Photo
                           </div>
                         )}
                       </div>
