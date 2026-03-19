@@ -88,7 +88,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                                     value={formData.full_name}
                                     onChange={handleChange}
                                     className="w-full bg-muted/50 border-none rounded-2xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 transition-all font-bold"
-                                    placeholder="John Doe"
+                                    placeholder={t('fullNamePlaceholder')}
                                 />
                             </div>
                         </div>
@@ -107,7 +107,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className="w-full bg-muted/50 border-none rounded-2xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 transition-all font-bold"
-                                placeholder="name@example.com"
+                                placeholder={t('emailAddressPlaceholder')}
                             />
                         </div>
                     </div>
