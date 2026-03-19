@@ -206,6 +206,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   };
 
   const submitCounterOffer = () => {
+      // Correctly map items back to their original roles for the backend
       const payload = {
           offered_items: isInitiator ? draftMyItems : draftTheirItems,
           requested_items: isInitiator ? draftTheirItems : draftMyItems,
@@ -261,6 +262,15 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="bg-background w-full max-w-2xl h-[95vh] md:h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col border border-primary/20 relative"
       >
+        {trade?.status === 'cancelled' && (
+            <div className="absolute inset-0 z-[110] bg-background/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
+                <div className="space-y-4">
+                    <X size={48} className="mx-auto text-muted-foreground opacity-50" />
+                    <p className="text-xl font-black uppercase tracking-tighter text-muted-foreground">{t('offerRemovedFromChat', 'Offer removed from the chat')}</p>
+                    <button onClick={onClose} className="px-8 py-3 rounded-2xl bg-muted font-black text-xs uppercase tracking-widest hover:bg-muted/80 transition-all">{t('close')}</button>
+                </div>
+            </div>
+        )}
         {/* Header */}
         <div className="p-4 border-b border-white/10 flex justify-between items-center bg-card/20 shrink-0">
             <div className="flex items-center gap-2">

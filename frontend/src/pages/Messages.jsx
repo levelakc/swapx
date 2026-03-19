@@ -131,6 +131,51 @@ function OfferSummaryCard({ tradeId, onOpen }) {
     );
 }
 
+function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
+    const isMe = msg.sender_email === me?.email;
+    const tradeId = msg.trade_data?.trade_id || msg.related_trade_id;
+
+    const { data: trade } = useQuery({
+        queryKey: ['trade', tradeId],
+        queryFn: () => getTradeById(tradeId),
+        enabled: !!tradeId,
+    });
+
+    if (trade?.status === 'cancelled') {
+        return (
+            <div className="flex items-center gap-2 opacity-50 italic py-1">
+                <X size={14} />
+                <span className="text-xs font-bold">{t('offerRemovedFromChat')}</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-3 border-b border-white/10 pb-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />
+                </div>
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
+                    <p className="text-sm font-bold">{msg.content}</p>
+                </div>
+            </div>
+            <button 
+                onClick={onOpenNegotiation}
+                className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg ${
+                    isMe 
+                    ? 'bg-white/20 hover:bg-white/30 text-white' 
+                    : 'bg-primary text-white hover:opacity-90'
+                }`}
+            >
+                <ExternalLink size={14} />
+                {t('openNegotiation')}
+            </button>
+        </div>
+    );
+}
+
 function ChatMessage({ msg, me, onOpenNegotiation, t }) {
     const isMe = msg.sender_email === me?.email;
     const isSystem = msg.sender_email === 'system@ahlafot.com' || msg.sender_email === 'system';
@@ -157,28 +202,7 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
                 : 'bg-card text-card-foreground border border-border rounded-tl-none'
             }`}>
                 {['offer', 'counter', 'cancelled', 'accept', 'reject'].includes(msg.type) ? (
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3 border-b border-white/10 pb-3 mb-2">
-                            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                                <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
-                                <p className="text-sm font-bold">{msg.content}</p>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={onOpenNegotiation}
-                            className={`w-full py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg ${
-                                isMe 
-                                ? 'bg-white/20 hover:bg-white/30 text-white' 
-                                : 'bg-primary text-white hover:opacity-90'
-                            }`}
-                        >
-                            <ExternalLink size={14} />
-                            {t('openNegotiation')}
-                        </button>
-                    </div>
+                    <OfferMessageContent msg={msg} me={me} t={t} onOpenNegotiation={onOpenNegotiation} />
                 ) : msg.type === 'image' ? (
                     <img src={msg.content} alt="" className="w-full rounded-2xl cursor-pointer hover:opacity-90" onClick={() => window.open(msg.content, '_blank')} />
                 ) : (
@@ -207,10 +231,27 @@ export default function Messages() {
 
   const { data: me } = useQuery({ queryKey: ['user', 'me'], queryFn: getMe });
 
+  const [hiddenConvoIds, setHiddenConvoIds] = useState(() => {
+    try {
+        return JSON.parse(localStorage.getItem('hidden_conversations') || '[]');
+    } catch (e) {
+        return [];
+    }
+  });
+
   const { data: conversations = [], isLoading: isLoadingConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: getConversations,
   });
+
+  const hideConversation = (e, id) => {
+    e.stopPropagation();
+    const newHidden = [...hiddenConvoIds, id];
+    setHiddenConvoIds(newHidden);
+    localStorage.setItem('hidden_conversations', JSON.stringify(newHidden));
+    if (selectedConversationId === id) setSelectedConversationId(null);
+    toast.success(t('offerRemovedFromChat'));
+  };
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery({
     queryKey: ['messages', selectedConversationId],
@@ -220,8 +261,11 @@ export default function Messages() {
   });
 
   const tradeConversations = useMemo(() => {
-    return conversations.filter(c => c.related_trade_id || c.participants.some(p => p.includes('sona') || p.includes('support')));
-  }, [conversations]);
+    return conversations.filter(c => 
+        (c.related_trade_id || c.participants.some(p => p.includes('sona') || p.includes('support'))) &&
+        !hiddenConvoIds.includes(c._id)
+    );
+  }, [conversations, hiddenConvoIds]);
 
   const filteredConversations = useMemo(() => {
     if (!searchQuery) return tradeConversations;
@@ -324,7 +368,7 @@ export default function Messages() {
                     <div 
                         key={convo._id}
                         onClick={() => handleSelectConversation(convo._id)}
-                        className={`p-5 cursor-pointer border-b border-border/40 transition-all flex items-center gap-4 ${
+                        className={`p-5 cursor-pointer border-b border-border/40 transition-all flex items-center gap-4 group relative ${
                             isSelected ? 'bg-primary/10 border-l-4 border-l-primary shadow-inner' : 'hover:bg-muted/40 border-l-4 border-l-transparent'
                         }`}
                     >
@@ -340,8 +384,14 @@ export default function Messages() {
                             <p className="text-xs text-muted-foreground truncate font-bold">{convo.last_message || t('noMessagesYet')}</p>
                         </div>
                         {unreadCount > 0 && (
-                            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-xl flex items-center justify-center text-[10px] font-black">{unreadCount}</div>
+                            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-xl flex items-center justify-center text-[10px] font-black shrink-0">{unreadCount}</div>
                         )}
+                        <button 
+                            onClick={(e) => hideConversation(e, convo._id)}
+                            className="absolute right-2 top-2 p-1 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all"
+                        >
+                            <X size={14} />
+                        </button>
                     </div>
                 );
             })}

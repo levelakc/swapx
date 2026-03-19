@@ -328,6 +328,7 @@ const translations = {
     systemMessage: 'System Message',
     newOfferReceived: 'New Offer Received!',
     openToViewAndChat: 'Open to view items and talk',
+    offerRemovedFromChat: 'Offer removed from the chat',
   },
   he: {
     google: "Google",
@@ -655,6 +656,7 @@ const translations = {
     systemMessage: 'הודעת מערכת',
     newOfferReceived: 'התקבלה הצעה חדשה!',
     openToViewAndChat: 'פתח כדי לצפות בפריטים ולדבר',
+    offerRemovedFromChat: 'ההצעה הוסרה מהצ׳אט',
   },
 };
 
