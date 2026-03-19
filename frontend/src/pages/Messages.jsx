@@ -134,11 +134,22 @@ function OfferSummaryCard({ tradeId, onOpen }) {
 function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
     const isMe = msg.sender_email === me?.email;
     const tradeId = msg.trade_data?.trade_id || msg.related_trade_id;
+    const queryClient = useQueryClient();
 
     const { data: trade } = useQuery({
         queryKey: ['trade', tradeId],
         queryFn: () => getTradeById(tradeId),
         enabled: !!tradeId,
+    });
+
+    const cancelMutation = useMutation({
+        mutationFn: () => updateTradeStatus(tradeId, 'cancelled'),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['trade', tradeId]);
+            queryClient.invalidateQueries(['conversations']);
+            queryClient.invalidateQueries(['messages']);
+            toast.success(t('statusUpdated'));
+        }
     });
 
     if (trade?.status === 'cancelled') {
@@ -151,7 +162,20 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 relative group/offer">
+            {trade?.status === 'pending' && (
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        cancelMutation.mutate();
+                    }}
+                    disabled={cancelMutation.isLoading}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-all shadow-lg z-10"
+                    title={t('cancelOffer')}
+                >
+                    {cancelMutation.isLoading ? <Loader2 size={12} className="animate-spin" /> : <X size={12} strokeWidth={3} />}
+                </button>
+            )}
             <div className="flex items-center gap-3 border-b border-white/10 pb-3 mb-2">
                 <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                     <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />

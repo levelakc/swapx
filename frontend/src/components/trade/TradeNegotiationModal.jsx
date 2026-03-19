@@ -226,9 +226,6 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   };
 
   const handleClose = () => {
-      if (trade?.status === 'pending') {
-          statusMutation.mutate({ id: tradeId, status: 'cancelled' });
-      }
       onClose();
   };
 
