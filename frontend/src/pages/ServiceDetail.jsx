@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getService, getMe, getReviews, addReview } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
@@ -18,6 +18,24 @@ export default function ServiceDetail() {
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: service.title,
+          text: service.description,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast.success(t('linkCopied', 'Link copied to clipboard!'));
+    }
+  };
 
   const { data: user } = useQuery({
     queryKey: ['user', 'me'],
@@ -83,6 +101,14 @@ export default function ServiceDetail() {
         >
           {dir === 'rtl' ? <ArrowRight size={18} /> : <ChevronLeft size={18} />}
           {t('back', 'Back')}
+        </button>
+
+        <button 
+          onClick={handleShare}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border hover:bg-muted transition-all text-sm font-bold shadow-sm"
+        >
+          <Share2 size={18} className="text-primary" />
+          {t('share', 'Share')}
         </button>
       </div>
 

@@ -41,7 +41,7 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
   const isList = viewMode === 'list';
 
   return (
-    <Link to={`/item/${item._id}`} target="_blank" rel="noopener noreferrer" className="block h-full">
+    <Link to={`/item/${item._id}`} className="block h-full">
       <FuturisticCard className="h-full">
         <div className={`flex ${isList ? 'flex-row' : 'flex-col'} h-full`}>
           <div className={`relative ${isList ? 'w-48 h-48 flex-shrink-0' : 'w-full h-48'}`}>

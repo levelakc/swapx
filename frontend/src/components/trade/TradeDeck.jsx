@@ -136,23 +136,18 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
 
     return (
         <FuturisticTradeDeck isOpen={isOpen} onClose={onClose}>
-            <div className="flex flex-col h-full bg-background text-foreground overflow-hidden">
-                {/* Header */}
-                <div className="p-4 border-b flex items-center justify-between bg-muted/20">
-                    <div>
-                        <h2 className="text-xl font-bold flex items-center gap-2">
-                            {isService ? <><Calendar size={20} className="text-primary"/> {t('scheduleDate')}</> : <>🤝 {t('makeOffer')}</>}
-                        </h2>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                            {isService ? t('bookingFor', 'Booking for') : t('tradingFor')}: 
-                            <span className="font-medium text-foreground ml-1">
-                                {targetItem ? t(targetItem.title) : t('negotiation', 'Negotiation')}
-                            </span>
+            <div className="flex flex-col min-h-full bg-background text-foreground">
+                <div className="p-4 sm:p-6 space-y-8 text-foreground flex-1">
+                    
+                    {/* Header info in content */}
+                    <div className="bg-muted/30 p-4 rounded-2xl border border-dashed mb-6">
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest mb-1">
+                            {isService ? t('bookingFor', 'Booking for') : t('tradingFor')}
                         </p>
+                        <h3 className="text-lg font-bold text-foreground">
+                            {targetItem ? t(targetItem.title) : t('negotiation', 'Negotiation')}
+                        </h3>
                     </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-8 text-foreground">
                     
                     {/* Date Selection for Services */}
                     {isService && (

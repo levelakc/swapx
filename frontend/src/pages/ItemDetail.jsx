@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getItem, getCategories, getMe, getItems } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Loader2, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ArrowRight, Share2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import ItemCard from '../components/items/ItemCard';
@@ -15,6 +15,24 @@ export default function ItemDetail() {
   const { t, language, dir } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: item.title,
+          text: item.description,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast.success(t('linkCopied', 'Link copied to clipboard!'));
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -83,6 +101,14 @@ export default function ItemDetail() {
         >
           {dir === 'rtl' ? <ArrowRight size={18} /> : <ChevronLeft size={18} />}
           {t('back', 'Back')}
+        </button>
+
+        <button 
+          onClick={handleShare}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border hover:bg-muted transition-all text-sm font-bold shadow-sm"
+        >
+          <Share2 size={18} className="text-primary" />
+          {t('share', 'Share')}
         </button>
       </div>
 

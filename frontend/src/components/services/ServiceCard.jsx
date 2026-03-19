@@ -13,7 +13,7 @@ export default function ServiceCard({ service }) {
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   return (
-    <Link to={`/service/${service._id}`} target="_blank" rel="noopener noreferrer" className="block h-full">
+    <Link to={`/service/${service._id}`} className="block h-full">
       <FuturisticCard className="h-full">
         <div className="flex flex-col h-full">
           <div className="relative w-full h-48">
