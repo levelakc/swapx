@@ -86,7 +86,7 @@ export default function NavBar() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-2' : 'bg-background py-3'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-2' : 'bg-background py-3'}`}>
       <div className="w-full px-2 sm:px-8">
         <div className="flex items-center justify-between">
           
@@ -211,7 +211,7 @@ export default function NavBar() {
             initial={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
-            className={`fixed inset-y-0 ${dir === 'ltr' ? 'left-0' : 'right-0'} w-72 bg-background/95 backdrop-blur-xl border-x border-border shadow-2xl z-[60] p-6 flex flex-col gap-8`}
+            className={`fixed inset-y-0 ${dir === 'ltr' ? 'left-0' : 'right-0'} w-72 bg-background border-x border-border shadow-2xl z-[120] p-6 flex flex-col gap-8`}
           >
             <div className="flex items-center justify-between mb-2">
                 <Logo />
@@ -279,7 +279,7 @@ export default function NavBar() {
         )}
       </AnimatePresence>
       {isOpen && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[55]" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]" onClick={() => setIsOpen(false)} />
       )}
     </header>
   );
