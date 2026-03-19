@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ChevronRight, Package, Info } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
+import ImageWithFallback from '../common/ImageWithFallback';
 
 const ItemDetailsModal = ({ isOpen, onClose, item }) => {
   const { t, language, dir } = useLanguage();
