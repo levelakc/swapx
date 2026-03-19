@@ -10,6 +10,8 @@ import LanguageSwitcher from '../LanguageSwitcher';
 import { motion, AnimatePresence } from 'framer-motion';
 import logoIcon from '../../imgs/1.jpg';
 
+import ImageWithFallback from '../common/ImageWithFallback';
+
 const Logo = () => {
   const { t } = useLanguage();
   return (
@@ -27,7 +29,7 @@ const Logo = () => {
           </text>
         </svg>
         <div className="relative z-10 flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 bg-background rounded-full border border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md overflow-hidden">
-          <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
+          <ImageWithFallback src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
     </div>
@@ -236,7 +238,9 @@ export default function NavBar() {
                     ) : (
                         <>
                             <Link to="/profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
-                                <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-12 w-12 rounded-2xl object-cover ring-2 ring-border group-hover:ring-primary transition-all shadow-md" />
+                                <div className="w-12 h-12 shrink-0">
+                                    <ImageWithFallback src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="w-full h-full rounded-2xl object-cover ring-2 ring-border group-hover:ring-primary transition-all shadow-md" />
+                                </div>
                                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">{t('profile')}</span>
                             </Link>
                             {user?.role === 'admin' && (

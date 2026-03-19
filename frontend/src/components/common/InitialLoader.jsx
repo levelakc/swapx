@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import logoIcon from '../../imgs/1.jpg';
 import { useLanguage } from '../../contexts/LanguageContext';
+import ImageWithFallback from './ImageWithFallback';
 
 const InitialLoader = () => {
   const { t } = useLanguage();
@@ -43,7 +44,7 @@ const InitialLoader = () => {
           }}
           className="relative z-10 flex items-center justify-center w-32 h-32 sm:w-44 sm:h-44 bg-background rounded-full border-4 border-primary shadow-2xl overflow-hidden"
         >
-          <img src={logoIcon} alt="Logo" className="w-full h-full object-cover" />
+          <ImageWithFallback src={logoIcon} alt="Logo" className="w-full h-full object-cover" />
         </motion.div>
       </div>
 

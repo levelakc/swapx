@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Link } from 'react-router-dom';
 import logoIcon from '../../imgs/1.jpg';
+import ImageWithFallback from './ImageWithFallback';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -12,7 +13,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <Link to="/" className="flex items-center gap-2 group transition-all duration-300">
-                <img src={logoIcon} alt="Ahlafot" className="h-10 w-auto object-contain rounded-lg transition-transform group-hover:scale-105" />
+                <div className="h-10 w-10 shrink-0">
+                    <ImageWithFallback src={logoIcon} alt="Ahlafot" className="w-full h-full object-contain rounded-lg transition-transform group-hover:scale-105" />
+                </div>
                 <h3 className="text-xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform">
                     {t('brand')}
                 </h3>
