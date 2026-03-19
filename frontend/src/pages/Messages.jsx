@@ -419,7 +419,24 @@ export default function Messages() {
                                 <p className="font-black text-sm truncate">{displayName}</p>
                                 <span className="text-[10px] font-bold opacity-40">{format(new Date(convo.last_message_at), 'p')}</span>
                             </div>
-                            <p className="text-xs text-muted-foreground truncate font-bold">{convo.last_message || t('noMessagesYet')}</p>
+                            <p className="text-xs text-muted-foreground truncate font-bold">
+                                {(() => {
+                                    const privateStrings = [
+                                        'New trade offer', 
+                                        'Counter offer sent!', 
+                                        'Offer removed', 
+                                        'Sent you a trade offer!',
+                                        'Trade accepted.',
+                                        'Trade rejected.',
+                                        'Trade completed.',
+                                        'Proposed a trade'
+                                    ];
+                                    if (privateStrings.some(s => convo.last_message?.includes(s))) {
+                                        return t('negotiationUpdate', 'Negotiation update...');
+                                    }
+                                    return convo.last_message || t('noMessagesYet');
+                                })()}
+                            </p>
                         </div>
                         {unreadCount > 0 && (
                             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-xl flex items-center justify-center text-[10px] font-black shrink-0">{unreadCount}</div>

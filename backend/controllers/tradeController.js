@@ -102,7 +102,7 @@ const createTrade = asyncHandler(async (req, res) => {
       participants: [initiator_email, receiver_email],
       related_item_id: requested_items && requested_items.length > 0 ? requested_items[0] : undefined,
       related_trade_id: newTrade._id,
-      last_message: message || 'New trade offer',
+      last_message: '', // Keep it empty/private initially
   });
 
   // Create initial message in the message collection too (for real-time chat)
@@ -276,15 +276,13 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
         );
         // Add a system message for cancellation
         await Message.create({
-            conversation_id: conversation._id,
+            conversation_id: conversation._id.toString(),
             sender_email: 'system@ahlafot.com',
             content: 'The offer was removed by one of the parties.',
             type: 'system'
         });
-        // Update the conversation's last message
-        conversation.last_message = 'Offer removed';
-        await conversation.save();
-    }
+        }
+
 
   } else if (status === 'completed') {
       if (trade.status !== 'accepted') {
@@ -416,10 +414,6 @@ const counterTrade = asyncHandler(async (req, res) => {
               cash_requested: trade.cash_requested,
           }
       });
-      
-      // Also update the conversation's last message
-      conversation.last_message = message || 'Counter offer sent!';
-      await conversation.save();
   }
 
   res.json(updatedTrade);
