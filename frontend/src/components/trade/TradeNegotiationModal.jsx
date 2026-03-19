@@ -198,8 +198,10 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
   const handleSendMessage = (e) => {
     if (e) e.preventDefault();
-    if (!messageContent.trim()) return;
-    sendMessageMutation.mutate({ conversation_id: conversationId, content: messageContent });
+    if (!messageContent.trim() || sendMessageMutation.isLoading) return;
+    const content = messageContent;
+    setMessageContent('');
+    sendMessageMutation.mutate({ conversation_id: conversationId, content });
   };
 
   const handleTyping = (e) => {

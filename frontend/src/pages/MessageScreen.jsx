@@ -140,7 +140,9 @@ export default function MessageScreen() {
 
   const handleSendMessage = () => {
     if (!message.trim() || !user || messageMutation.isLoading) return;
-    messageMutation.mutate({ content: message, type: 'text', sender: user.email });
+    const content = message;
+    setMessage('');
+    messageMutation.mutate({ content, type: 'text', sender: user.email });
   };
 
   const handleSendOffer = (offerData) => {
