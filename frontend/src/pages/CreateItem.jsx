@@ -211,6 +211,41 @@ export default function CreateItem({ id: propsId, onSuccess }) {
     >
       <div className={`${isModal ? '' : 'bg-card/50 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden'}`}>
         <div className={`${isModal ? 'p-0' : 'p-8 md:p-10'}`}>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+              {isEdit ? <Save size={32} /> : <Plus size={32} />}
+            </div>
+            <div>
+              <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                {isEdit ? t('editItem', 'Edit Item') : t('listYourItem')}
+              </h1>
+              <p className="text-muted-foreground">{isEdit ? t('editItemSubtitle', 'Update your listing details') : t('createItemSubtitle')}</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            
+            {/* Listing Type Toggle */}
+            {!isEdit && (
+                <div className="flex justify-center">
+                    <div className="bg-secondary/50 p-1 rounded-xl flex gap-1">
+                        <button
+                            type="button"
+                            onClick={() => setListingType('item')}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'item' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                            <Package size={18} /> {t('item')}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setListingType('service')}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all ${listingType === 'service' ? 'bg-primary text-primary-content shadow-md' : 'text-muted-foreground hover:text-foreground'}`}
+                        >
+                            <Briefcase size={18} /> {t('service')}
+                        </button>
+                    </div>
+                </div>
+            )}
             
             {/* Basic Info Section */}
             <div className="space-y-6">
