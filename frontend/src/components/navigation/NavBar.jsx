@@ -250,7 +250,7 @@ export default function NavBar() {
                         </>
                     ) : (
                         <>
-                            <Link to="/profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
+                            <Link to="/profile" id="tour-profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
                                 <div className="w-12 h-12 shrink-0">
                                     <ImageWithFallback src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="w-full h-full rounded-2xl object-cover ring-2 ring-border group-hover:ring-primary transition-all shadow-md" />
                                 </div>

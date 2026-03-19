@@ -6,14 +6,21 @@ import { X, ChevronRight, ChevronLeft, Sparkles, Compass, Briefcase, Search, Mes
 const PencilArrow = ({ className, rotation = 0 }) => (
   <svg 
     viewBox="0 0 100 100" 
-    className={`w-32 h-32 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-lg ${className}`}
+    className={`w-32 h-32 fill-none stroke-primary stroke-[3] stroke-linecap-round stroke-linejoin-round drop-shadow-lg origin-center ${className}`}
     style={{ transform: `rotate(${rotation}deg)` }}
   >
+    {/* A more curved arrow pointing to top-right corner of the SVG box */}
     <path 
-        d="M20,80 Q40,20 80,40 M80,40 L70,30 M80,40 L65,45" 
+        d="M20,90 Q30,40 85,15" 
         className="animate-[dash_2s_ease-in-out_infinite]"
         strokeDasharray="200"
         strokeDashoffset="200"
+    />
+    <path 
+        d="M70,15 L85,15 L85,30" 
+        className="animate-[dash_2s_ease-in-out_infinite]"
+        strokeDasharray="100"
+        strokeDashoffset="100"
     />
     <style>{`
       @keyframes dash {
@@ -53,7 +60,7 @@ export default function WelcomeTour() {
         : "The Explore button at the top is your gateway to a world of items. Cars, watches, or even cards - it's all there!",
       icon: <Compass className="w-8 h-8 text-primary" />,
       target: "tour-explore",
-      rotation: -140
+      rotation: -140 // Pointing UP towards the navbar
     },
     {
       title: language === 'he' ? 'צריכים עזרה מקצועית? 🛠️' : 'Need Professional Help? 🛠️',
@@ -71,7 +78,7 @@ export default function WelcomeTour() {
           : "Use coins to boost your items to the top of the list and get more visibility!",
         icon: <Coins className="w-8 h-8 text-yellow-500" />,
         target: "tour-coins",
-        rotation: -40
+        rotation: -140
       },
     {
       title: language === 'he' ? 'הצעות ומשא ומתן 🤝' : 'Offers & Negotiation 🤝',
@@ -80,7 +87,7 @@ export default function WelcomeTour() {
         : "This is where the magic happens! In Offers, you can manage all your trades, talk to people, and close deals.",
       icon: <MessageSquare className="w-8 h-8 text-emerald-500" />,
       target: "tour-offers",
-      rotation: -40
+      rotation: -140
     },
     {
       title: language === 'he' ? 'הפרופיל שלכם 👤' : 'Your Profile 👤',
@@ -89,7 +96,7 @@ export default function WelcomeTour() {
         : "Here you can edit your details, see the items you've uploaded, and manage your account.",
       icon: <User className="w-8 h-8 text-purple-500" />,
       target: "tour-profile",
-      rotation: -40
+      rotation: 20 // Profile is usually inside the burger menu or sidebar, pointing slightly different
     }
   ];
 
@@ -99,11 +106,23 @@ export default function WelcomeTour() {
         const element = document.getElementById(steps[currentStep].target);
         if (element) {
           const rect = element.getBoundingClientRect();
-          setArrowStyles({
-            top: rect.bottom + 10,
-            left: rect.left + (rect.width / 2) - 64, // Center arrow (w-32 = 128px / 2 = 64)
-            position: 'fixed'
-          });
+          const isNavbarItem = steps[currentStep].target.startsWith('tour-');
+          
+          if (steps[currentStep].target === 'tour-profile') {
+              // Profile is in burger menu, we point from LEFT to RIGHT or so
+              setArrowStyles({
+                top: rect.top + (rect.height / 2) - 64,
+                left: rect.left - 100,
+                position: 'fixed'
+              });
+          } else {
+              // Navbar items - Pointing UP from below
+              setArrowStyles({
+                top: rect.bottom + 10,
+                left: rect.left + (rect.width / 2) - 80, // Point tip is at ~90% width of 128px
+                position: 'fixed'
+              });
+          }
         }
       };
       
