@@ -266,6 +266,23 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
     const itemIdsToRevert = [...trade.offered_items, ...trade.requested_items];
     await Item.updateMany({ _id: { $in: itemIdsToRevert } }, { status: 'active' });
 
+    // Find the related conversation and update the last 'offer' message to say "Offer removed"
+    const conversation = await Conversation.findOne({ related_trade_id: trade._id });
+    if (conversation) {
+        // Find the most recent offer message and update it
+        await Message.updateMany(
+            { conversation_id: conversation._id, type: 'offer' },
+            { $set: { content: 'Offer removed', 'trade_data.status': 'cancelled' } }
+        );
+        // Add a system message for cancellation
+        await Message.create({
+            conversation_id: conversation._id,
+            sender_email: 'system@ahlafot.com',
+            content: 'The offer was removed by one of the parties.',
+            type: 'system'
+        });
+    }
+
   } else if (status === 'completed') {
       if (trade.status !== 'accepted') {
           res.status(400);
@@ -343,6 +360,68 @@ const addTradeMessage = asyncHandler(async (req, res) => {
   res.status(201).json(updatedTrade.messages[updatedTrade.messages.length - 1]);
 });
 
+// @desc    Counter a trade offer
+// @route   PUT /api/trades/:id/counter
+// @access  Private
+const counterTrade = asyncHandler(async (req, res) => {
+  const { offered_items, requested_items, cash_offered, cash_requested, message } = req.body;
+  const tradeId = req.params.id;
+  const userEmail = req.user.email;
+
+  const trade = await Trade.findById(tradeId);
+
+  if (!trade) {
+    res.status(404);
+    throw new Error('Trade not found');
+  }
+
+  if (trade.initiator_email !== userEmail && trade.receiver_email !== userEmail) {
+    res.status(403);
+    throw new Error('Not authorized to counter this trade');
+  }
+
+  if (trade.status !== 'pending' && trade.status !== 'countered') {
+    res.status(400);
+    throw new Error(`Cannot counter a trade with status: ${trade.status}`);
+  }
+
+  trade.offered_items = offered_items;
+  trade.requested_items = requested_items;
+  trade.cash_offered = cash_offered || 0;
+  trade.cash_requested = cash_requested || 0;
+  trade.status = 'countered';
+
+  if (message) {
+      trade.messages.push({ sender: userEmail, content: message, type: 'counter' });
+  }
+
+  const updatedTrade = await trade.save();
+  
+  // We should also emit a system message in the Conversation so the chat shows "Offer Countered".
+  const conversation = await Conversation.findOne({ related_trade_id: trade._id });
+  if (conversation) {
+      await Message.create({
+          conversation_id: conversation._id.toString(),
+          sender_email: userEmail,
+          content: message || 'Counter offer sent!',
+          type: 'offer',
+          trade_data: {
+              trade_id: trade._id,
+              offered_items,
+              requested_items,
+              cash_offered: trade.cash_offered,
+              cash_requested: trade.cash_requested,
+          }
+      });
+      
+      // Also update the conversation's last message
+      conversation.last_message = message || 'Counter offer sent!';
+      await conversation.save();
+  }
+
+  res.json(updatedTrade);
+});
+
 module.exports = {
   createTrade,
   getSentTrades,
@@ -350,4 +429,5 @@ module.exports = {
   getTradeById,
   updateTradeStatus,
   addTradeMessage,
+  counterTrade,
 };

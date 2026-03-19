@@ -164,6 +164,10 @@ export const updateTradeStatus = (id, status) => request(`/trades/${id}`, {
     method: 'PUT',
     body: JSON.stringify({ status }),
 });
+export const counterTrade = (id, data) => request(`/trades/${id}/counter`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+});
 export const addTradeMessage = (id, message) => request(`/trades/${id}/message`, {
     method: 'POST',
     body: JSON.stringify(message),

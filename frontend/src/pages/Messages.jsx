@@ -156,14 +156,14 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
                 ? 'bg-primary text-primary-foreground rounded-tr-none' 
                 : 'bg-card text-card-foreground border border-border rounded-tl-none'
             }`}>
-                {msg.type === 'offer' ? (
+                {['offer', 'counter', 'cancelled', 'accept', 'reject'].includes(msg.type) ? (
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 border-b border-white/10 pb-3 mb-2">
                             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                                 <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')}</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
                                 <p className="text-sm font-bold">{msg.content}</p>
                             </div>
                         </div>
@@ -389,12 +389,12 @@ export default function Messages() {
                 </button>
             </div>
 
-            {/* Chat Messages */}
+            {/* Offer Notifications Timeline */}
             <div className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-none">
                 {isLoadingMessages ? (
                     <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
-                ) : messages.length > 0 ? (
-                    messages.map((msg, idx) => (
+                ) : messages.filter(m => ['offer', 'system', 'counter', 'accept', 'reject', 'cancelled'].includes(m.type)).length > 0 ? (
+                    messages.filter(m => ['offer', 'system', 'counter', 'accept', 'reject', 'cancelled'].includes(m.type)).map((msg, idx) => (
                         <ChatMessage 
                             key={msg._id} 
                             msg={msg} 
@@ -410,27 +410,6 @@ export default function Messages() {
                     </div>
                 )}
                 <div ref={messagesEndRef} />
-            </div>
-
-            {/* Chat Input */}
-            <div className="p-6 border-t border-white/5 bg-card/20">
-                <div className="flex items-center gap-3 max-w-4xl mx-auto">
-                    <input 
-                        type="text" 
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        placeholder={t('typeAMessage')}
-                        className="flex-1 bg-muted/40 border-none rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
-                    <button 
-                        onClick={handleSendMessage}
-                        disabled={!message.trim() || sendMessageMutation.isLoading}
-                        className="p-4 bg-primary text-white rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
-                    >
-                        {sendMessageMutation.isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
-                    </button>
-                </div>
             </div>
           </>
         ) : (

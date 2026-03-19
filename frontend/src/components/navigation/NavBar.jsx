@@ -242,51 +242,43 @@ export default function NavBar() {
                 <button onClick={() => setIsOpen(false)}><X size={24}/></button>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-4">
                 {!user ? (
                     <>
-                        <Link to="/login" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full py-3 px-4 rounded-xl bg-muted/50 font-bold hover:bg-muted transition-all">
+                        <Link to="/login" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
                             <UserIcon size={20} />
-                            {t('signIn')}
+                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('signIn')}</span>
                         </Link>
-                        <Link to="/register" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full py-3 px-4 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+                        <Link to="/register" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-primary bg-primary/10 hover:bg-primary hover:text-white transition-all">
                             <InfinityIcon size={20} />
-                            {t('register')}
+                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('register')}</span>
                         </Link>
                     </>
                 ) : (
                     <>
-                        <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full py-3 px-4 rounded-xl bg-muted/50 font-bold hover:bg-muted transition-all">
-                            <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-6 w-6 rounded-full object-cover" />
-                            {t('profile')}
+                        <Link to="/profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                            <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-6 w-6 rounded-full object-cover ring-1 ring-border" />
+                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('profile')}</span>
                         </Link>
                         {user?.role === 'admin' && (
-                            <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 w-full py-3 px-4 rounded-xl bg-muted/50 font-bold">
+                            <Link to="/admin" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
                                 <LayoutDashboard size={20} />
-                                {t('admin')}
+                                <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('admin')}</span>
                             </Link>
                         )}
                     </>
                 )}
             </div>
 
-            <div className="border-t border-border/50 pt-6 flex flex-col gap-4">
-                <div className="flex items-center justify-between px-2">
-                    <span className="text-sm font-bold text-muted-foreground">{t('theme', 'Theme')}</span>
-                    <button onClick={handleThemeChange} className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                        {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
-                    </button>
-                </div>
-                
-                <div className="flex flex-col gap-2 px-2">
-                    <span className="text-sm font-bold text-muted-foreground mb-1">{t('language', 'Language')}</span>
-                    <LanguageSwitcher />
-                </div>
-
-                <div className="flex flex-col gap-2 px-2">
-                    <span className="text-sm font-bold text-muted-foreground mb-1">{t('currency', 'Currency')}</span>
-                    <CurrencySwitcher />
-                </div>
+            <div className="border-t border-border/50 pt-6 flex flex-wrap items-center justify-center gap-4">
+                <button onClick={handleThemeChange} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+                    {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
+                    <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">
+                        {theme === 'dark' ? t('light') : t('dark')}
+                    </span>
+                </button>
+                <LanguageSwitcher />
+                <CurrencySwitcher />
             </div>
 
             {user && (
