@@ -296,10 +296,21 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                     </div>
                     <button
                         onClick={handleSubmit}
-                        disabled={tradeMutation.isLoading}
+                        disabled={tradeMutation.isLoading || tradeMutation.isSuccess}
                         className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {tradeMutation.isLoading ? <Loader2 className="animate-spin" /> : <><Send size={18} /> {isService ? t('sendRequest', 'Send Request') : t('sendOffer')}</>}
+                        {tradeMutation.isLoading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : tradeMutation.isSuccess ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                                    <div className="w-2 h-2 bg-white rounded-full animate-ping" />
+                                </div>
+                                {t('sending', 'Sending...')}
+                            </div>
+                        ) : (
+                            <><Send size={18} /> {isService ? t('sendRequest', 'Send Request') : t('sendOffer')}</>
+                        )}
                     </button>
                 </div>
             </div>
