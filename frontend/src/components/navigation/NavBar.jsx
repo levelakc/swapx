@@ -97,123 +97,125 @@ export default function NavBar() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[500] transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-2' : 'bg-background py-3'}`}>
-      <div className="w-full px-2 sm:px-8">
-        <div className="flex items-center justify-between">
-          
-          {/* Burger Menu Button - Always at Start (Right in RTL, Left in LTR) */}
-          <button 
-            onClick={() => setIsOpen(!isOpen)} 
-            className="p-2 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center shrink-0"
-          >
-            <Menu size={26} className={isOpen ? 'rotate-90 transition-transform' : ''} />
-            <span className="text-[10px] font-bold uppercase tracking-tighter mt-0.5">{t('menu', 'Menu')}</span>
-          </button>
-
-          {/* Icons Group */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            {user && (
-              <Link 
-                  to="/messages" 
-                  id="tour-offers"
-                  className="flex flex-col items-center p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
-              >
-                  <div className="relative">
-                      <ArrowRightLeft size={22} />
-                      {totalUnread > 0 && (
-                          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
-                          </span>
-                      )}
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers')}</span>
-              </Link>
-            )}
-
-            {user && (
-              <Link 
-                  to="/coins" 
-                  id="tour-coins"
-                  className="flex flex-col items-center p-1.5 sm:p-2.5 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
-              >
-                  <div className="flex items-center gap-1">
-                      <Coins size={20} />
-                      <span className="text-[12px] font-bold">{user.coins}</span>
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
-              </Link>
-            )}
-
-            <NavLink 
-                to="/services" 
-                id="tour-services"
-                className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
-            >
-                <Briefcase size={22} />
-                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                    {t('navServices')}
-                </span>
-            </NavLink>
-
-            <NavLink 
-                to="/browse" 
-                id="tour-explore"
-                className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
-            >
-                <Compass size={22} />
-                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                    {t('navBrowse')}
-                </span>
-            </NavLink>
-
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-[500] transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-2' : 'bg-background py-3'}`}>
+        <div className="w-full px-2 sm:px-8">
+          <div className="flex items-center justify-between">
+            
+            {/* Burger Menu Button - Always at Start (Right in RTL, Left in LTR) */}
             <button 
-                onClick={() => setIsSearchOpen(!isSearchOpen)} 
-                id="tour-search"
-                className={`flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-2 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center shrink-0"
             >
-                <Search size={22}/>
-                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
-                    {t('navSearch')}
-                </span>
+              <Menu size={26} className={isOpen ? 'rotate-90 transition-transform' : ''} />
+              <span className="text-[10px] font-bold uppercase tracking-tighter mt-0.5">{t('menu', 'Menu')}</span>
             </button>
+
+            {/* Icons Group */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              {user && (
+                <Link 
+                    to="/messages" 
+                    id="tour-offers"
+                    className="flex flex-col items-center p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
+                >
+                    <div className="relative">
+                        <ArrowRightLeft size={22} />
+                        {totalUnread > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers')}</span>
+                </Link>
+              )}
+
+              {user && (
+                <Link 
+                    to="/coins" 
+                    id="tour-coins"
+                    className="flex flex-col items-center p-1.5 sm:p-2.5 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
+                >
+                    <div className="flex items-center gap-1">
+                        <Coins size={20} />
+                        <span className="text-[12px] font-bold">{user.coins}</span>
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
+                </Link>
+              )}
+
+              <NavLink 
+                  to="/services" 
+                  id="tour-services"
+                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              >
+                  <Briefcase size={22} />
+                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                      {t('navServices')}
+                  </span>
+              </NavLink>
+
+              <NavLink 
+                  to="/browse" 
+                  id="tour-explore"
+                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              >
+                  <Compass size={22} />
+                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                      {t('navBrowse')}
+                  </span>
+              </NavLink>
+
+              <button 
+                  onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                  id="tour-search"
+                  className={`flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              >
+                  <Search size={22}/>
+                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                      {t('navSearch')}
+                  </span>
+              </button>
+            </div>
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Logo - Always at End (Left in RTL, Right in LTR) */}
+            <Link to="/" className="block shrink-0">
+              <Logo />
+            </Link>
           </div>
-
-          {/* Spacer */}
-          <div className="flex-1" />
-
-          {/* Logo - Always at End (Left in RTL, Right in LTR) */}
-          <Link to="/" className="block shrink-0">
-            <Logo />
-          </Link>
         </div>
+      </header>
 
-        {/* New Elegant Search Dropdown */}
-        <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 px-4 py-2 z-40 flex justify-center pointer-events-none"
-            >
-              <div className="w-full max-w-md bg-background/80 backdrop-blur-md border border-border/50 shadow-xl rounded-2xl px-4 py-2 flex items-center pointer-events-auto">
-                <Search size={18} className="text-muted-foreground mr-3" />
-                <input 
-                  type="text" 
-                  placeholder={t('search')} 
-                  className="flex-1 bg-transparent border-none focus:outline-none text-sm font-bold py-1"
-                  autoFocus
-                  onKeyDown={handleSearch}
-                />
-                <button onClick={() => setIsSearchOpen(false)} className="ml-2 text-muted-foreground hover:text-foreground">
-                  <X size={16} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* New Elegant Search Dropdown */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`fixed ${isScrolled ? 'top-[60px]' : 'top-[80px]'} left-0 right-0 px-4 py-2 z-[490] flex justify-center pointer-events-none transition-all duration-300`}
+          >
+            <div className="w-full max-w-md bg-background/80 backdrop-blur-md border border-border/50 shadow-xl rounded-2xl px-4 py-2 flex items-center pointer-events-auto">
+              <Search size={18} className="text-muted-foreground mr-3" />
+              <input 
+                type="text" 
+                placeholder={t('search')} 
+                className="flex-1 bg-transparent border-none focus:outline-none text-sm font-bold py-1"
+                autoFocus
+                onKeyDown={handleSearch}
+              />
+              <button onClick={() => setIsSearchOpen(false)} className="ml-2 text-muted-foreground hover:text-foreground">
+                <X size={16} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Burger Menu Overlay */}
       <AnimatePresence>
@@ -222,7 +224,7 @@ export default function NavBar() {
             initial={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
-            className={`fixed inset-y-0 ${dir === 'ltr' ? 'left-0' : 'right-0'} w-72 bg-background border-x border-border shadow-2xl z-[120] p-6 flex flex-col gap-8`}
+            className={`fixed inset-y-0 ${dir === 'ltr' ? 'left-0' : 'right-0'} w-72 bg-background border-x border-border shadow-2xl z-[650] p-6 flex flex-col gap-8`}
           >
             <div className="flex items-center justify-between mb-2">
                 <Logo />
@@ -290,8 +292,8 @@ export default function NavBar() {
         )}
       </AnimatePresence>
       {isOpen && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[640]" onClick={() => setIsOpen(false)} />
       )}
-    </header>
+    </>
   );
 }
