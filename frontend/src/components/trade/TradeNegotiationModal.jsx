@@ -16,7 +16,7 @@ import { useCurrency } from '../../contexts/CurrencyContext';
 import { 
     Loader2, X, ArrowRightLeft, DollarSign, Package, Check, 
     Send, Image as ImageIcon, CheckCheck, Info, HeartHandshake,
-    Trash2, Edit3, Plus, Minus
+    Trash2, Edit3, Plus, Minus, MessageCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
