@@ -3,12 +3,15 @@ import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, createTrade } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, Send, Image, Mic, Phone, HeartHandshake, Check, X, Package } from 'lucide-react';
+import { Loader2, Send, Image, HeartHandshake, Package } from 'lucide-react';
 import { toast } from 'sonner';
 import AudioRecorder from '../components/common/AudioRecorder';
 import MakeOfferModal from '../components/trade/MakeOfferModal';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import { motion, AnimatePresence } from 'framer-motion';
+import io from 'socket.io-client';
+
+const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
 export default function MessageScreen() {
   const { id: conversationId } = useParams();
@@ -20,14 +23,15 @@ export default function MessageScreen() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const socket = useRef(null);
 
-  const { data: user, isLoading: isLoadingUser } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ['user', 'me'],
     queryFn: getMe,
     retry: false,
   });
 
-  const { data: conversation, isLoading: isLoadingConversation } = useQuery({
+  const { data: conversation } = useQuery({
     queryKey: ['conversation', conversationId],
     queryFn: () => getConversation(conversationId),
     enabled: !!user,
@@ -37,28 +41,53 @@ export default function MessageScreen() {
     queryKey: ['messages', conversationId],
     queryFn: () => getMessages(conversationId),
     enabled: !!user,
-    refetchInterval: 3000,
+    // Polling as fallback, but socket is primary
+    refetchInterval: 10000, 
   });
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (behavior = "smooth") => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
+  // Socket setup
   useEffect(() => {
-    scrollToBottom();
+    const userData = localStorage.getItem('base44_user');
+    if (!userData || !conversationId) return;
+    const token = JSON.parse(userData)?.token;
+    
+    const newSocket = io(SOCKET_URL, { auth: { token } });
+    socket.current = newSocket;
+    
+    newSocket.emit('joinConversation', { conversationId });
+
+    newSocket.on('newMessage', (newMsg) => {
+        if (newMsg.conversation_id === conversationId) {
+            queryClient.setQueryData(['messages', conversationId], (old = []) => {
+                // Prevent duplicates if query was already refetched
+                if (old.some(m => m._id === newMsg._id)) return old;
+                return [...old, newMsg];
+            });
+            queryClient.invalidateQueries(['conversations']);
+        }
+    });
+
+    return () => newSocket.disconnect();
+  }, [conversationId, queryClient]);
+
+  useEffect(() => {
+    scrollToBottom("auto");
+  }, [conversationId]); // Initial scroll on enter
+
+  useEffect(() => {
+    scrollToBottom("smooth");
   }, [messages]);
 
   const messageMutation = useMutation({
     mutationFn: (messageData) => sendMessage(conversationId, messageData),
-    onSuccess: (newMessage) => {
+    onSuccess: () => {
       setMessage('');
-      // Manually update the query cache to include the new message
-      queryClient.setQueryData(['messages', conversationId], (oldMessages = []) => {
-          // If the server returns all messages, use them, otherwise append
-          if (Array.isArray(newMessage)) return newMessage;
-          return [...oldMessages, newMessage];
-      });
       queryClient.invalidateQueries(['messages', conversationId]);
+      queryClient.invalidateQueries(['conversations']);
     },
     onError: (error) => {
       toast.error(error.message || t('failedToSendChatMessage'));
@@ -80,6 +109,7 @@ export default function MessageScreen() {
     mutationFn: (tradeData) => createTrade(tradeData),
     onSuccess: () => {
       queryClient.invalidateQueries(['messages', conversationId]);
+      queryClient.invalidateQueries(['conversations']);
       toast.success(t('offerSent'));
     },
     onError: (error) => {
@@ -102,15 +132,12 @@ export default function MessageScreen() {
   };
 
   const handleSendMessage = () => {
-    if (message.trim() === '' || !user) return;
+    if (!message.trim() || !user || messageMutation.isLoading) return;
     messageMutation.mutate({ content: message, type: 'text', sender: user.email });
   };
 
   const handleSendOffer = (offerData) => {
-    if (!conversation) {
-        toast.error("Conversation not loaded yet");
-        return;
-    }
+    if (!conversation || createTradeMutation.isLoading) return;
 
     const otherParticipant = conversation.participants.find(p => p !== user.email);
     const requestedItem = conversation.related_item_id?._id || conversation.related_item_id;
@@ -120,7 +147,6 @@ export default function MessageScreen() {
         return;
     }
 
-    // Construct a readable offer message
     const itemsCount = offerData.offeredItems.length;
     const cashText = offerData.cash.amount > 0 
         ? (offerData.cash.type === 'add' ? ` + ${offerData.cash.amount} cash` : ` asking for ${offerData.cash.amount} cash`) 
@@ -138,7 +164,7 @@ export default function MessageScreen() {
     });
   };
 
-  if (isLoadingUser || isLoadingMessages) {
+  if (isLoadingMessages) {
     return <div className="flex justify-center items-center h-[calc(100vh-80px)]"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>;
   }
 
@@ -150,8 +176,6 @@ export default function MessageScreen() {
     <div className="container mx-auto max-w-4xl p-0 md:p-4 h-[calc(100vh-64px)] flex flex-col">
       <div className="flex-grow bg-background md:rounded-2xl md:shadow-xl border border-border overflow-hidden flex flex-col relative">
         
-        {/* Chat Header (Optional - could show recipient info) */}
-        
         {/* Messages Area */}
         <div className="flex-grow p-4 overflow-y-auto space-y-4 bg-muted/20">
           <AnimatePresence initial={false}>
@@ -161,7 +185,7 @@ export default function MessageScreen() {
                 </div>
             )}
             {messages.map((msg) => {
-                const isMe = msg.sender_email === user.email;
+                const isMe = msg.sender_email === user?.email;
                 return (
                     <motion.div 
                         key={msg._id} 
@@ -278,7 +302,7 @@ export default function MessageScreen() {
                     <button 
                         onClick={handleSendMessage} 
                         disabled={messageMutation.isLoading}
-                        className="p-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md active:scale-95"
+                        className="p-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md active:scale-95 disabled:opacity-50"
                     >
                         {messageMutation.isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                     </button>

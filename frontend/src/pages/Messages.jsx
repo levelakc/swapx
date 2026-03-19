@@ -326,7 +326,10 @@ export default function Messages() {
     
     newSocket.on('newMessage', (newMsg) => {
         if (newMsg.conversation_id === selectedConversationId) {
-            queryClient.setQueryData(['messages', selectedConversationId], (old = []) => [...old, newMsg]);
+            queryClient.setQueryData(['messages', selectedConversationId], (old = []) => {
+                if (old.some(m => m._id === newMsg._id)) return old;
+                return [...old, newMsg];
+            });
             queryClient.invalidateQueries(['conversations']);
         }
     });
@@ -350,7 +353,7 @@ export default function Messages() {
   };
 
   const handleSendMessage = () => {
-      if (!message.trim()) return;
+      if (!message.trim() || sendMessageMutation.isLoading) return;
       sendMessageMutation.mutate({ content: message, type: 'text' });
   };
 
