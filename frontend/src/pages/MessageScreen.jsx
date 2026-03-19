@@ -46,6 +46,12 @@ export default function MessageScreen() {
     refetchInterval: 10000, 
   });
 
+  useEffect(() => {
+    if (messages.length > 0) {
+        queryClient.invalidateQueries(['conversations']);
+    }
+  }, [messages, queryClient]);
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
         const container = messagesEndRef.current.parentElement;

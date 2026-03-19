@@ -360,7 +360,18 @@ export default function Messages() {
   const handleSelectConversation = (id) => {
       setSelectedConversationId(id);
       setShowList(false);
+      // Invalidate messages to trigger getMessages and clear unread count on backend
+      queryClient.invalidateQueries(['messages', id]);
+      queryClient.invalidateQueries(['conversations']);
   };
+
+  useEffect(() => {
+    if (selectedConversationId && messages.length > 0) {
+        // After messages are loaded, the backend has cleared the unread count,
+        // so we should refresh the conversation list to update the red dot.
+        queryClient.invalidateQueries(['conversations']);
+    }
+  }, [messages.length, selectedConversationId, queryClient]);
 
   const handleSendMessage = () => {
       if (!message.trim() || sendMessageMutation.isLoading) return;

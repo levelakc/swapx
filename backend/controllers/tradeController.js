@@ -102,7 +102,12 @@ const createTrade = asyncHandler(async (req, res) => {
       participants: [initiator_email, receiver_email],
       related_item_id: requested_items && requested_items.length > 0 ? requested_items[0] : undefined,
       related_trade_id: newTrade._id,
-      last_message: '', // Keep it empty/private initially
+      last_message: message || 'Sent you a trade offer!', // Initialize with first message
+      last_message_at: Date.now(),
+      unread_count: {
+          [initiator_email]: 0,
+          [receiver_email]: 1
+      }
   });
 
   // Create initial message in the message collection too (for real-time chat)
@@ -226,6 +231,18 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
       // Also send a system message to the associated conversation
       const otherConversation = await Conversation.findOne({ related_trade_id: otherTrade._id });
       if (otherConversation) {
+        // Increment unread for participants of overlapping trades
+        const newUC = { ...otherConversation.unread_count };
+        otherConversation.participants.forEach(p => {
+            if (p !== 'system@ahlafot.com') {
+                newUC[p] = (newUC[p] || 0) + 1;
+            }
+        });
+        otherConversation.unread_count = newUC;
+        otherConversation.last_message = 'Trade cancelled due to item being traded elsewhere.';
+        otherConversation.last_message_at = Date.now();
+        await otherConversation.save();
+
         await Message.create({
           conversation_id: otherConversation._id.toString(),
           sender_email: 'system@ahlafot.com',
@@ -233,6 +250,27 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
           type: 'system'
         });
       }
+    }
+
+    // Find the related conversation
+    const conversation = await Conversation.findOne({ related_trade_id: trade._id });
+    if (conversation) {
+        const otherParticipant = conversation.participants.find(p => p !== userEmail);
+        const newUnreadCount = { ...conversation.unread_count };
+        newUnreadCount[otherParticipant] = (newUnreadCount[otherParticipant] || 0) + 1;
+        newUnreadCount[userEmail] = 0; // Clear for current user since they just acted
+        
+        conversation.unread_count = newUnreadCount;
+        conversation.last_message = message || 'Trade accepted.';
+        conversation.last_message_at = Date.now();
+        await conversation.save();
+
+        await Message.create({
+            conversation_id: conversation._id.toString(),
+            sender_email: userEmail,
+            content: message || 'Trade accepted.',
+            type: 'accept'
+        });
     }
 
   } else if (status === 'rejected') {
@@ -252,6 +290,26 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
     const itemIdsToRevert = [...trade.offered_items, ...trade.requested_items];
     await Item.updateMany({ _id: { $in: itemIdsToRevert } }, { status: 'active' });
 
+    const conversation = await Conversation.findOne({ related_trade_id: trade._id });
+    if (conversation) {
+        const otherParticipant = conversation.participants.find(p => p !== userEmail);
+        const newUnreadCount = { ...conversation.unread_count };
+        newUnreadCount[otherParticipant] = (newUnreadCount[otherParticipant] || 0) + 1;
+        newUnreadCount[userEmail] = 0;
+        
+        conversation.unread_count = newUnreadCount;
+        conversation.last_message = message || 'Trade rejected.';
+        conversation.last_message_at = Date.now();
+        await conversation.save();
+
+        await Message.create({
+            conversation_id: conversation._id.toString(),
+            sender_email: userEmail,
+            content: message || 'Trade rejected.',
+            type: 'reject'
+        });
+    }
+
   } else if (status === 'cancelled') {
     // Both initiator and receiver can cancel before acceptance/rejection
     if (trade.status !== 'pending' && trade.status !== 'countered') {
@@ -269,6 +327,16 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
     // Find the related conversation and update the last 'offer' message to say "Offer removed"
     const conversation = await Conversation.findOne({ related_trade_id: trade._id });
     if (conversation) {
+        const otherParticipant = conversation.participants.find(p => p !== userEmail);
+        const newUnreadCount = { ...conversation.unread_count };
+        newUnreadCount[otherParticipant] = (newUnreadCount[otherParticipant] || 0) + 1;
+        newUnreadCount[userEmail] = 0;
+
+        conversation.unread_count = newUnreadCount;
+        conversation.last_message = 'Offer removed';
+        conversation.last_message_at = Date.now();
+        await conversation.save();
+
         // Find the most recent offer message and update it
         await Message.updateMany(
             { conversation_id: conversation._id, type: 'offer' },
@@ -281,7 +349,7 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
             content: 'The offer was removed by one of the parties.',
             type: 'system'
         });
-        }
+    }
 
 
   } else if (status === 'completed') {
@@ -401,6 +469,15 @@ const counterTrade = asyncHandler(async (req, res) => {
   // We should also emit a system message in the Conversation so the chat shows "Offer Countered".
   const conversation = await Conversation.findOne({ related_trade_id: trade._id });
   if (conversation) {
+      const otherParticipant = conversation.participants.find(p => p !== userEmail);
+      const newUnreadCount = { ...conversation.unread_count };
+      newUnreadCount[otherParticipant] = (newUnreadCount[otherParticipant] || 0) + 1;
+      
+      conversation.unread_count = newUnreadCount;
+      conversation.last_message = message || 'Counter offer sent!';
+      conversation.last_message_at = Date.now();
+      await conversation.save();
+
       await Message.create({
           conversation_id: conversation._id.toString(),
           sender_email: userEmail,
