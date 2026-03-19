@@ -106,7 +106,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
 
         const tradeData = {
             initiator_email: user.email,
-            receiver_email: targetItem?.user?.email || targetItem?.created_by?.email || '', 
+            receiver_email: targetItem?.receiver_email || targetItem?.provider_email || targetItem?.user?.email || targetItem?.created_by?.email || '', 
             offered_items: currentOfferedItems,
             requested_items: targetItem ? [targetItem._id] : [],
             cash_offered: currentCashOffered,

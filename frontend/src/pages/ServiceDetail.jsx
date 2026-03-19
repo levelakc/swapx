@@ -256,7 +256,8 @@ export default function ServiceDetail() {
         targetItem={{
             ...service,
             estimated_value: service.hourly_rate,
-            is_service: true
+            is_service: true,
+            receiver_email: service.provider_email
         }} 
         onSubmit={onTradeSubmit} 
       />

@@ -237,7 +237,15 @@ export default function ItemDetail() {
         </div>
       )}
 
-      <TradeDeck isOpen={isTradeDeckOpen} onClose={() => setIsTradeDeckOpen(false)} targetItem={item} onSubmit={onTradeSubmit} />
+      <TradeDeck 
+        isOpen={isTradeDeckOpen} 
+        onClose={() => setIsTradeDeckOpen(false)} 
+        targetItem={{
+            ...item,
+            receiver_email: item.created_by?.email
+        }} 
+        onSubmit={onTradeSubmit} 
+      />
     </div>
   );
 }
