@@ -97,6 +97,8 @@ const translations = {
     sentTradeOffer: 'Sent you a trade offer!',
     tradeOffer: 'Trade Offer',
     negotiationUpdate: 'Negotiation update...',
+    sentAnImage: 'Sent an image 📷',
+    sentAVoice: 'Sent a recording 🎤',
     cancelOffer: 'Cancel Offer',
     cancel: 'Cancel',
     loadingTradeDetails: 'Loading trade details...',
@@ -429,6 +431,8 @@ const translations = {
     sentTradeOffer: 'שלחתי לך הצעת טרייד!',
     tradeOffer: 'הצעת טרייד',
     negotiationUpdate: 'עדכון במשא ומתן...',
+    sentAnImage: 'שלח/ה תמונה 📷',
+    sentAVoice: 'שלח/ה הקלטה 🎤',
     cancelOffer: 'בטל הצעה',
 
     cancel: 'ביטול',

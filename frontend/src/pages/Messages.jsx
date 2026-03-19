@@ -493,6 +493,8 @@ export default function Messages() {
                                     // Handle specific hardcoded system messages from backend
                                     if (convo.last_message === 'Sent you a trade offer!') return t('sentTradeOffer');
                                     if (convo.last_message === 'Counter offer sent!' || convo.last_message === 'I have updated my offer.') return t('updatedOffer');
+                                    if (convo.last_message === 'Sent a image') return t('sentAnImage', 'Sent an image 📷');
+                                    if (convo.last_message === 'Sent a voice') return t('sentAVoice', 'Sent a recording 🎤');
                                     
                                     return convo.last_message || t('noMessagesYet');
                                 })()}

@@ -188,9 +188,10 @@ const sendMessage = asyncHandler(async (req, res) => {
   const createdMessage = await message.save();
 
   // Only update last_message for non-trade types to keep trade actions private in the sidebar
+  const msgType = type || 'text';
   const publicTypes = ['text', 'image', 'voice'];
-  if (publicTypes.includes(type || 'text')) {
-    conversation.last_message = type === 'text' ? content : `Sent a ${type}`;
+  if (publicTypes.includes(msgType)) {
+    conversation.last_message = msgType === 'text' ? content : `Sent a ${msgType}`;
     conversation.last_message_at = Date.now();
   }
 
