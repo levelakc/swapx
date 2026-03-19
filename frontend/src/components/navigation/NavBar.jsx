@@ -32,7 +32,7 @@ const Logo = () => {
         </div>
       </div>
       <div className="flex flex-col leading-none transition-transform duration-300 group-hover:scale-105">
-        <span className="text-lg sm:text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
+        <span className="text-sm sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
           {t('brand')}
         </span>
       </div>
