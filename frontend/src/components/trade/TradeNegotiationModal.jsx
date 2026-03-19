@@ -226,7 +226,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
           requested_items: isInitiator ? draftTheirItems : draftMyItems,
           cash_offered: isInitiator ? draftMyCashOffered : draftMyCashRequested,
           cash_requested: isInitiator ? draftMyCashRequested : draftMyCashOffered,
-          message: "I have updated my offer.",
+          message: t('updatedOffer'),
       };
       counterMutation.mutate(payload);
   };

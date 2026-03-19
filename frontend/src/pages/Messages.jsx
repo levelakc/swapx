@@ -184,7 +184,13 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
                 </div>
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
-                    <p className="text-sm font-bold">{msg.content}</p>
+                    <p className="text-sm font-bold">
+                        {(() => {
+                            if (msg.content === 'Sent you a trade offer!') return t('sentTradeOffer');
+                            if (msg.content === 'Counter offer sent!' || msg.content === 'I have updated my offer.') return t('updatedOffer');
+                            return msg.content;
+                        })()}
+                    </p>
                 </div>
             </div>
             <button 
@@ -474,14 +480,20 @@ export default function Messages() {
                                         'Counter offer sent!', 
                                         'Offer removed', 
                                         'Sent you a trade offer!',
+                                        'I have updated my offer.',
                                         'Trade accepted.',
                                         'Trade rejected.',
                                         'Trade completed.',
                                         'Proposed a trade'
                                     ];
                                     if (privateStrings.some(s => convo.last_message?.includes(s))) {
-                                        return t('negotiationUpdate', 'Negotiation update...');
+                                        return t('negotiationUpdate');
                                     }
+                                    
+                                    // Handle specific hardcoded system messages from backend
+                                    if (convo.last_message === 'Sent you a trade offer!') return t('sentTradeOffer');
+                                    if (convo.last_message === 'Counter offer sent!' || convo.last_message === 'I have updated my offer.') return t('updatedOffer');
+                                    
                                     return convo.last_message || t('noMessagesYet');
                                 })()}
                             </p>
