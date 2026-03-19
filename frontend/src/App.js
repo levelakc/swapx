@@ -4,7 +4,6 @@ import { Toaster } from 'sonner';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'; // Import LanguageProvider
-import { useEffect } from 'react';
 import Layout from './Layout';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
