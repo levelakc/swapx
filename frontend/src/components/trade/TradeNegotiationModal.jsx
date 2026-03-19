@@ -164,7 +164,11 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     
     newSocket.on('newMessage', (newMessage) => {
       if (newMessage.conversation_id === conversationId) {
-          queryClient.setQueryData(['messages', conversationId], (old) => [...(old || []), newMessage]);
+          queryClient.setQueryData(['messages', conversationId], (old) => {
+              const alreadyExists = old?.some(m => m._id === newMessage._id);
+              if (alreadyExists) return old;
+              return [...(old || []), newMessage];
+          });
           queryClient.invalidateQueries(['conversations']);
       }
     });
@@ -439,7 +443,16 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                                 <p className="text-xs font-bold leading-relaxed">{msg.content}</p>
                                             )}
                                         </div>
-                                        <span className="text-[7px] font-black mt-0.5 opacity-30">{format(new Date(msg.createdAt), 'p')}</span>
+                                        <span className="text-[7px] font-black mt-0.5 opacity-30">
+                                            {(() => {
+                                                try {
+                                                    const date = msg.createdAt ? new Date(msg.createdAt) : new Date();
+                                                    return isNaN(date.getTime()) ? '' : format(date, 'p');
+                                                } catch (e) {
+                                                    return '';
+                                                }
+                                            })()}
+                                        </span>
                                     </div>
                                 </div>
                             );
