@@ -49,6 +49,19 @@
 
 body {
   @apply bg-background text-foreground overflow-x-hidden;
+  /* Prevent scroll to bottom on page load */
+  scroll-behavior: auto !important;
+}
+
+/* Fix mobile zoom on focus */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+@media (min-width: 640px) {
+  input, textarea, select {
+    font-size: inherit !important;
+  }
 }
 
 .text-shadow-glow {

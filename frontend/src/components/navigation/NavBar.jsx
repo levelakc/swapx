@@ -100,7 +100,7 @@ export default function NavBar() {
           {/* Icons Group */}
           <div className="flex items-center gap-0.5 sm:gap-1">
             {user && (
-              <Link to="/profile" className="flex flex-col items-center p-1.5 sm:p-2 hover:bg-muted rounded-xl transition-all shrink-0">
+              <Link to="/profile" id="tour-profile" className="flex flex-col items-center p-1.5 sm:p-2 hover:bg-muted rounded-xl transition-all shrink-0">
                 <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-5 w-5 sm:h-6 sm:w-6 rounded-full object-cover ring-1 ring-border" />
                 <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
               </Link>
@@ -109,6 +109,7 @@ export default function NavBar() {
             {user && (
               <Link 
                   to="/messages" 
+                  id="tour-offers"
                   className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
               >
                   <div className="relative">
@@ -127,6 +128,7 @@ export default function NavBar() {
             {user && (
               <Link 
                   to="/coins" 
+                  id="tour-coins"
                   className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
               >
                   <div className="flex items-center gap-1">
@@ -139,6 +141,7 @@ export default function NavBar() {
 
             <NavLink 
                 to="/services" 
+                id="tour-services"
                 className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
                 <Briefcase size={18} />
@@ -149,6 +152,7 @@ export default function NavBar() {
 
             <NavLink 
                 to="/browse" 
+                id="tour-explore"
                 className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
                 <Compass size={18} />
@@ -159,6 +163,7 @@ export default function NavBar() {
 
             <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                id="tour-search"
                 className={`flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
                 <Search size={18}/>
