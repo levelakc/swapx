@@ -8,11 +8,59 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 
+import AuthModal from '../components/common/AuthModal';
+import CreateItem from './CreateItem';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+
+function EditItemModal({ id, isOpen, onClose }) {
+    if (!id) return null;
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    />
+                    
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative bg-background w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden border border-border flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="p-6 border-b border-border flex justify-between items-center bg-card/50 backdrop-blur-md sticky top-0 z-20">
+                            <h2 className="text-2xl font-black uppercase tracking-tighter">
+                                Edit Item
+                            </h2>
+                            <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-8">
+                            <CreateItem id={id} onSuccess={onClose} />
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+}
+
 export default function MyItems() {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('active');
+  const [editingItemId, setEditingItemId] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['user', 'me'],
@@ -63,8 +111,8 @@ export default function MyItems() {
   };
 
   const handleEdit = (itemId) => {
-    // Navigate to an edit page, which can be the same as CreateItem page with pre-filled data
-    navigate(`/edit-item/${itemId}`);
+    setEditingItemId(itemId);
+    setIsEditModalOpen(true);
   };
 
   const handleFeature = (itemId) => {
@@ -149,6 +197,12 @@ export default function MyItems() {
                 <p>No items in this category.</p>
             )}
         </div>
+
+        <EditItemModal 
+            id={editingItemId} 
+            isOpen={isEditModalOpen} 
+            onClose={() => setIsEditModalOpen(false)} 
+        />
     </div>
   );
 }
