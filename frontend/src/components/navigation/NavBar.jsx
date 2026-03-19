@@ -58,6 +58,13 @@ export default function NavBar() {
   });
 
   const totalUnread = conversations.reduce((acc, conv) => {
+    // Check if conversation is hidden in localStorage
+    try {
+        const hiddenConvoIds = JSON.parse(localStorage.getItem('hidden_conversations') || '[]');
+        if (hiddenConvoIds.includes(conv._id)) return acc;
+    } catch (e) {
+        // Fallback if localStorage is corrupt
+    }
     return acc + (conv.unread_count?.[user?.email] || 0);
   }, 0);
 

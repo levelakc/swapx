@@ -275,6 +275,12 @@ export default function Messages() {
     const newHidden = [...hiddenConvoIds, id];
     setHiddenConvoIds(newHidden);
     localStorage.setItem('hidden_conversations', JSON.stringify(newHidden));
+    
+    // Also clear unread count on backend so the red dot goes away
+    getMessages(id).then(() => {
+        queryClient.invalidateQueries(['conversations']);
+    }).catch(err => console.error("Failed to clear unread on hide:", err));
+
     if (selectedConversationId === id) setSelectedConversationId(null);
     toast.success(t('offerRemovedFromChat'));
   };
