@@ -125,10 +125,10 @@ export default function NavBar() {
                 <Link 
                     to="/messages" 
                     id="tour-offers"
-                    className="flex flex-col items-center p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
+                    className="flex flex-col items-center p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-indigo-500 transition-colors relative shrink-0"
                 >
                     <div className="relative">
-                        <ArrowRightLeft size={22} />
+                        <ArrowRightLeft size={22} className="text-indigo-500" />
                         {totalUnread > 0 && (
                             <span className="absolute -top-1 -right-1 flex h-3 w-3">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -147,7 +147,7 @@ export default function NavBar() {
                     className="flex flex-col items-center p-1.5 sm:p-2.5 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
                 >
                     <div className="flex items-center gap-1">
-                        <Coins size={20} />
+                        <Coins size={20} className="text-yellow-500" />
                         <span className="text-[12px] font-bold">{user.coins}</span>
                     </div>
                     <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
@@ -157,9 +157,9 @@ export default function NavBar() {
               <NavLink 
                   to="/services" 
                   id="tour-services"
-                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-blue-500' : 'text-muted-foreground hover:bg-muted hover:text-blue-500'}`}
               >
-                  <Briefcase size={22} />
+                  <Briefcase size={22} className="text-blue-500" />
                   <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                       {t('navServices')}
                   </span>
@@ -168,9 +168,9 @@ export default function NavBar() {
               <NavLink 
                   to="/browse" 
                   id="tour-explore"
-                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                  className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-primary'}`}
               >
-                  <Compass size={22} />
+                  <Compass size={22} className="text-primary" />
                   <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                       {t('navBrowse')}
                   </span>
@@ -179,9 +179,9 @@ export default function NavBar() {
               <button 
                   onClick={() => setIsSearchOpen(!isSearchOpen)} 
                   id="tour-search"
-                  className={`flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                  className={`flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-slate-500' : 'text-muted-foreground hover:bg-muted hover:text-slate-500'}`}
               >
-                  <Search size={22}/>
+                  <Search size={22} className="text-slate-500" />
                   <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                       {t('navSearch')}
                   </span>
