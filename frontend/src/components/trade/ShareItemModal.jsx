@@ -38,7 +38,7 @@ export default function ShareItemModal({ isOpen, onClose, onSubmit }) {
             className="bg-background w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
         >
             <div className="p-4 border-b flex justify-between items-center bg-muted/20">
-                <h3 className="font-bold text-lg flex items-center gap-2"><Package size={20}/> Share an Item</h3>
+                <h3 className="font-bold text-lg flex items-center gap-2"><Package size={20}/> {t('shareItem', 'Share an Item')}</h3>
                 <button onClick={onClose} className="p-1 hover:bg-muted rounded-full"><X size={20}/></button>
             </div>
 
@@ -57,7 +57,7 @@ export default function ShareItemModal({ isOpen, onClose, onSubmit }) {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-muted-foreground">No items to share.</p>
+                    <p className="text-center text-muted-foreground">{t('noItemsToShare', 'No items to share.')}</p>
                 )}
             </div>
 
@@ -67,7 +67,7 @@ export default function ShareItemModal({ isOpen, onClose, onSubmit }) {
                     disabled={!selectedItemId}
                     className="w-full bg-primary text-primary-content py-2 rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors"
                 >
-                    Share Item Link
+                    {t('shareItemLink', 'Share Item Link')}
                 </button>
             </div>
         </motion.div>
