@@ -14,7 +14,7 @@ const Logo = () => {
   const { t } = useLanguage();
   return (
     <div className="flex items-center gap-1.5 group cursor-pointer relative">
-      <div className="relative flex items-center justify-center w-14 h-14 sm:w-24 sm:h-24 shrink-0">
+      <div className="relative flex items-center justify-center w-16 h-16 sm:w-28 sm:h-28 shrink-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
           <defs>
@@ -26,7 +26,7 @@ const Logo = () => {
             </textPath>
           </text>
         </svg>
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 sm:w-19 sm:h-19 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg overflow-hidden">
+        <div className="relative z-10 flex items-center justify-center w-13 h-13 sm:w-22 sm:h-22 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg overflow-hidden">
           <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function NavBar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -84,37 +84,37 @@ export default function NavBar() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
-      <div className="w-full px-1.5 sm:px-6">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-2' : 'bg-background py-3'}`}>
+      <div className="w-full px-2 sm:px-8">
         <div className="flex items-center justify-between">
           
           {/* Burger Menu Button - Always at Start (Right in RTL, Left in LTR) */}
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="p-1.5 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center shrink-0"
+            className="p-2 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center shrink-0"
           >
-            <Menu size={22} className={isOpen ? 'rotate-90 transition-transform' : ''} />
-            <span className="text-[8px] font-bold uppercase tracking-tighter mt-0.5">{t('menu', 'Menu')}</span>
+            <Menu size={26} className={isOpen ? 'rotate-90 transition-transform' : ''} />
+            <span className="text-[10px] font-bold uppercase tracking-tighter mt-0.5">{t('menu', 'Menu')}</span>
           </button>
 
           {/* Icons Group */}
-          <div className="flex items-center gap-0.5 sm:gap-1">
+          <div className="flex items-center gap-1 sm:gap-2">
             {user && (
               <Link 
                   to="/messages" 
                   id="tour-offers"
-                  className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
+                  className="flex flex-col items-center p-2 sm:p-2.5 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative shrink-0"
               >
                   <div className="relative">
-                      <ArrowRightLeft size={18} />
+                      <ArrowRightLeft size={22} />
                       {totalUnread > 0 && (
-                          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                          <span className="absolute -top-1 -right-1 flex h-3 w-3">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                               <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
                           </span>
                       )}
                   </div>
-                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers')}</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers')}</span>
               </Link>
             )}
 
@@ -122,23 +122,23 @@ export default function NavBar() {
               <Link 
                   to="/coins" 
                   id="tour-coins"
-                  className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
+                  className="flex flex-col items-center p-1.5 sm:p-2.5 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors shrink-0"
               >
                   <div className="flex items-center gap-1">
-                      <Coins size={16} />
-                      <span className="text-[10px] font-bold">{user.coins}</span>
+                      <Coins size={20} />
+                      <span className="text-[12px] font-bold">{user.coins}</span>
                   </div>
-                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
               </Link>
             )}
 
             <NavLink 
                 to="/services" 
                 id="tour-services"
-                className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
-                <Briefcase size={18} />
-                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                <Briefcase size={22} />
+                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                     {t('navServices')}
                 </span>
             </NavLink>
@@ -146,10 +146,10 @@ export default function NavBar() {
             <NavLink 
                 to="/browse" 
                 id="tour-explore"
-                className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                className={({ isActive }) => `flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
-                <Compass size={18} />
-                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                <Compass size={22} />
+                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                     {t('navBrowse')}
                 </span>
             </NavLink>
@@ -157,10 +157,10 @@ export default function NavBar() {
             <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)} 
                 id="tour-search"
-                className={`flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                className={`flex flex-col items-center p-2 sm:p-2.5 rounded-xl transition-all shrink-0 focus:outline-none ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
-                <Search size={18}/>
-                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                <Search size={22}/>
+                <span className="text-[9px] sm:text-[10px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
                     {t('navSearch')}
                 </span>
             </button>
