@@ -299,6 +299,27 @@ export default function Messages() {
     );
   }, [conversations, hiddenConvoIds]);
 
+  useEffect(() => {
+    if (conversations.length > 0 && me?.email) {
+        const hasUnreadHidden = conversations.some(c => 
+            hiddenConvoIds.includes(c._id) && (c.unread_count?.[me.email] > 0)
+        );
+        
+        if (hasUnreadHidden) {
+            setHiddenConvoIds(prev => {
+                const next = prev.filter(id => {
+                    const convo = conversations.find(c => c._id === id);
+                    return !(convo?.unread_count?.[me.email] > 0);
+                });
+                if (next.length !== prev.length) {
+                    localStorage.setItem('hidden_conversations', JSON.stringify(next));
+                }
+                return next;
+            });
+        }
+    }
+  }, [conversations, hiddenConvoIds, me?.email]);
+
   const filteredConversations = useMemo(() => {
     if (!searchQuery) return tradeConversations;
     return tradeConversations.filter(convo => {
@@ -332,6 +353,16 @@ export default function Messages() {
     newSocket.on('onlineUsers', (users) => setOnlineUsers(users));
     
     newSocket.on('newMessage', (newMsg) => {
+        // If we receive a message for a hidden conversation, unhide it!
+        setHiddenConvoIds(prev => {
+            if (prev.includes(newMsg.conversation_id)) {
+                const next = prev.filter(id => id !== newMsg.conversation_id);
+                localStorage.setItem('hidden_conversations', JSON.stringify(next));
+                return next;
+            }
+            return prev;
+        });
+
         if (newMsg.conversation_id === selectedConversationId) {
             queryClient.setQueryData(['messages', selectedConversationId], (old = []) => {
                 const currentMessages = Array.isArray(old) ? old : [];
@@ -341,8 +372,8 @@ export default function Messages() {
                 const updated = [...currentMessages, newMsg];
                 return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             });
-            queryClient.invalidateQueries(['conversations']);
         }
+        queryClient.invalidateQueries(['conversations']);
     });
 
     return () => newSocket.disconnect();
