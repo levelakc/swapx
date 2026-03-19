@@ -55,11 +55,13 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     enabled: isOpen && !!conversationId,
   });
 
-  const { data: myInventory = [] } = useQuery({
+  const { data: myInventoryData } = useQuery({
     queryKey: ['myItems'],
     queryFn: getMyItems,
     enabled: isOpen && isEditing,
   });
+
+  const myInventory = myInventoryData?.items || [];
 
   const messages = useMemo(() => Array.isArray(messagesData) ? messagesData : [], [messagesData]);
 
@@ -243,11 +245,11 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const currencySym = currency === 'ILS' ? '₪' : '$';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-0 md:p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-background w-full max-w-6xl h-full md:h-[90vh] rounded-none md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-white/10 relative"
+        className="bg-background w-full max-w-5xl h-[90vh] md:h-[85vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-primary/20 relative"
       >
         
         {/* Mobile Tabs */}
