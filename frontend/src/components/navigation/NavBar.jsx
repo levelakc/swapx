@@ -13,9 +13,9 @@ import logoIcon from '../../imgs/1.jpg';
 const Logo = () => {
   const { t } = useLanguage();
   return (
-    <div className="flex items-center gap-1.5 group cursor-pointer relative">
-      <div className="relative flex items-center justify-center w-16 h-16 sm:w-28 sm:h-28 shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="flex items-center gap-1 group cursor-pointer relative">
+      <div className="relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-secondary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite] group-hover:animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
           <defs>
             <path id="circlePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
@@ -26,7 +26,7 @@ const Logo = () => {
             </textPath>
           </text>
         </svg>
-        <div className="relative z-10 flex items-center justify-center w-13 h-13 sm:w-22 sm:h-22 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg overflow-hidden">
+        <div className="relative z-10 flex items-center justify-center w-8 h-8 sm:w-11 sm:h-11 bg-background rounded-full border border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-md overflow-hidden">
           <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
