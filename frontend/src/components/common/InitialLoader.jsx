@@ -22,17 +22,6 @@ const InitialLoader = () => {
           className="absolute inset-0 bg-gradient-to-br from-primary via-purple-500 to-secondary blur-3xl rounded-full opacity-20" 
         />
         
-        <svg className="absolute inset-0 w-full h-full animate-[spin_8s_linear_infinite]" viewBox="0 0 100 100" dir="ltr">
-          <defs>
-            <path id="loaderCirclePath" d="M 50, 50 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
-          </defs>
-          <text className="text-[8px] font-black uppercase tracking-[0.3em] fill-primary">
-            <textPath href="#loaderCirclePath" startOffset="0%">
-              {t('brand').toUpperCase()} • {t('brand').toUpperCase()} • {t('brand').toUpperCase()} • {t('brand').toUpperCase()} •
-            </textPath>
-          </text>
-        </svg>
-
         <motion.div 
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
