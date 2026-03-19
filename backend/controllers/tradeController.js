@@ -281,6 +281,9 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
             content: 'The offer was removed by one of the parties.',
             type: 'system'
         });
+        // Update the conversation's last message
+        conversation.last_message = 'Offer removed';
+        await conversation.save();
     }
 
   } else if (status === 'completed') {

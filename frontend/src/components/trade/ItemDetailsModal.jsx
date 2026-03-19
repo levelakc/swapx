@@ -44,7 +44,7 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative bg-card w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/10"
+            className="relative bg-slate-950 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/10 dark"
           >
             {/* Close Button */}
             <button 
@@ -120,12 +120,12 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
                 <div className="space-y-4 flex-1">
                   <div className="space-y-2">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{t('description')}</h4>
-                    <p className="text-sm font-bold text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm font-bold text-foreground leading-relaxed whitespace-pre-wrap">
                       {item.description || t('noDescription', 'No description provided.')}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
                     <div className="space-y-1">
                       <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-50">{t('location')}</p>
                       <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
@@ -143,11 +143,11 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
                   </div>
 
                   {item.looking_for?.length > 0 && (
-                    <div className="space-y-2 pt-4 border-t border-white/5">
+                    <div className="space-y-2 pt-4 border-t border-border/50">
                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{t('lookingFor')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {item.looking_for.map((cat, i) => (
-                          <span key={i} className="px-3 py-1 bg-muted/50 rounded-lg text-[10px] font-bold text-foreground border border-white/5">
+                          <span key={i} className="px-3 py-1 bg-muted rounded-lg text-[10px] font-bold text-foreground border border-border">
                             {typeof cat === 'object' ? (cat[`label_${language}`] || cat.label_en) : cat}
                           </span>
                         ))}
