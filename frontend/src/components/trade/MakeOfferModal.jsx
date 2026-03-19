@@ -4,6 +4,8 @@ import { getMyItems } from '../../api/api';
 import { Loader2, DollarSign, X } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
+import ImageWithFallback from '../common/ImageWithFallback';
+
 export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemName }) {
   const { t } = useLanguage();
   const [selectedItems, setSelectedItems] = useState([]);
@@ -76,7 +78,7 @@ export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemNa
                         ${isTraded ? 'opacity-60 grayscale cursor-not-allowed border-muted' : ''}
                         ${isSelected ? 'border-primary ring-2 ring-primary bg-primary/10' : 'hover:border-primary/50'}`}
                     >
-                      <img src={item.images[0]} alt={item.title} className="w-full h-24 object-cover rounded-md" />
+                      <ImageWithFallback src={item.images?.[0]} alt={item.title} className="w-full h-24 object-cover rounded-md" />
                       <p className="text-sm font-medium truncate">{item.title}</p>
                       
                       {item.status !== 'active' && (

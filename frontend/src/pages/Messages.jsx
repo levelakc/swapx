@@ -230,7 +230,7 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
                 {['offer', 'counter', 'cancelled', 'accept', 'reject'].includes(msg.type) ? (
                     <OfferMessageContent msg={msg} me={me} t={t} onOpenNegotiation={onOpenNegotiation} />
                 ) : msg.type === 'image' ? (
-                    <img src={msg.content} alt="" className="w-full rounded-2xl cursor-pointer hover:opacity-90" onClick={() => window.open(msg.content, '_blank')} />
+                    <ImageWithFallback src={msg.content} alt="" className="w-full rounded-2xl cursor-pointer hover:opacity-90" onClick={() => window.open(msg.content, '_blank')} />
                 ) : (
                     <p className="text-sm font-bold leading-relaxed">{msg.content}</p>
                 )}
@@ -456,7 +456,9 @@ export default function Messages() {
 
                             return (
                                 <>
-                                    <img src={displayAvatar} className="w-10 h-10 rounded-xl object-cover" alt="" />
+                                    <div className="w-10 h-10 shrink-0">
+                                        <ImageWithFallback src={displayAvatar} className="w-full h-full rounded-xl object-cover" alt="" />
+                                    </div>
                                     <div>
                                         <p className="font-black text-sm uppercase tracking-tight">{displayName}</p>
                                         <div className="flex items-center gap-1.5">

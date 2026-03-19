@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image as ImageIcon, Plus, Briefcase, Package, Globe, Instagram, Facebook, Map } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function CreateItem() {
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
@@ -340,7 +341,7 @@ export default function CreateItem() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {images.map((img, i) => (
                       <div key={i} className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all group ${img.isMain ? 'border-primary shadow-lg shadow-primary/20' : 'border-white/5'}`}>
-                        <img src={img.preview} alt="" className="w-full h-full object-cover" />
+                        <ImageWithFallback src={img.preview} alt="" className="w-full h-full object-cover" />
                         
                         {/* Overlay Actions */}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">

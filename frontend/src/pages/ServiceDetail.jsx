@@ -149,7 +149,13 @@ export default function ServiceDetail() {
                     <div key={review._id} className="bg-secondary/20 p-6 rounded-2xl border border-white/5">
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                                <img src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} className="w-10 h-10 rounded-full border-2 border-primary/20" alt={review.reviewer.full_name}/>
+                                <div className="w-10 h-10 shrink-0">
+                                    <ImageWithFallback 
+                                        src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} 
+                                        className="w-full h-full rounded-full border-2 border-primary/20 object-cover" 
+                                        alt={review.reviewer.full_name}
+                                    />
+                                </div>
                                 <div>
                                     <span className="font-bold block">{review.reviewer.full_name}</span>
                                     <span className="text-[10px] text-muted-foreground uppercase font-black">{t('verifiedClient', 'Verified Client')}</span>

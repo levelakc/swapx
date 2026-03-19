@@ -5,6 +5,8 @@ import { Loader2, X, Package } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import ImageWithFallback from '../common/ImageWithFallback';
+
 export default function ShareItemModal({ isOpen, onClose, onSubmit }) {
   const { t } = useLanguage();
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -49,7 +51,7 @@ export default function ShareItemModal({ isOpen, onClose, onSubmit }) {
                                 onClick={() => setSelectedItemId(item._id)}
                                 className={`cursor-pointer border rounded-lg p-2 transition-all ${selectedItemId === item._id ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'hover:border-primary/50'}`}
                             >
-                                <img src={item.images?.[0] || 'https://via.placeholder.com/150'} alt={item.title} className="w-full h-24 object-cover rounded-md mb-2"/>
+                                <ImageWithFallback src={item.images?.[0]} alt={item.title} className="w-full h-24 object-cover rounded-md mb-2"/>
                                 <p className="text-sm font-medium truncate">{t(item.title)}</p>
                             </div>
                         ))}

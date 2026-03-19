@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import ItemCard from '../components/items/ItemCard';
 import { Link, useNavigate } from 'react-router-dom';
+import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function Profile() {
   const { t } = useLanguage();
@@ -89,11 +90,13 @@ export default function Profile() {
           <div className="relative flex flex-col items-center md:flex-row md:items-start md:gap-12">
             <div className="relative shrink-0">
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-primary to-purple-500 rounded-full blur-sm opacity-50 animate-pulse"></div>
-              <img 
-                src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
-                alt="avatar" 
-                className="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-background shadow-2xl" 
-              />
+              <div className="w-32 h-32 md:w-40 md:h-40 relative">
+                <ImageWithFallback 
+                  src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} 
+                  alt="avatar" 
+                  className="relative w-full h-full rounded-full object-cover border-4 border-background shadow-2xl" 
+                />
+              </div>
               <button className="absolute bottom-1 right-1 bg-primary text-primary-content p-2.5 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-background">
                 <Edit className="w-4 h-4" />
               </button>
