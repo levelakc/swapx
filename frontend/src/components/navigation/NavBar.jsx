@@ -30,12 +30,6 @@ const Logo = () => {
           <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
-      <div className="flex items-center gap-2 leading-none transition-transform duration-300 group-hover:scale-105">
-        <span className="text-sm sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
-          {t('brand')}
-        </span>
-        <InfinityIcon className="w-4 h-4 sm:w-6 sm:h-6 text-primary" strokeWidth={3} />
-      </div>
     </div>
   );
 };
