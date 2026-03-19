@@ -27,14 +27,14 @@ const Logo = () => {
           </text>
         </svg>
         <div className="relative z-10 flex items-center justify-center w-11 h-11 sm:w-19 sm:h-19 bg-background rounded-full border-2 border-primary group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700 shadow-lg overflow-hidden">
-          <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover p-1" />
-          <InfinityIcon className="absolute w-7 h-7 sm:w-12 sm:h-12 text-primary drop-shadow-md" strokeWidth={3} />
+          <img src={logoIcon} alt="Logo Icon" className="w-full h-full object-cover" />
         </div>
       </div>
-      <div className="flex flex-col leading-none transition-transform duration-300 group-hover:scale-105">
+      <div className="flex items-center gap-2 leading-none transition-transform duration-300 group-hover:scale-105">
         <span className="text-sm sm:text-lg font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-white dark:to-purple-300 uppercase">
           {t('brand')}
         </span>
+        <InfinityIcon className="w-7 h-7 sm:w-11 sm:h-11 text-primary" strokeWidth={3} />
       </div>
     </div>
   );
