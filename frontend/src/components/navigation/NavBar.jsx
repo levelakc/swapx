@@ -87,118 +87,91 @@ export default function NavBar() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-background/95 backdrop-blur-md shadow-sm py-1' : 'bg-background py-2'}`}>
-      <div className="w-full px-1.5 sm:px-6 relative">
-        <div className="flex items-center justify-between flex-row">
+      <div className="w-full px-1.5 sm:px-6">
+        <div className={`flex items-center justify-between ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
           
-          {/* Left Side Group */}
-          <div className="flex items-center gap-2">
-            {/* LTR: Burger, Logo, Nav */}
-            {dir === 'ltr' ? (
+          {/* Left Side: Logo + Burger */}
+          <div className="flex items-center gap-0">
+            <Link to="/" className="block">
+              <Logo />
+            </Link>
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-1.5 text-muted-foreground hover:text-primary transition-colors flex flex-col items-center"
+            >
+              <InfinityIcon size={22} className={isOpen ? 'rotate-90 transition-transform' : ''} />
+              <span className="text-[8px] font-bold uppercase tracking-tighter mt-0.5">{t('menu', 'Menu')}</span>
+            </button>
+          </div>
+
+          {/* Right Side: Navigation */}
+          <div className={`flex items-center gap-0.5 sm:gap-1 ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
+            <button 
+                onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                className={`flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            >
+                <Search size={18}/>
+                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    {t('navSearch')}
+                </span>
+            </button>
+
+            <NavLink 
+                to="/services" 
+                className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            >
+                <Briefcase size={18} />
+                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    {t('navServices')}
+                </span>
+            </NavLink>
+
+            <NavLink 
+                to="/browse" 
+                className={({ isActive }) => `flex flex-col items-center p-1.5 sm:p-2 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+            >
+                <Compass size={18} />
+                <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter text-center leading-tight">
+                    {t('navBrowse')}
+                </span>
+            </NavLink>
+
+            {user && (
               <>
-                <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
-                    {isOpen ? <X size={20} /> : <Menu size={20} />}
-                </button>
-                <Link to="/" className="block">
-                  <Logo />
+                <Link 
+                    to="/messages" 
+                    className="flex flex-col items-center p-1.5 sm:p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-primary transition-colors relative"
+                >
+                    <div className="relative">
+                        <ArrowRightLeft size={18} />
+                        {totalUnread > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-full w-full bg-red-500"></span>
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('offers')}</span>
                 </Link>
-                <div className="hidden md:flex items-center gap-1 border-l border-border/50 pl-2">
-                  <NavLink to="/browse" className={({ isActive }) => `flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Compass size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navBrowse')}</span>
-                  </NavLink>
-                  <NavLink to="/services" className={({ isActive }) => `flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Briefcase size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navServices')}</span>
-                  </NavLink>
-                  <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Search size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navSearch')}</span>
-                  </button>
-                </div>
-              </>
-            ) : (
-              /* RTL: Coins, Profile, Burger */
-              <>
-                {user && (
-                  <div className="flex items-center gap-3">
-                    <Link id="tour-profile" to="/profile" className="flex flex-col items-center p-1 sm:p-2">
-                      <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-7 w-7 rounded-full object-cover ring-1 ring-border" />
-                    </Link>
-                    <Link id="tour-coins" to="/coins" className="flex flex-col items-center p-1 sm:p-2 text-yellow-600">
-                      <div className="flex items-center gap-1">
+
+                <Link 
+                    to="/coins" 
+                    className="flex flex-col items-center p-1 sm:p-2 rounded-xl text-yellow-600 hover:bg-yellow-500/10 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
                         <Coins size={16} />
                         <span className="text-[10px] font-bold">{user.coins}</span>
-                      </div>
-                    </Link>
-                  </div>
-                )}
-                <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-muted-foreground hover:text-foreground focus:outline-none">
-                    {isOpen ? <X size={20} /> : <Menu size={20} />}
-                </button>
+                    </div>
+                    <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navCoins')}</span>
+                </Link>
+
+                <Link to="/profile" className="flex flex-col items-center p-1.5 sm:p-2 hover:bg-muted rounded-xl transition-all">
+                  <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-5 w-5 sm:h-6 sm:w-6 rounded-full object-cover ring-1 ring-border" />
+                  <span className="text-[8px] sm:text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('profile')}</span>
+                </Link>
               </>
             )}
           </div>
-
-          {/* Right Side Group */}
-          <div className="flex items-center gap-2">
-            {/* RTL: Logo, Nav */}
-            {dir === 'rtl' ? (
-              <div className="flex items-center gap-3">
-                <Link to="/" className="block">
-                  <Logo />
-                </Link>
-                <div className="hidden md:flex items-center gap-1 border-r border-border/50 pr-2">
-                  <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isSearchOpen ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Search size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navSearch')}</span>
-                  </button>
-                  <NavLink to="/services" className={({ isActive }) => `flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Briefcase size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navServices')}</span>
-                  </NavLink>
-                  <NavLink to="/browse" className={({ isActive }) => `flex flex-col items-center px-3 py-1.5 rounded-xl transition-all ${isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
-                    <Compass size={18} />
-                    <span className="text-[9px] font-bold mt-0.5 uppercase tracking-tighter">{t('navBrowse')}</span>
-                  </NavLink>
-                </div>
-              </div>
-            ) : (
-              /* LTR: Coins, Profile */
-              user && (
-                <div className="flex items-center gap-3">
-                  <Link id="tour-coins" to="/coins" className="flex flex-col items-center p-1 sm:p-2 text-yellow-600">
-                    <div className="flex items-center gap-1">
-                      <Coins size={16} />
-                      <span className="text-[10px] font-bold">{user.coins}</span>
-                    </div>
-                  </Link>
-                  <Link id="tour-profile" to="/profile" className="flex flex-col items-center p-1 sm:p-2">
-                    <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-7 w-7 rounded-full object-cover ring-1 ring-border" />
-                  </Link>
-                </div>
-              )
-            )}
-          </div>
-
-        </div>
-
-        {/* Mobile Sub-Nav */}
-        <div className="md:hidden flex items-center justify-around py-2 border-t border-border/10 mt-1">
-            <NavLink to="/browse" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl ${isActive ? 'text-primary bg-primary/5' : 'text-muted-foreground'}`}>
-                <Compass size={20} />
-            </NavLink>
-            <NavLink to="/services" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl ${isActive ? 'text-primary bg-primary/5' : 'text-muted-foreground'}`}>
-                <Briefcase size={20} />
-            </NavLink>
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-2 text-muted-foreground">
-                <Search size={20} />
-            </button>
-            {user && (
-                <Link to="/messages" className="p-2 text-muted-foreground relative">
-                    <ArrowRightLeft size={20} />
-                    {totalUnread > 0 && <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full border-2 border-background" />}
-                </Link>
-            )}
         </div>
 
         {/* New Elegant Search Dropdown */}
@@ -235,54 +208,64 @@ export default function NavBar() {
             initial={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: dir === 'ltr' ? -100 : 100 }}
-            className="fixed inset-y-0 left-0 w-72 bg-background border-r border-border shadow-2xl z-[60] p-6 flex flex-col gap-6"
+            className={`fixed inset-y-0 ${dir === 'ltr' ? 'left-0' : 'right-0'} w-72 bg-background/95 backdrop-blur-xl border-x border-border shadow-2xl z-[60] p-6 flex flex-col gap-8`}
           >
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
                 <Logo />
-                <button onClick={() => setIsOpen(false)}><X size={24}/></button>
+                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-muted rounded-full transition-all"><X size={24}/></button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-                {!user ? (
-                    <>
-                        <Link to="/login" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-                            <UserIcon size={20} />
-                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('signIn')}</span>
-                        </Link>
-                        <Link to="/register" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-primary bg-primary/10 hover:bg-primary hover:text-white transition-all">
-                            <InfinityIcon size={20} />
-                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('register')}</span>
-                        </Link>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-                            <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-6 w-6 rounded-full object-cover ring-1 ring-border" />
-                            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('profile')}</span>
-                        </Link>
-                        {user?.role === 'admin' && (
-                            <Link to="/admin" onClick={() => setIsOpen(false)} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-                                <LayoutDashboard size={20} />
-                                <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t('admin')}</span>
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-wrap items-center justify-center gap-6 py-4 bg-muted/20 rounded-3xl">
+                    {!user ? (
+                        <>
+                            <Link to="/login" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
+                                <div className="p-3 rounded-2xl bg-background border border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                                    <UserIcon size={22} />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">{t('signIn')}</span>
                             </Link>
-                        )}
-                    </>
-                )}
-            </div>
+                            <Link to="/register" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
+                                <div className="p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                                    <InfinityIcon size={22} />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">{t('register')}</span>
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/profile" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
+                                <img src={user.avatar || `https://avatar.vercel.sh/${user.email}.svg`} alt="Avatar" className="h-12 w-12 rounded-2xl object-cover ring-2 ring-border group-hover:ring-primary transition-all shadow-md" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">{t('profile')}</span>
+                            </Link>
+                            {user?.role === 'admin' && (
+                                <Link to="/admin" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
+                                    <div className="p-3 rounded-2xl bg-background border border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                                        <LayoutDashboard size={22} />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">{t('admin')}</span>
+                                </Link>
+                            )}
+                        </>
+                    )}
+                </div>
 
-            <div className="border-t border-border/50 pt-6 flex flex-wrap items-center justify-center gap-4">
-                <button onClick={handleThemeChange} className="flex flex-col items-center p-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-                    {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
-                    <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">
-                        {theme === 'dark' ? t('light') : t('dark')}
-                    </span>
-                </button>
-                <LanguageSwitcher />
-                <CurrencySwitcher />
+                <div className="border-t border-border/50 pt-8 flex flex-wrap items-center justify-center gap-8">
+                    <button onClick={handleThemeChange} className="flex flex-col items-center gap-1.5 group transition-all">
+                        <div className="p-3 rounded-2xl bg-background border border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                            {theme === 'dark' ? <Sun size={22}/> : <Moon size={22}/>}
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">
+                            {theme === 'dark' ? t('light') : t('dark')}
+                        </span>
+                    </button>
+                    <LanguageSwitcher />
+                    <CurrencySwitcher />
+                </div>
             </div>
 
             {user && (
-                <button onClick={handleLogout} className="mt-auto flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase tracking-widest text-sm active:scale-95 transition-all">
+                <button onClick={handleLogout} className="mt-auto flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-red-500/10 text-red-500 font-black uppercase tracking-widest text-sm hover:bg-red-500 hover:text-white transition-all active:scale-95 shadow-lg shadow-red-500/5">
                     <LogOut size={20}/>
                     {t('logout')}
                 </button>
@@ -291,7 +274,7 @@ export default function NavBar() {
         )}
       </AnimatePresence>
       {isOpen && (
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[55]" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[55]" onClick={() => setIsOpen(false)} />
       )}
     </header>
   );
