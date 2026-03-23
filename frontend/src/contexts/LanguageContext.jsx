@@ -854,8 +854,13 @@ export function LanguageProvider({ children }) {
   const t = (key, defaultValue) => {
     if (!key || typeof key !== 'string') return defaultValue || key;
     const resolve = (path, obj) => path.split('.').reduce((prev, curr) => prev ? prev[curr] : null, obj) 
-    const translation = resolve(key, translations[language]) || resolve(key, translations.en);
-    return translation || defaultValue || key;
+    
+    let translation = resolve(key, translations[language]);
+    if (translation === undefined || translation === null) {
+        translation = resolve(key, translations.en);
+    }
+    
+    return (translation !== undefined && translation !== null) ? translation : (defaultValue || key);
   };
 
   return (

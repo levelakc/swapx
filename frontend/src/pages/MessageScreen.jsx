@@ -229,7 +229,7 @@ export default function MessageScreen() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl p-0 md:p-4 h-[calc(100vh-7rem)] flex flex-col">
+    <div className="container mx-auto max-w-4xl p-0 md:p-4 h-[calc(100dvh-7rem)] flex flex-col">
       <div className="flex-grow bg-background md:rounded-2xl md:shadow-xl border border-border overflow-hidden flex flex-col relative">
         
         {/* Messages Area */}
@@ -264,9 +264,25 @@ export default function MessageScreen() {
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2 font-bold border-b border-primary-foreground/20 pb-2 mb-1">
                                         <HeartHandshake size={20} />
-                                        <span>{t('tradeOffer', 'Trade Offer')}</span>
+                                        <span>{t('tradeOffer')}{msg.type !== 'offer' ? ` ${t(msg.type)}` : ''}</span>
                                     </div>
-                                    <p className="text-[15px] font-medium leading-relaxed">{msg.content}</p>
+                                    <p className="text-[15px] font-medium leading-relaxed">
+                                        {(() => {
+                                            const mapping = {
+                                                'Sent you a trade offer!': t('sentTradeOffer'),
+                                                'Counter offer sent!': t('offerCountered'),
+                                                'I have updated my offer.': t('updatedOffer'),
+                                                'Trade Accepted!': t('tradeAccepted'),
+                                                'Trade Rejected': t('tradeRejected'),
+                                                'Trade Cancelled': t('tradeCancelled'),
+                                                'Offer Countered!': t('offerCountered'),
+                                                'Trade accepted.': t('tradeAcceptedMsg'),
+                                                'Trade rejected.': t('tradeRejectedMsg'),
+                                                'Counter offer sent!': t('counterOfferSentMsg'),
+                                            };
+                                            return mapping[msg.content] || msg.content;
+                                        })()}
+                                    </p>
                                     
                                     <button 
                                         onClick={() => {

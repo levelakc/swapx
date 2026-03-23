@@ -575,7 +575,9 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                             ) : msg.type === 'offer' || msg.type === 'counter' || msg.type === 'cancelled' ? (
                                                 <div className="flex items-center gap-2 opacity-80">
                                                     <HeartHandshake size={14} />
-                                                    <p className="text-[10px] font-black uppercase tracking-wide">{translateSystemMessage(msg.content)}</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-wide">
+                                                        {t('tradeOffer')}{msg.type !== 'offer' ? ` ${t(msg.type)}` : ''}: {translateSystemMessage(msg.content)}
+                                                    </p>
                                                 </div>
                                             ) : (
                                                 <p className="text-xs font-bold leading-relaxed">{msg.content}</p>

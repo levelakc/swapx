@@ -186,7 +186,9 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
                     <ArrowRightLeft size={20} className={isMe ? 'text-white' : 'text-primary'} />
                 </div>
                 <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60">
+                        {t('tradeOffer')}{msg.type !== 'offer' ? ` ${t(msg.type)}` : ''}
+                    </p>
                     <p className="text-sm font-bold">
                         {(() => {
                             const mapping = {
@@ -484,7 +486,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-[calc(100vh-6rem)] md:h-[calc(100vh-7rem)] bg-background border-none md:border rounded-none md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300">
+    <div className="flex flex-col md:flex-row h-[calc(100dvh-6rem)] md:h-[calc(100dvh-7rem)] bg-background border-none md:border rounded-none md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300">
       
       {/* Sidebar (Existing logic) */}
       <div className={`w-full md:w-80 lg:w-96 border-r flex flex-col bg-card/30 backdrop-blur-xl ${!showList && 'hidden md:flex'}`}>
@@ -641,7 +643,7 @@ export default function Messages() {
             </div>
 
             {/* Offer Notifications Timeline */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-none">
+            <div className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-thin">
                 {isLoadingMessages ? (
                     <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
                 ) : messages.filter(m => ['offer', 'system', 'counter', 'accept', 'reject', 'cancelled'].includes(m.type)).length > 0 ? (
