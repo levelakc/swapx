@@ -119,11 +119,24 @@ export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemNa
               <input 
                 type="number" 
                 min="0"
-                value={cashAmount}
-                onChange={(e) => setCashAmount(e.target.value)}
+                value={cashAmount || ''}
+                onChange={(e) => setCashAmount(Number(e.target.value))}
                 className="w-full pl-9 pr-4 py-2 bg-input border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
                 placeholder="0"
               />
+            </div>
+            <div className="flex flex-wrap gap-2 mt-2">
+                {[50, 100, 200, 500, 1000].map(amount => (
+                    <button 
+                        key={amount} 
+                        type="button"
+                        onClick={() => setCashAmount(prev => (prev || 0) + amount)}
+                        className="px-2 py-1 text-[10px] bg-muted hover:bg-muted/80 rounded-md font-medium transition-colors"
+                    >
+                        +${amount}
+                    </button>
+                ))}
+                <button type="button" onClick={() => setCashAmount(0)} className="px-2 py-1 text-[10px] bg-red-100 text-red-600 hover:bg-red-200 rounded-md font-medium transition-colors ml-auto">{t('clear', 'Clear')}</button>
             </div>
           </div>
         </div>

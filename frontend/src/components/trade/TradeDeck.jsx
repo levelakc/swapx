@@ -267,7 +267,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                                     <span className="text-xl font-bold text-foreground">{currencySymbol}</span>
                                                     <input 
                                                         type="number" 
-                                                        value={cashAmount} 
+                                                        value={cashAmount || ''} 
                                                         onChange={(e) => setCashAmount(Number(e.target.value))}
                                                         className="flex-1 text-2xl font-bold bg-transparent border-b-2 border-muted focus:border-purple-500 outline-none px-2 py-1 transition-colors text-foreground"
                                                         placeholder="0"
@@ -277,12 +277,18 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                                     {quickCashOptions.map(amount => (
                                                         <button 
                                                             key={amount} 
-                                                            onClick={() => setCashAmount(prev => prev + amount)}
+                                                            onClick={() => setCashAmount(prev => (prev || 0) + amount)}
                                                             className="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-full font-medium transition-colors"
                                                         >
                                                             +{currencySymbol}{amount}
                                                         </button>
                                                     ))}
+                                                    <button 
+                                                        onClick={() => setCashAmount(prev => (prev || 0) + 1000)}
+                                                        className="px-3 py-1 text-xs bg-primary/10 text-primary hover:bg-primary/20 rounded-full font-bold transition-colors"
+                                                    >
+                                                        +{currencySymbol}1,000
+                                                    </button>
                                                     <button onClick={() => setCashAmount(0)} className="px-3 py-1 text-xs bg-red-100 text-red-600 hover:bg-red-200 rounded-full font-medium transition-colors ml-auto">{t('clear', 'Clear')}</button>
                                                 </div>
                                             </motion.div>

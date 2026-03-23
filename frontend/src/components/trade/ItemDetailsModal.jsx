@@ -76,31 +76,31 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
               <X size={20} />
             </button>
 
-            <div className="flex flex-col lg:flex-row h-full overflow-y-auto">
+            <div className="flex flex-col lg:flex-row h-full overflow-hidden">
               {/* Image Gallery */}
-              <div className="lg:w-1/2 relative bg-black flex items-center justify-center min-h-[300px] lg:min-h-0">
+              <div className="lg:w-1/2 relative bg-black flex items-center justify-center h-[35vh] sm:h-[40vh] lg:h-auto shrink-0 lg:shrink">
                 {item.images && item.images.length > 0 ? (
                   <>
                     <ImageWithFallback 
                       src={item.images[currentImageIndex]} 
                       alt={item.title} 
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain p-2"
                     />
                     {item.images.length > 1 && (
                       <>
                         <button 
                           onClick={prevImage}
-                          className="absolute left-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all"
+                          className="absolute left-2 p-1.5 bg-black/40 hover:bg-black/60 text-white rounded-full backdrop-blur-md transition-all border border-white/10"
                         >
-                          <ChevronLeft size={24} />
+                          <ChevronLeft size={20} />
                         </button>
                         <button 
                           onClick={nextImage}
-                          className="absolute right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-md transition-all"
+                          className="absolute right-2 p-1.5 bg-black/40 hover:bg-black/60 text-white rounded-full backdrop-blur-md transition-all border border-white/10"
                         >
-                          <ChevronRight size={24} />
+                          <ChevronRight size={20} />
                         </button>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 px-3 py-1.5 bg-black/20 backdrop-blur-md rounded-full border border-white/10">
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 px-2 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10 scale-75 sm:scale-100">
                           {item.images.map((_, i) => (
                             <div 
                               key={i} 
@@ -112,15 +112,15 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
                     )}
                   </>
                 ) : (
-                  <div className="flex flex-col items-center text-muted-foreground opacity-20">
-                    <Package size={80} />
-                    <p className="font-black uppercase tracking-widest mt-4">No Image</p>
+                  <div className="flex flex-col items-center text-muted-foreground opacity-20 scale-75 sm:scale-100">
+                    <Package size={60} />
+                    <p className="font-black uppercase tracking-widest mt-2 text-[10px]">No Image</p>
                   </div>
                 )}
               </div>
 
               {/* Details Content */}
-              <div className="lg:w-1/2 p-6 md:p-8 space-y-6 flex flex-col">
+              <div className="lg:w-1/2 p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 flex flex-col overflow-y-auto scrollbar-thin min-h-0 flex-1">
                 <div className="space-y-2">
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full border border-primary/20">

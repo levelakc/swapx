@@ -498,7 +498,7 @@ const translations = {
     status: 'סטטוס',
     decline: 'דחה',
     acceptOffer: 'קבל הצעה',
-    statusUpdated: 'סטטוס הטרייד עודכן!',
+    statusUpdated: 'הטרייד עודכן!',
     noAvailableOffers: 'אין הצעות זמינות כרגע ⌚',
     updatedOffer: 'עדכנתי את ההצעה שלי.',
     sentTradeOffer: 'שלחתי לך הצעת טרייד!',
@@ -836,7 +836,7 @@ const translations = {
     systemMessage: 'הודעת מערכת',
     newOfferReceived: 'התקבלה הצעה חדשה!',
     openToViewAndChat: 'פתח כדי לצפות בפריטים ולדבר',
-    offerRemovedFromChat: 'ההצעה הוסרה מהצ׳אט',
+    offerRemovedFromChat: 'ההצעה הוסרה על ידי אחד הצדדים.',
   },
 };
 
