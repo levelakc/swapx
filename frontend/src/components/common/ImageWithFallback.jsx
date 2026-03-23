@@ -13,7 +13,10 @@ export default function ImageWithFallback({ src, alt, className, ...props }) {
 
   if (error || isInvalidSrc) {
     return (
-      <div className={`flex flex-col items-center justify-center bg-muted/30 text-muted-foreground/40 border border-dashed border-border/50 gap-2 min-h-[100px] ${className.replace('object-cover', '')}`}>
+      <div 
+        className={`flex flex-col items-center justify-center bg-muted/30 text-muted-foreground/40 border border-dashed border-border/50 gap-2 min-h-[100px] ${className.replace('object-cover', '')}`}
+        {...props}
+      >
         <ImageOff size={24} strokeWidth={1.5} />
         <span className="text-[8px] font-black uppercase tracking-widest opacity-60">Image Missing</span>
       </div>

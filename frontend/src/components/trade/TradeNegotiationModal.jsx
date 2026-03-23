@@ -89,6 +89,20 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   const isInitiator = me && trade && trade.initiator_email === me.email;
   const isReceiver = me && trade && trade.receiver_email === me.email;
 
+  const lastOfferMessage = useMemo(() => {
+    return [...messages].reverse().find(m => m.type === 'offer' || m.type === 'counter');
+  }, [messages]);
+
+  const canAccept = useMemo(() => {
+    if (!me || !trade) return false;
+    if (trade.status === 'pending') return isReceiver;
+    if (trade.status === 'countered') {
+        // If the last offer/counter was sent by someone else, I can accept.
+        return lastOfferMessage && lastOfferMessage.sender_email !== me.email;
+    }
+    return false;
+  }, [me, trade, isReceiver, lastOfferMessage]);
+
   // Local state for edits
   const [draftMyItems, setDraftMyItems] = useState([]);
   const [draftTheirItems, setDraftTheirItems] = useState([]);
@@ -446,7 +460,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                 <div className="shrink-0 pt-2 border-t border-white/5">
                     {(!isTerminalState) ? (
                         isEditing ? (
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className={`grid gap-2 ${canAccept ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
                                 <button 
                                     onClick={() => setIsEditing(false)} 
                                     disabled={isTradeActionLoading}
@@ -461,6 +475,16 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                 >
                                     {isTradeActionLoading ? <Loader2 size={14} className="animate-spin" /> : t('sendOffer')}
                                 </button>
+                                {canAccept && (
+                                    <button 
+                                        onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
+                                        disabled={isTradeActionLoading}
+                                        className="col-span-2 md:col-span-1 py-2.5 rounded-xl bg-green-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {statusMutation.isLoading ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                                        {t('acceptOffer')}
+                                    </button>
+                                )}
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -480,7 +504,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                     <Edit3 size={14} />
                                     {t('counterOffer')}
                                 </button>
-                                {isReceiver && (
+                                {canAccept && (
                                     <button 
                                         onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
                                         disabled={isTradeActionLoading}
