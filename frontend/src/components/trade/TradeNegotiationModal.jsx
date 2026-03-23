@@ -239,6 +239,12 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     newSocket.on('typing', () => setIsTyping(true));
     newSocket.on('stopTyping', () => setIsTyping(false));
 
+    newSocket.on('tradeUpdated', (updatedTrade) => {
+        if (updatedTrade._id === tradeId) {
+            queryClient.invalidateQueries(['trade', tradeId]);
+        }
+    });
+
     return () => {
         if (socket.current) {
             socket.current.emit('leaveConversation', { conversationId });
@@ -285,6 +291,9 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         'Trade Rejected': t('tradeRejected'),
         'Trade Cancelled': t('tradeCancelled'),
         'Offer Countered!': t('offerCountered'),
+        'Trade accepted.': t('tradeAcceptedMsg'),
+        'Trade rejected.': t('tradeRejectedMsg'),
+        'Counter offer sent!': t('counterOfferSentMsg'),
     };
     return mapping[content] || content;
   };

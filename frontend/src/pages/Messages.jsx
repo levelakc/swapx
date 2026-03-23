@@ -197,6 +197,9 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
                                 'Trade Rejected': t('tradeRejected'),
                                 'Trade Cancelled': t('tradeCancelled'),
                                 'Offer Countered!': t('offerCountered'),
+                                'Trade accepted.': t('tradeAcceptedMsg'),
+                                'Trade rejected.': t('tradeRejectedMsg'),
+                                'Counter offer sent!': t('counterOfferSentMsg'),
                             };
                             return mapping[msg.content] || msg.content;
                         })()}
@@ -232,6 +235,9 @@ function ChatMessage({ msg, me, onOpenNegotiation, t, language }) {
             'Trade Rejected': t('tradeRejected'),
             'Trade Cancelled': t('tradeCancelled'),
             'Offer Countered!': t('offerCountered'),
+            'Trade accepted.': t('tradeAcceptedMsg'),
+            'Trade rejected.': t('tradeRejectedMsg'),
+            'Counter offer sent!': t('counterOfferSentMsg'),
         };
         return mapping[content] || content;
     };
@@ -432,6 +438,10 @@ export default function Messages() {
             });
         }
         queryClient.invalidateQueries(['conversations']);
+    });
+
+    newSocket.on('tradeUpdated', (updatedTrade) => {
+        queryClient.invalidateQueries(['trade', updatedTrade._id]);
     });
 
     return () => newSocket.disconnect();

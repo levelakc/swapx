@@ -118,8 +118,13 @@ export default function MessageScreen() {
         }
     });
 
+    newSocket.on('tradeUpdated', (updatedTrade) => {
+        queryClient.invalidateQueries(['trade', updatedTrade._id]);
+        queryClient.invalidateQueries(['conversation', conversationId]);
+    });
+
     return () => newSocket.disconnect();
-  }, [conversationId, queryClient]);
+  }, [conversationId, queryClient, user?.email, t]);
 
   useEffect(() => {
     scrollToBottom("auto");

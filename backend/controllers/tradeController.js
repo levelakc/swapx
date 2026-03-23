@@ -4,6 +4,7 @@ const Item = require('../models/Item');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
+const { getIO } = require('../socket');
 
 // Helper function to validate items and ownership
 const validateItems = async (itemIds, ownerId) => {
@@ -252,25 +253,34 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
       }
     }
 
-    // Find the related conversation
+    // Update conversation state
     const conversation = await Conversation.findOne({ related_trade_id: trade._id });
     if (conversation) {
         const otherParticipant = conversation.participants.find(p => p !== userEmail);
         const newUnreadCount = { ...conversation.unread_count };
         newUnreadCount[otherParticipant] = (newUnreadCount[otherParticipant] || 0) + 1;
-        newUnreadCount[userEmail] = 0; // Clear for current user since they just acted
+        newUnreadCount[userEmail] = 0; 
         
         conversation.unread_count = newUnreadCount;
         conversation.last_message = message || 'Trade accepted.';
         conversation.last_message_at = Date.now();
         await conversation.save();
 
-        await Message.create({
+        const newMessage = await Message.create({
             conversation_id: conversation._id.toString(),
             sender_email: userEmail,
             content: message || 'Trade accepted.',
             type: 'accept'
         });
+
+        // Emit socket events
+        try {
+            const io = getIO();
+            io.to(conversation._id.toString()).emit('newMessage', newMessage);
+            io.to(conversation._id.toString()).emit('tradeUpdated', trade);
+        } catch (err) {
+            console.error('Socket emit error:', err.message);
+        }
     }
 
   } else if (status === 'rejected') {
@@ -302,12 +312,21 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
         conversation.last_message_at = Date.now();
         await conversation.save();
 
-        await Message.create({
+        const newMessage = await Message.create({
             conversation_id: conversation._id.toString(),
             sender_email: userEmail,
             content: message || 'Trade rejected.',
             type: 'reject'
         });
+
+        // Emit socket events
+        try {
+            const io = getIO();
+            io.to(conversation._id.toString()).emit('newMessage', newMessage);
+            io.to(conversation._id.toString()).emit('tradeUpdated', trade);
+        } catch (err) {
+            console.error('Socket emit error:', err.message);
+        }
     }
 
   } else if (status === 'cancelled') {
@@ -478,11 +497,11 @@ const counterTrade = asyncHandler(async (req, res) => {
       conversation.last_message_at = Date.now();
       await conversation.save();
 
-      await Message.create({
+      const conversationMessage = await Message.create({
           conversation_id: conversation._id.toString(),
           sender_email: userEmail,
           content: message || 'Counter offer sent!',
-          type: 'offer',
+          type: 'counter',
           trade_data: {
               trade_id: trade._id,
               offered_items,
@@ -491,6 +510,15 @@ const counterTrade = asyncHandler(async (req, res) => {
               cash_requested: trade.cash_requested,
           }
       });
+
+      // Emit socket events
+      try {
+          const io = getIO();
+          io.to(conversation._id.toString()).emit('newMessage', conversationMessage);
+          io.to(conversation._id.toString()).emit('tradeUpdated', trade);
+      } catch (err) {
+          console.error('Socket emit error:', err.message);
+      }
   }
 
   res.json(updatedTrade);
