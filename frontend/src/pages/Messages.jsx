@@ -188,9 +188,16 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
                     <p className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('tradeOffer')} {t(msg.type)}</p>
                     <p className="text-sm font-bold">
                         {(() => {
-                            if (msg.content === 'Sent you a trade offer!') return t('sentTradeOffer');
-                            if (msg.content === 'Counter offer sent!' || msg.content === 'I have updated my offer.') return t('updatedOffer');
-                            return msg.content;
+                            const mapping = {
+                                'Sent you a trade offer!': t('sentTradeOffer'),
+                                'Counter offer sent!': t('offerCountered'),
+                                'I have updated my offer.': t('updatedOffer'),
+                                'Trade Accepted!': t('tradeAccepted'),
+                                'Trade Rejected': t('tradeRejected'),
+                                'Trade Cancelled': t('tradeCancelled'),
+                                'Offer Countered!': t('offerCountered'),
+                            };
+                            return mapping[msg.content] || msg.content;
                         })()}
                     </p>
                 </div>
@@ -214,11 +221,25 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
     const isMe = msg.sender_email === me?.email;
     const isSystem = msg.sender_email === 'system@ahlafot.com' || msg.sender_email === 'system';
 
+    const translateSystemMessage = (content) => {
+        if (!content) return content;
+        const mapping = {
+            'Sent you a trade offer!': t('sentTradeOffer'),
+            'Counter offer sent!': t('offerCountered'),
+            'I have updated my offer.': t('updatedOffer'),
+            'Trade Accepted!': t('tradeAccepted'),
+            'Trade Rejected': t('tradeRejected'),
+            'Trade Cancelled': t('tradeCancelled'),
+            'Offer Countered!': t('offerCountered'),
+        };
+        return mapping[content] || content;
+    };
+
     if (isSystem) {
         return (
             <div className="flex justify-center my-4">
                 <div className="px-4 py-2 bg-muted/50 rounded-full border border-border/50">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{msg.content}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{translateSystemMessage(msg.content)}</p>
                 </div>
             </div>
         );

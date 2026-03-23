@@ -20,7 +20,7 @@ export default function CoinPanel() {
     const claimMutation = useMutation({
         mutationFn: claimDailyReward,
         onSuccess: (data) => {
-            toast.success(`You claimed ${5} coins!`);
+            toast.success(t('claimRewardSuccess', 'You claimed {amount} coins!').replace('{amount}', '5'));
             queryClient.invalidateQueries(['user', 'me']);
         },
         onError: (err) => {

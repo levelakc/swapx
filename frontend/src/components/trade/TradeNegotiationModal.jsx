@@ -220,6 +220,20 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     }, 2000);
   };
 
+  const translateSystemMessage = (content) => {
+    if (!content) return content;
+    const mapping = {
+        'Sent you a trade offer!': t('sentTradeOffer'),
+        'Counter offer sent!': t('offerCountered'),
+        'I have updated my offer.': t('updatedOffer'),
+        'Trade Accepted!': t('tradeAccepted'),
+        'Trade Rejected': t('tradeRejected'),
+        'Trade Cancelled': t('tradeCancelled'),
+        'Offer Countered!': t('offerCountered'),
+    };
+    return mapping[content] || content;
+  };
+
   const submitCounterOffer = () => {
       // Correctly map items back to their original roles for the backend
       const payload = {
@@ -449,7 +463,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                 return (
                                     <div key={msg._id} className="flex justify-center my-2">
                                         <span className="px-3 py-1 bg-muted/50 rounded-full text-[8px] font-black uppercase tracking-widest text-muted-foreground">
-                                            {msg.content}
+                                            {translateSystemMessage(msg.content)}
                                         </span>
                                     </div>
                                 );
@@ -470,7 +484,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                             ) : msg.type === 'offer' || msg.type === 'counter' || msg.type === 'cancelled' ? (
                                                 <div className="flex items-center gap-2 opacity-80">
                                                     <HeartHandshake size={14} />
-                                                    <p className="text-[10px] font-black uppercase tracking-wide">{msg.content}</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-wide">{translateSystemMessage(msg.content)}</p>
                                                 </div>
                                             ) : (
                                                 <p className="text-xs font-bold leading-relaxed">{msg.content}</p>
