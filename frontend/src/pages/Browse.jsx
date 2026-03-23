@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
-import { getItems } from '../api/api';
+import { getItems, getCategories } from '../api/api';
 import ItemCard from '../components/items/ItemCard';
 import CategoryFilter from '../components/filters/CategoryFilter';
 import FilterSidebar from '../components/filters/FilterSidebar';
@@ -11,7 +11,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import PageInfo from '../components/common/PageInfo';
 
 export default function Browse({ listingType = 'item' }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   
