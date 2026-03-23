@@ -129,16 +129,23 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="rememberMe"
-              type="checkbox"
-              className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
-              {...register('rememberMe')}
-            />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-foreground cursor-pointer select-none">
-              {t('rememberMe', 'Remember me')}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center group cursor-pointer select-none">
+              <div className="relative">
+                <input
+                  id="remember-me"
+                  name="rememberMe"
+                  type="checkbox"
+                  className="sr-only peer"
+                  {...register('rememberMe')}
+                />
+                <div className="w-5 h-5 bg-muted/50 border border-border rounded-lg peer-checked:bg-primary peer-checked:border-primary transition-all duration-200 flex items-center justify-center group-hover:border-primary/50">
+                  <div className="w-2.5 h-2.5 bg-white rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity transform scale-50 peer-checked:scale-100 duration-200" />
+                </div>
+              </div>
+              <span className="ml-3 text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+                {t('rememberMe', 'Remember me')}
+              </span>
             </label>
           </div>
 
