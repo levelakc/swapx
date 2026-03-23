@@ -21,7 +21,7 @@ function ItemCarouselCard({ item, isSelected, onSelect, onOpenDetails }) {
     const isTraded = item.status === 'traded';
 
     // Handle double tap
-    const lastTap = React.useRef(0);
+    const lastTap = useRef(0);
     const handleTap = () => {
         const now = Date.now();
         const DOUBLE_TAP_DELAY = 300;

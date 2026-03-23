@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 import AuthModal from '../components/common/AuthModal';
 import CreateItem from './CreateItem';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
 
 function EditItemModal({ id, isOpen, onClose }) {
     if (!id) return null;
