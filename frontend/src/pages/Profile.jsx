@@ -64,7 +64,7 @@ export default function Profile() {
   };
 
   const handleEditItem = (id) => {
-      window.location.href = `/create?edit=${id}`; // Simple query param
+      navigate(`/edit-item/${id}`);
   };
 
   const supportMutation = useMutation({
