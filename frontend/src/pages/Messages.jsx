@@ -497,7 +497,11 @@ export default function Messages() {
                         key={convo._id}
                         onClick={() => handleSelectConversation(convo._id)}
                         className={`p-5 cursor-pointer border-b border-border/40 transition-all flex items-center gap-4 group relative ${
-                            isSelected ? 'bg-primary/10 border-l-4 border-l-primary shadow-inner' : 'hover:bg-muted/40 border-l-4 border-l-transparent'
+                            isSelected 
+                            ? 'bg-primary/10 border-l-4 border-l-primary shadow-inner' 
+                            : unreadCount > 0 
+                                ? 'bg-primary/5 border-l-4 border-l-primary/50' 
+                                : 'hover:bg-muted/40 border-l-4 border-l-transparent'
                         }`}
                     >
                         <div className="relative">
@@ -506,10 +510,10 @@ export default function Messages() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-center mb-1">
-                                <p className="font-black text-sm truncate">{displayName}</p>
+                                <p className={`text-sm truncate ${unreadCount > 0 ? 'font-black text-foreground' : 'font-bold text-foreground/80'}`}>{displayName}</p>
                                 <span className="text-[10px] font-bold opacity-40">{format(new Date(convo.last_message_at), 'p')}</span>
                             </div>
-                            <p className="text-xs text-muted-foreground truncate font-bold">
+                            <p className={`text-xs truncate ${unreadCount > 0 ? 'font-black text-primary' : 'font-medium text-muted-foreground'}`}>
                                 {(() => {
                                     const privateStrings = [
                                         'New trade offer', 

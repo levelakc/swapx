@@ -262,9 +262,10 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
     const currencySymbol = currency === 'ILS' ? '₪' : '$';
     const isSelected = isMine && draftMyItems.includes(item._id);
+    const canToggle = isEditing && isMine && trade?.status === 'pending' || trade?.status === 'countered';
 
     return (
-        <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${isEditing && isMine ? 'cursor-pointer hover:bg-muted' : ''}`}>
+        <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${canToggle ? 'cursor-pointer hover:bg-muted' : ''}`}>
             <div className="w-8 h-8 md:w-10 md:h-10 shrink-0">
                 <ImageWithFallback 
                     src={item.images?.[0]} 
@@ -277,11 +278,11 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                     }}
                 />
             </div>
-            <div className="flex-1 min-w-0 text-left cursor-pointer" onClick={() => isEditing && isMine && toggleMyItem(item._id)}>
+            <div className="flex-1 min-w-0 text-left cursor-pointer" onClick={() => canToggle && toggleMyItem(item._id)}>
                 <p className="text-[10px] md:text-xs font-black truncate">{item.title}</p>
                 <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground">{currencySymbol}{displayValue.toLocaleString()}</p>
             </div>
-            {isEditing && isMine && (
+            {canToggle && (
                 <div className="mr-1 cursor-pointer" onClick={() => toggleMyItem(item._id)}>
                     {isSelected ? <Minus size={14} className="text-red-500" /> : <Plus size={14} className="text-green-500" />}
                 </div>
@@ -291,6 +292,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
   };
 
   const currencySym = currency === 'ILS' ? '₪' : '$';
+  const isTradeActionLoading = statusMutation.isLoading || counterMutation.isLoading;
 
   return (
     <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
@@ -402,25 +404,35 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                     {trade?.status === 'pending' || trade?.status === 'countered' ? (
                         isEditing ? (
                             <div className="grid grid-cols-2 gap-2">
-                                <button onClick={() => setIsEditing(false)} className="py-2.5 rounded-xl border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-muted transition-all">
+                                <button 
+                                    onClick={() => setIsEditing(false)} 
+                                    disabled={isTradeActionLoading}
+                                    className="py-2.5 rounded-xl border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-muted transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
                                     {t('cancel')}
                                 </button>
-                                <button onClick={submitCounterOffer} disabled={counterMutation.isLoading} className="py-2.5 rounded-xl bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center">
-                                    {counterMutation.isLoading ? <Loader2 size={14} className="animate-spin" /> : t('sendOffer')}
+                                <button 
+                                    onClick={submitCounterOffer} 
+                                    disabled={isTradeActionLoading} 
+                                    className="py-2.5 rounded-xl bg-primary text-white font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isTradeActionLoading ? <Loader2 size={14} className="animate-spin" /> : t('sendOffer')}
                                 </button>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                 <button 
                                     onClick={() => statusMutation.mutate({ id: tradeId, status: 'cancelled' })}
-                                    className="py-2.5 rounded-xl border border-red-500/30 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
+                                    disabled={isTradeActionLoading}
+                                    className="py-2.5 rounded-xl border border-red-500/30 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Trash2 size={14} />
+                                    {statusMutation.isLoading ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                                     {t('cancel')}
                                 </button>
                                 <button 
                                     onClick={() => setIsEditing(true)}
-                                    className="py-2.5 rounded-xl bg-primary/20 text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center justify-center gap-2"
+                                    disabled={isTradeActionLoading}
+                                    className="py-2.5 rounded-xl bg-primary/20 text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <Edit3 size={14} />
                                     {t('counterOffer')}
@@ -428,15 +440,17 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                 {isReceiver && (
                                     <button 
                                         onClick={() => statusMutation.mutate({ id: tradeId, status: 'accepted' })}
-                                        className="col-span-2 md:col-span-1 py-2.5 rounded-xl bg-green-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all"
+                                        disabled={isTradeActionLoading}
+                                        className="col-span-2 md:col-span-1 py-2.5 rounded-xl bg-green-500 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
+                                        {statusMutation.isLoading ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
                                         {t('acceptOffer')}
                                     </button>
                                 )}
                             </div>
                         )
                     ) : (
-                        <div className="text-center py-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                        <div className="text-center py-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest bg-muted/20 rounded-xl">
                             {t('tradeOffer')} {t(trade?.status)}
                         </div>
                     )}
