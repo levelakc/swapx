@@ -20,6 +20,7 @@ import {
     Clock, ShieldCheck, CircleDollarSign, Trash2, Send
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { he, enUS } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
@@ -264,7 +265,7 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
                     <p className="text-sm font-bold leading-relaxed">{msg.content}</p>
                 )}
                 <div className={`text-[9px] mt-2 font-black uppercase opacity-40 flex justify-end`}>
-                    {format(new Date(msg.createdAt), 'p')}
+                    {format(new Date(msg.createdAt), 'p', { locale: language === 'he' ? he : enUS })}
                 </div>
             </div>
         </motion.div>
@@ -537,7 +538,7 @@ export default function Messages() {
                         <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-center mb-1">
                                 <p className={`text-sm truncate ${unreadCount > 0 ? 'font-black text-foreground' : 'font-bold text-foreground/80'}`}>{displayName}</p>
-                                <span className="text-[10px] font-bold opacity-40">{format(new Date(convo.last_message_at), 'p')}</span>
+                                <span className="text-[10px] font-bold opacity-40">{format(new Date(convo.last_message_at), 'p', { locale: language === 'he' ? he : enUS })}</span>
                             </div>
                             <p className={`text-xs truncate ${unreadCount > 0 ? 'font-black text-primary' : 'font-medium text-muted-foreground'}`}>
                                 {(() => {

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { he, enUS } from 'date-fns/locale';
 import io from 'socket.io-client';
 import AudioRecorder from '../common/AudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -575,7 +576,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                             {(() => {
                                                 try {
                                                     const date = msg.createdAt ? new Date(msg.createdAt) : new Date();
-                                                    return isNaN(date.getTime()) ? '' : format(date, 'p');
+                                                    return isNaN(date.getTime()) ? '' : format(date, 'p', { locale: language === 'he' ? he : enUS });
                                                 } catch (e) {
                                                     return '';
                                                 }

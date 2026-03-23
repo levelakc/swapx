@@ -5,6 +5,8 @@ import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, c
 import { useLanguage } from '../contexts/LanguageContext';
 import { Loader2, Send, Image, HeartHandshake, Package } from 'lucide-react';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { he, enUS } from 'date-fns/locale';
 import AudioRecorder from '../components/common/AudioRecorder';
 import MakeOfferModal from '../components/trade/MakeOfferModal';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
@@ -294,9 +296,8 @@ export default function MessageScreen() {
                                 <p className="whitespace-pre-wrap break-words text-[15px]">{msg.content}</p>
                             )}
                             <div className={`text-[10px] mt-1 text-right opacity-70 ${isMe ? 'text-primary-foreground' : 'text-muted-foreground'}`}>
-                                {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </div>
-                        </div>
+                                {format(new Date(msg.createdAt), 'p', { locale: language === 'he' ? he : enUS })}
+                            </div>                        </div>
                     </motion.div>
                 );
             })}
