@@ -10,10 +10,18 @@ import logoWithSlogan from '../imgs/3.jpg';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 
 export default function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLanguage();
+
+  const savedEmail = localStorage.getItem('remembered_email');
+  
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      email: savedEmail || '',
+      rememberMe: !!savedEmail
+    }
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -42,8 +50,15 @@ export default function Login() {
 
   const loginMutation = useMutation({
     mutationFn: ({ email, password }) => login(email, password),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       localStorage.setItem('base44_user', JSON.stringify(data));
+      
+      if (variables.rememberMe) {
+        localStorage.setItem('remembered_email', variables.email);
+      } else {
+        localStorage.removeItem('remembered_email');
+      }
+
       if (data.dailyReward) {
         toast.success('You received 5 coins for your daily login!');
       } else {
@@ -112,6 +127,19 @@ export default function Login() {
               />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
             </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="rememberMe"
+              type="checkbox"
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+              {...register('rememberMe')}
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-foreground cursor-pointer select-none">
+              {t('rememberMe', 'Remember me')}
+            </label>
           </div>
 
           <div>
