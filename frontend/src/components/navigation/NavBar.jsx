@@ -48,6 +48,10 @@ export default function NavBar() {
   });
 
   const totalUnread = conversations.reduce((acc, conv) => {
+    // ONLY count conversations that are visible in the Offers/Messages window
+    const isVisible = conv.related_trade_id || conv.participants.some(p => p.includes('sona') || p.includes('support'));
+    if (!isVisible) return acc;
+
     // Check if conversation is hidden in localStorage
     try {
         const hiddenConvoIds = JSON.parse(localStorage.getItem('hidden_conversations') || '[]');
@@ -55,7 +59,8 @@ export default function NavBar() {
     } catch (e) {
         // Fallback if localStorage is corrupt
     }
-    return acc + (conv.unread_count?.[user?.email] || 0);
+    const count = conv.unread_count?.[user?.email] || 0;
+    return acc + count;
   }, 0);
 
   const handleLogout = () => {

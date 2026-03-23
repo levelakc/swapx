@@ -111,6 +111,18 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     }
   }, [trade, isInitiator, isEditing]);
 
+  useEffect(() => {
+    if (isOpen && messages.length > 0) {
+        // Clearing unread count on backend happens when messages are fetched
+        // so we invalidate conversations to update the UI/Navbar ping
+        queryClient.invalidateQueries(['conversations']);
+    }
+  }, [isOpen, messages.length, queryClient]);
+
+  useEffect(() => {
+    if (!isOpen) setIsEditing(false);
+  }, [isOpen]);
+
   const myFullItems = isEditing 
     ? draftMyItems.map(id => myInventory.find(i => i._id === id) || offeredItemsData.find(i => i._id === id) || requestedItemsData.find(i => i._id === id)).filter(Boolean)
     : (isInitiator ? offeredItemsData : requestedItemsData);
