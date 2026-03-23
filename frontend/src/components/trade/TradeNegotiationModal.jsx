@@ -146,11 +146,17 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }) => updateTradeStatus(id, status),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries(['trade', tradeId]);
       queryClient.invalidateQueries(['conversations']);
       queryClient.invalidateQueries(['messages', conversationId]);
-      toast.success(t('statusUpdated'));
+      
+      const statusMsgs = {
+          accepted: t('tradeAccepted'),
+          rejected: t('tradeRejected'),
+          cancelled: t('tradeCancelled')
+      };
+      toast.success(statusMsgs[variables.status] || t('statusUpdated'));
     },
     onError: (err) => toast.error(err.message || t('error'))
   });
@@ -294,6 +300,8 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
         'Trade accepted.': t('tradeAcceptedMsg'),
         'Trade rejected.': t('tradeRejectedMsg'),
         'Counter offer sent!': t('counterOfferSentMsg'),
+        'The offer was removed by one of the parties.': t('offerRemovedFromChat'),
+        'Offer removed': t('offerRemovedFromChat'),
     };
     return mapping[content] || content;
   };

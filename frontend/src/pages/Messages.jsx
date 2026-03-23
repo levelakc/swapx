@@ -153,7 +153,7 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
             queryClient.invalidateQueries(['trade', tradeId]);
             queryClient.invalidateQueries(['conversations']);
             queryClient.invalidateQueries(['messages']);
-            toast.success(t('statusUpdated'));
+            toast.success(t('tradeCancelled'));
         }
     });
 
@@ -240,6 +240,8 @@ function ChatMessage({ msg, me, onOpenNegotiation, t, language }) {
             'Trade accepted.': t('tradeAcceptedMsg'),
             'Trade rejected.': t('tradeRejectedMsg'),
             'Counter offer sent!': t('counterOfferSentMsg'),
+            'The offer was removed by one of the parties.': t('offerRemovedFromChat'),
+            'Offer removed': t('offerRemovedFromChat'),
         };
         return mapping[content] || content;
     };

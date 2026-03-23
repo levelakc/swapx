@@ -279,6 +279,8 @@ export default function MessageScreen() {
                                                 'Trade accepted.': t('tradeAcceptedMsg'),
                                                 'Trade rejected.': t('tradeRejectedMsg'),
                                                 'Counter offer sent!': t('counterOfferSentMsg'),
+                                                'The offer was removed by one of the parties.': t('offerRemovedFromChat'),
+                                                'Offer removed': t('offerRemovedFromChat'),
                                             };
                                             return mapping[msg.content] || msg.content;
                                         })()}
