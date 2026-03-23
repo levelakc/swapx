@@ -85,7 +85,14 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
             toast.success(isService ? t('serviceRequestSentSuccessfully', 'Service request sent successfully!') : t('tradeOfferSentSuccessfully'));
             onSubmit();
             onClose();
-            navigate(`/messages/${data.conversationId}`);
+            // Redirect to the general messages/offers page with the new conversation selected
+            // and keep track of where we came from so we can offer a "Back to search" button
+            navigate(`/messages`, { 
+                state: { 
+                    selectedId: data.conversationId,
+                    from: window.location.pathname + window.location.search 
+                } 
+            });
         },
         onError: (error) => {
             toast.error(error.message || t('failedToSendOffer'));

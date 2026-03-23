@@ -76,8 +76,6 @@ export default function ItemDetail() {
   };
 
   const onTradeSubmit = (tradeData) => {
-    console.log('Trade Submitted', tradeData);
-    toast.success('Trade offer sent successfully!');
     setIsTradeDeckOpen(false);
   }
 

@@ -86,8 +86,6 @@ export default function ServiceDetail() {
   }
 
   const onTradeSubmit = (tradeData) => {
-    console.log('Trade Submitted', tradeData);
-    toast.success('Service request sent successfully!');
     setIsTradeDeckOpen(false);
   }
 

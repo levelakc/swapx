@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
     getConversations, 
     getMe, 
@@ -250,10 +251,12 @@ function ChatMessage({ msg, me, onOpenNegotiation, t }) {
 
 export default function Messages() {
   const { t, language } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedConversationId, setSelectedConversationId] = useState(null);
+  const [selectedConversationId, setSelectedConversationId] = useState(location.state?.selectedId || null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [showList, setShowList] = useState(true);
+  const [showList, setShowList] = useState(!location.state?.selectedId);
   const [searchQuery, setSearchQuery] = useState('');
   const [isNegotiationOpen, setIsNegotiationOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -427,6 +430,14 @@ export default function Messages() {
       {/* Sidebar (Existing logic) */}
       <div className={`w-full md:w-80 lg:w-96 border-r flex flex-col bg-card/30 backdrop-blur-xl ${!showList && 'hidden md:flex'}`}>
         <div className="p-6 border-b space-y-4">
+            {location.state?.from && (
+                <button 
+                    onClick={() => navigate(location.state.from)}
+                    className="flex items-center gap-2 text-xs font-bold text-primary hover:text-primary/80 transition-all mb-2"
+                >
+                    <ChevronLeft size={14} /> {t('backToSearch', 'Back to Search')}
+                </button>
+            )}
             <h2 className="text-2xl font-black flex items-center gap-3 tracking-tighter">
                 <ArrowRightLeft className="text-primary w-7 h-7" />
                 {t('offers')}

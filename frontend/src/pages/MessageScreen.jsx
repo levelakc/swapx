@@ -195,7 +195,7 @@ export default function MessageScreen() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl p-0 md:p-4 h-[calc(100vh-64px)] flex flex-col">
+    <div className="container mx-auto max-w-4xl p-0 md:p-4 h-[calc(100vh-7rem)] flex flex-col">
       <div className="flex-grow bg-background md:rounded-2xl md:shadow-xl border border-border overflow-hidden flex flex-col relative">
         
         {/* Messages Area */}
