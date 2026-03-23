@@ -3,7 +3,7 @@ import { getMe, getMyItems, createTrade } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { Loader2, Info, Plus, DollarSign, Send, Package, MessageSquare, Calendar } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import FuturisticTradeDeck from './FuturisticTradeDeck';
 import { motion, AnimatePresence } from 'framer-motion';
