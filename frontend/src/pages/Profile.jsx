@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import ItemCard from '../components/items/ItemCard';
 import { Link, useNavigate } from 'react-router-dom';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import PageInfo from '../components/common/PageInfo';
 
 export default function Profile() {
   const { t } = useLanguage();
@@ -86,6 +87,10 @@ export default function Profile() {
           {/* Background Decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/5 rounded-full -ml-24 -mb-24 blur-3xl"></div>
+
+          <div className="absolute top-8 right-8 z-10">
+            <PageInfo infoKey="profileInfo" />
+          </div>
 
           <div className="relative flex flex-col items-center md:flex-row md:items-start md:gap-12">
             <div className="relative shrink-0">

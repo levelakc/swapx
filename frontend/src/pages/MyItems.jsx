@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMe, getMyItems, deleteItem, featureItem } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, PlusCircle, Star } from 'lucide-react'; // Import Star icon
+import { Loader2, PlusCircle, Star, X } from 'lucide-react'; // Import Star icon
+import PageInfo from '../components/common/PageInfo';
 import ItemCard from '../components/items/ItemCard';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -139,7 +140,10 @@ export default function MyItems() {
   return (
     <div>
         <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">{t('myItems')}</h1>
+            <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold">{t('myItems')}</h1>
+                <PageInfo infoKey="myItemsInfo" />
+            </div>
             <Link to="/create" className="flex items-center space-x-2 bg-primary text-primary-content px-4 py-2 rounded-lg">
                 <PlusCircle className="w-5 h-5"/>
                 <span>{t('listItem')}</span>

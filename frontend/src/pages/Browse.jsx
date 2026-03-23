@@ -8,6 +8,7 @@ import CategoryFilter from '../components/filters/CategoryFilter';
 import FilterSidebar from '../components/filters/FilterSidebar';
 import { Loader2, LayoutGrid, List, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import PageInfo from '../components/common/PageInfo';
 
 export default function Browse({ listingType = 'item' }) {
   const { t } = useLanguage();
@@ -174,11 +175,14 @@ export default function Browse({ listingType = 'item' }) {
       {/* Main Content */}
       <div className="flex-1 w-full min-w-0">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-card p-6 rounded-xl shadow-sm border">
-            <div>
-                <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    {t('browseItems')}
-                </h1>
-                <p className="text-muted-foreground mt-1">{t('browseItemsSubtitle', 'Discover unique items to trade')}</p>
+            <div className="flex items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        {t('browseItems')}
+                    </h1>
+                    <p className="text-muted-foreground mt-1">{t('browseItemsSubtitle', 'Discover unique items to trade')}</p>
+                </div>
+                <PageInfo infoKey="browseInfo" />
             </div>
 
             <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto items-center">

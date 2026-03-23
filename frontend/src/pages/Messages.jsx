@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import PageInfo from '../components/common/PageInfo';
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
@@ -438,10 +439,13 @@ export default function Messages() {
                     <ChevronLeft size={14} /> {t('backToSearch', 'Back to Search')}
                 </button>
             )}
-            <h2 className="text-2xl font-black flex items-center gap-3 tracking-tighter">
-                <ArrowRightLeft className="text-primary w-7 h-7" />
-                {t('offers')}
-            </h2>
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black flex items-center gap-3 tracking-tighter">
+                    <ArrowRightLeft className="text-primary w-7 h-7" />
+                    {t('offers')}
+                </h2>
+                <PageInfo infoKey="messagesInfo" />
+            </div>
             <div className="relative group">
                 <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <input 

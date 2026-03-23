@@ -7,6 +7,7 @@ import ServiceCard from '../components/services/ServiceCard';
 import ServiceFilterSidebar from '../components/filters/ServiceFilterSidebar';
 import { Loader2, Search, Filter } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import PageInfo from '../components/common/PageInfo';
 
 export default function BrowseServices() {
   const { t } = useLanguage();
@@ -87,11 +88,14 @@ export default function BrowseServices() {
       {/* Main Content */}
       <div className="flex-1 w-full min-w-0">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-card p-6 rounded-xl shadow-sm border">
-            <div>
-                <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    {t('browseServices')}
-                </h1>
-                <p className="text-muted-foreground mt-1">{t('browseServicesSubtitle', 'Find professionals for your needs')}</p>
+            <div className="flex items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        {t('browseServices')}
+                    </h1>
+                    <p className="text-muted-foreground mt-1">{t('browseServicesSubtitle', 'Find professionals for your needs')}</p>
+                </div>
+                <PageInfo infoKey="servicesInfo" />
             </div>
 
             <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto items-center">

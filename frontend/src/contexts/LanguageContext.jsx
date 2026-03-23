@@ -302,6 +302,40 @@ const translations = {
     doNotShowAgain: "Do not show again",
     back: "Back",
     backToSearch: "Back to Search",
+    pageInfo: "Page Information",
+    howToUse: "How to Use",
+    tradeDeckInfo: {
+        title: "Trade Offer Window",
+        description: "Select items from your collection to offer in exchange. You can also add or request cash to balance the deal. Double-tap any item image to see its full details before deciding!"
+    },
+    browseInfo: {
+        title: "Browse Items",
+        description: "Explore all items available for trade. Use filters to narrow down by category, price, or location. Click an item to see more details and make an offer."
+    },
+    servicesInfo: {
+        title: "Browse Services",
+        description: "Find professionals offering their services in exchange for items or other services. You can book a service by proposing a trade."
+    },
+    myItemsInfo: {
+        title: "My Items",
+        description: "Manage your listed items here. You can edit, delete, or feature them to get more visibility using your coins."
+    },
+    messagesInfo: {
+        title: "Offers & Messages",
+        description: "Track all your active trade negotiations. Each conversation represents a potential trade. Use the Negotiation Room to finalize details."
+    },
+    profileInfo: {
+        title: "User Profile",
+        description: "Update your personal information, change your avatar, and see your trading statistics and history."
+    },
+    coinPanelInfo: {
+        title: "Coin Center",
+        description: "Check your coin balance and claim your daily reward. Use coins to feature your items and get 10x more offers!"
+    },
+    adminInfo: {
+        title: "Admin Dashboard",
+        description: "System management area. Monitor trades, users, and categories to ensure a safe and active community."
+    },
     share: "Share",
     shareItem: "Share an Item",
     noItemsToShare: "No items to share.",
@@ -648,6 +682,40 @@ const translations = {
     doNotShowAgain: "אל תראה שוב",
     back: 'חזור',
     backToSearch: 'חזרה לחיפוש',
+    pageInfo: "מידע על הדף",
+    howToUse: "איך להשתמש",
+    tradeDeckInfo: {
+        title: "חלון הצעת טרייד",
+        description: "בחרו פריטים מהאוסף שלכם להצעה בתמורה. ניתן גם להוסיף או לבקש כסף כדי לאזן את העסקה. דאבל-קליק (לחיצה כפולה) על תמונת פריט תפתח את הפרטים המלאים שלו לפני שתחליטו!"
+    },
+    browseInfo: {
+        title: "עיון בפריטים",
+        description: "חקרו את כל הפריטים הזמינים להחלפה. השתמשו במסננים כדי לצמצם לפי קטגוריה, מחיר או מיקום. לחצו על פריט כדי לראות פרטים נוספים ולהציע הצעה."
+    },
+    servicesInfo: {
+        title: "עיון בשירותים",
+        description: "מצאו אנשי מקצוע המציעים את שירותיהם בתמורה לפריטים או שירותים אחרים. ניתן להזמין שירות על ידי הצעה לטרייד."
+    },
+    myItemsInfo: {
+        title: "הפריטים שלי",
+        description: "נהלו את הפריטים שפרסמתם כאן. ניתן לערוך, למחוק או להבליט אותם כדי לקבל יותר חשיפה באמצעות המטבעות שלכם."
+    },
+    messagesInfo: {
+        title: "הצעות והודעות",
+        description: "עקבו אחר כל המשא ומתן הפעיל שלכם. כל שיחה מייצגת טרייד פוטנציאלי. השתמשו בחדר המשא ומתן כדי לסגור פרטים."
+    },
+    profileInfo: {
+        title: "פרופיל משתמש",
+        description: "עדכנו את המידע האישי שלכם, שנו את האוואטר שלכם וראו את הסטטיסטיקה והיסטוריית המסחר שלכם."
+    },
+    coinPanelInfo: {
+        title: "מרכז המטבעות",
+        description: "בדקו את יתרת המטבעות שלכם וקבלו את התגמול היומי. השתמשו במטבעות כדי להבליט את הפריטים שלכם ולקבל פי 10 יותר הצעות!"
+    },
+    adminInfo: {
+        title: "לוח בקרה למנהל",
+        description: "אזור ניהול המערכת. עקבו אחר טריידים, משתמשים וקטגוריות כדי להבטיח קהילה בטוחה ופעילה."
+    },
     share: 'שתף',
     shareItem: "שתף פריט",
     noItemsToShare: "אין פריטים לשתף.",

@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Loader2, Timer, Gift } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import PageInfo from '../components/common/PageInfo';
 
 export default function CoinPanel() {
     const { t } = useLanguage();
@@ -62,7 +63,10 @@ export default function CoinPanel() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">{t('yourCoins', 'Your Coins')}</h1>
+            <div className="flex items-center gap-4 mb-6">
+                <h1 className="text-3xl font-bold">{t('yourCoins', 'Your Coins')}</h1>
+                <PageInfo infoKey="coinPanelInfo" />
+            </div>
             <div className="bg-card p-6 rounded-lg shadow-md mb-8">
                 <div className="flex items-center space-x-4 mb-4">
                     <img src="/coin.svg" alt="Coin" className="h-10 w-10"/>

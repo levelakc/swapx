@@ -9,6 +9,7 @@ import CategoryManager from '../components/admin/CategoryManager';
 import ItemsTable from '../components/admin/ItemsTable';
 import OnlineUsersTable from '../components/admin/OnlineUsersTable';
 import TradesTable from '../components/admin/TradesTable';
+import PageInfo from '../components/common/PageInfo';
 
 const StatCard = ({ title, value }) => (
   <div className="bg-muted p-4 rounded-lg shadow-sm">
@@ -204,9 +205,12 @@ export default function Admin() {
   return (
     <div className="space-y-6 pb-12">
       <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-black uppercase tracking-tighter">
-              {isAdmin ? 'Admin Console' : 'Moderator Panel'}
-          </h1>
+          <div className="flex items-center gap-4">
+              <h1 className="text-3xl font-black uppercase tracking-tighter">
+                  {isAdmin ? 'Admin Console' : 'Moderator Panel'}
+              </h1>
+              <PageInfo infoKey="adminInfo" />
+          </div>
           <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest">
               {user.role}
           </div>

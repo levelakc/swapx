@@ -8,22 +8,37 @@ import { toast } from 'sonner';
 import FuturisticTradeDeck from './FuturisticTradeDeck';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import PageInfo from '../common/PageInfo';
+import ItemDetailsModal from './ItemDetailsModal';
 
 import ImageWithFallback from '../common/ImageWithFallback';
 
-function ItemCarouselCard({ item, isSelected, onSelect }) {
+function ItemCarouselCard({ item, isSelected, onSelect, onOpenDetails }) {
     const { t } = useLanguage();
     const { currency, convertCurrency } = useCurrency();
     const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
     const currencySymbol = currency === 'ILS' ? '₪' : '$';
     const isTraded = item.status === 'traded';
 
+    // Handle double tap
+    const lastTap = React.useRef(0);
+    const handleTap = () => {
+        const now = Date.now();
+        const DOUBLE_TAP_DELAY = 300;
+        if (now - lastTap.current < DOUBLE_TAP_DELAY) {
+            onOpenDetails(item);
+        } else {
+            !isTraded && onSelect(item._id);
+        }
+        lastTap.current = now;
+    };
+
     return (
         <motion.div
             className={`relative flex flex-col items-center p-2 rounded-xl transition-all border-2 
                 ${isTraded ? 'opacity-50 grayscale cursor-not-allowed border-transparent' : 'cursor-pointer'}
                 ${isSelected ? 'border-purple-500 bg-purple-500/10' : 'border-transparent hover:bg-muted'}`}
-            onClick={() => !isTraded && onSelect(item._id)}
+            onClick={handleTap}
             whileHover={!isTraded ? { scale: 1.02 } : {}}
             whileTap={!isTraded ? { scale: 0.98 } : {}}
         >
@@ -63,6 +78,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
     const [preferredDate, setPreferredDate] = useState('');
     const [showNewOfferForm, setShowNewOfferForm] = useState(false);
     const [newOffer, setNewOffer] = useState({ title: '', description: '', estimated_value: '', image: null });
+    const [previewItem, setPreviewItem] = useState(null);
 
     const isService = targetItem?.listing_type === 'service' || targetItem?.is_service;
 
@@ -149,13 +165,16 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                 <div className="p-4 sm:p-6 space-y-8 text-foreground flex-1">
                     
                     {/* Header info in content */}
-                    <div className="bg-muted/30 p-4 rounded-2xl border border-dashed mb-6">
-                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest mb-1">
-                            {isService ? t('bookingFor', 'Booking for') : t('tradingFor')}
-                        </p>
-                        <h3 className="text-lg font-bold text-foreground">
-                            {targetItem ? t(targetItem.title) : t('negotiation', 'Negotiation')}
-                        </h3>
+                    <div className="bg-muted/30 p-4 rounded-2xl border border-dashed mb-6 flex justify-between items-start">
+                        <div>
+                            <p className="text-xs text-muted-foreground uppercase font-black tracking-widest mb-1">
+                                {isService ? t('bookingFor', 'Booking for') : t('tradingFor')}
+                            </p>
+                            <h3 className="text-lg font-bold text-foreground">
+                                {targetItem ? t(targetItem.title) : t('negotiation', 'Negotiation')}
+                            </h3>
+                        </div>
+                        <PageInfo infoKey="tradeDeckInfo" />
                     </div>
                     
                     {/* Date Selection for Services */}
@@ -186,7 +205,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                 ) : myItems.length > 0 ? (
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                         {myItems.map(item => (
-                                            <ItemCarouselCard key={item._id} item={item} isSelected={selectedItemIds.includes(item._id)} onSelect={handleSelect} />
+                                            <ItemCarouselCard key={item._id} item={item} isSelected={selectedItemIds.includes(item._id)} onSelect={handleSelect} onOpenDetails={setPreviewItem} />
                                         ))}
                                     </div>
                                 ) : (
@@ -323,6 +342,12 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                     </button>
                 </div>
             </div>
+
+            <ItemDetailsModal 
+                isOpen={!!previewItem}
+                onClose={() => setPreviewItem(null)}
+                item={previewItem}
+            />
         </FuturisticTradeDeck>
     );
 }
