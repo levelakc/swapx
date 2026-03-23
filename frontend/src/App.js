@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'sonner';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'; // Import LanguageProvider
@@ -58,7 +57,6 @@ function App() {
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <ScrollToTopReset />
               <div className="min-h-screen">
-                <Toaster position="bottom-right" expand={true} richColors />
                 <Layout>
                   <Routes>
                     <Route path="/" element={<Home />} />
