@@ -178,6 +178,12 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
               return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
           });
           queryClient.invalidateQueries(['conversations']);
+      } else if (newMsg.sender_email !== me?.email) {
+          // Alert user about message in ANOTHER conversation
+          toast(t('newMessageReceived'), {
+              description: newMsg.content.substring(0, 50) + (newMsg.content.length > 50 ? '...' : ''),
+          });
+          queryClient.invalidateQueries(['conversations']);
       }
     });
 
@@ -262,7 +268,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
     const currencySymbol = currency === 'ILS' ? '₪' : '$';
     const isSelected = isMine && draftMyItems.includes(item._id);
-    const canToggle = isEditing && isMine && trade?.status === 'pending' || trade?.status === 'countered';
+    const canToggle = isEditing && isMine && !isTradeActionLoading && (trade?.status === 'pending' || trade?.status === 'countered');
 
     return (
         <div key={item._id} className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${isSelected && isEditing ? 'bg-primary/10 border-primary' : 'bg-card/40 border-border/50'} ${canToggle ? 'cursor-pointer hover:bg-muted' : ''}`}>
@@ -359,8 +365,9 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                     <input 
                                         type="number" 
                                         value={draftMyCashOffered} 
+                                        disabled={isTradeActionLoading}
                                         onChange={e => setDraftMyCashOffered(Number(e.target.value))} 
-                                        className="w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-green-500 text-right outline-none"
+                                        className={`w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-green-500 text-right outline-none ${isTradeActionLoading && 'opacity-50'}`}
                                     />
                                 </div>
                             ) : (
@@ -388,8 +395,9 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                                     <input 
                                         type="number" 
                                         value={draftMyCashRequested} 
+                                        disabled={isTradeActionLoading}
                                         onChange={e => setDraftMyCashRequested(Number(e.target.value))} 
-                                        className="w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-blue-500 text-right outline-none"
+                                        className={`w-12 md:w-16 bg-background border border-white/10 rounded px-1 py-0.5 text-[10px] font-bold text-blue-500 text-right outline-none ${isTradeActionLoading && 'opacity-50'}`}
                                     />
                                 </div>
                             ) : (
