@@ -43,7 +43,7 @@ export default function PageInfo({ infoKey }) {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-card w-full max-w-md rounded-[2.5rem] shadow-2xl border-4 border-primary/20 overflow-hidden"
+              className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-2xl border-4 border-primary/30 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-8">
@@ -53,23 +53,23 @@ export default function PageInfo({ infoKey }) {
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-muted rounded-full transition-colors"
+                    className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground"
                   >
                     <X size={24} />
                   </button>
                 </div>
 
-                <h2 className="text-3xl font-black mb-4 tracking-tighter">
+                <h2 className="text-3xl font-black mb-4 tracking-tighter text-slate-900 dark:text-white">
                   {info.title}
                 </h2>
 
-                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
                   {info.description}
                 </p>
 
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-full py-4 bg-primary text-primary-foreground font-black rounded-2xl hover:opacity-90 transition-all active:scale-95 shadow-xl shadow-primary/20"
+                  className="w-full py-4 bg-primary text-primary-content font-black rounded-2xl hover:scale-[1.02] transition-all active:scale-95 shadow-xl shadow-primary/20"
                 >
                   {t('back')}
                 </button>
