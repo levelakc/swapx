@@ -26,6 +26,16 @@ export default function MessageScreen() {
   const messagesEndRef = useRef(null);
   const socket = useRef(null);
 
+  const playNotificationSound = () => {
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log('Sound play error:', e));
+    } catch (e) {
+      console.log('Audio init error:', e);
+    }
+  };
+
   const { data: user } = useQuery({
     queryKey: ['user', 'me'],
     queryFn: getMe,
@@ -73,6 +83,10 @@ export default function MessageScreen() {
     newSocket.emit('joinConversation', { conversationId });
 
     newSocket.on('newMessage', (newMsg) => {
+        if (newMsg.sender_email !== user?.email) {
+            playNotificationSound();
+        }
+
         if (newMsg.conversation_id === conversationId) {
             queryClient.setQueryData(['messages', conversationId], (old = []) => {
                 // Ensure we are dealing with an array
@@ -86,6 +100,18 @@ export default function MessageScreen() {
                 return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             });
             // Update conversation list unread counts/last message
+            queryClient.invalidateQueries(['conversations']);
+        } else if (newMsg.sender_email !== user?.email) {
+            // Alert user about message in ANOTHER conversation
+            toast(t('newMessageReceived'), {
+                description: newMsg.content.substring(0, 50) + (newMsg.content.length > 50 ? '...' : ''),
+                action: {
+                    label: t('view'),
+                    onClick: () => {
+                        window.location.href = `/messages?id=${newMsg.conversation_id}`;
+                    }
+                }
+            });
             queryClient.invalidateQueries(['conversations']);
         }
     });
@@ -107,7 +133,7 @@ export default function MessageScreen() {
       setMessage('');
       queryClient.invalidateQueries(['messages', conversationId]);
       queryClient.invalidateQueries(['conversations']);
-      toast.success(t('messageSentSuccessfully', 'Message sent!'));
+      playNotificationSound();
     },
     onError: (error) => {
       toast.error(error.message || t('failedToSendChatMessage'));
@@ -170,11 +196,12 @@ export default function MessageScreen() {
     }
 
     const itemsCount = offerData.offeredItems.length;
+    const itemsText = itemsCount === 1 ? t('item') : t('items');
     const cashText = offerData.cash.amount > 0 
-        ? (offerData.cash.type === 'add' ? ` + ${offerData.cash.amount} cash` : ` asking for ${offerData.cash.amount} cash`) 
+        ? (offerData.cash.type === 'add' ? ` + ${offerData.cash.amount} ${t('cash')}` : ` ${t('askingFor')} ${offerData.cash.amount} ${t('cash')}`) 
         : '';
     
-    const content = `Proposed a trade: ${itemsCount} items${cashText}`;
+    const content = `${t('proposedTrade')}: ${itemsCount} ${itemsText}${cashText}`;
     
     createTradeMutation.mutate({
         receiver_email: otherParticipant,

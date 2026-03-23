@@ -210,7 +210,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                                     </div>
                                 ) : (
                                     <div className="text-center p-6 bg-muted/30 rounded-xl border border-dashed">
-                                        <p className="text-sm text-muted-foreground">You don't have any items listed yet.</p>
+                                        <p className="text-sm text-muted-foreground">{t('noItemsListed')}</p>
                                     </div>
                                 )}
 
@@ -312,7 +312,7 @@ export default function TradeDeck({ isOpen, onClose, targetItem, onSubmit }) {
                 <div className="p-4 border-t bg-background">
                     <div className="flex items-center justify-between mb-4 text-xs text-muted-foreground px-1">
                         {!isService ? (
-                            <span>{t('offering')}: <b className="text-foreground">{selectedItemIds.length} items</b> {showNewOfferForm && '+ 1 custom'}</span>
+                            <span>{t('offering')}: <b className="text-foreground">{selectedItemIds.length} {selectedItemIds.length === 1 ? t('item') : t('items')}</b> {showNewOfferForm && `+ 1 ${t('custom')}`}</span>
                         ) : (
                             <span>{t('bookingService', 'Booking Service')}</span>
                         )}

@@ -152,12 +152,22 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     onError: (err) => toast.error(err.message || t('error'))
   });
 
+  const playNotificationSound = () => {
+    try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(e => console.log('Sound play error:', e));
+    } catch (e) {
+        console.log('Audio init error:', e);
+    }
+  };
+
   const sendMessageMutation = useMutation({
     mutationFn: (newMessage) => sendMessage(conversationId, newMessage),
     onSuccess: () => {
         setMessageContent('');
         queryClient.invalidateQueries(['messages', conversationId]);
-        toast.success(t('messageSentSuccessfully', 'Message sent!'));
+        playNotificationSound();
     }
   });
 
@@ -180,6 +190,10 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
     newSocket.on('connect', () => newSocket.emit('joinConversation', { conversationId }));
     
     newSocket.on('newMessage', (newMsg) => {
+      if (newMsg.sender_email !== me?.email) {
+          playNotificationSound();
+      }
+      
       if (newMsg.conversation_id === conversationId) {
           queryClient.setQueryData(['messages', conversationId], (old) => {
               const currentMessages = Array.isArray(old) ? old : [];
@@ -194,6 +208,14 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
           // Alert user about message in ANOTHER conversation
           toast(t('newMessageReceived'), {
               description: newMsg.content.substring(0, 50) + (newMsg.content.length > 50 ? '...' : ''),
+              action: {
+                  label: t('view'),
+                  onClick: () => {
+                      onClose(); // Close current modal
+                      // Navigate to messages page with the new conversation
+                      window.location.href = `/messages?id=${newMsg.conversation_id}`;
+                  }
+              }
           });
           queryClient.invalidateQueries(['conversations']);
       }
@@ -311,6 +333,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
   const currencySym = currency === 'ILS' ? '₪' : '$';
   const isTradeActionLoading = statusMutation.isLoading || counterMutation.isLoading;
+  const isTerminalState = ['accepted', 'rejected', 'cancelled', 'completed'].includes(trade?.status);
 
   return (
     <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
@@ -421,7 +444,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
                 {/* Actions Bar */}
                 <div className="shrink-0 pt-2 border-t border-white/5">
-                    {trade?.status === 'pending' || trade?.status === 'countered' ? (
+                    {(!isTerminalState) ? (
                         isEditing ? (
                             <div className="grid grid-cols-2 gap-2">
                                 <button 
@@ -470,8 +493,8 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
                             </div>
                         )
                     ) : (
-                        <div className="text-center py-2 text-[10px] font-black uppercase text-muted-foreground tracking-widest bg-muted/20 rounded-xl">
-                            {t('tradeOffer')} {t(trade?.status)}
+                        <div className="text-center py-2.5 text-[10px] font-black uppercase text-muted-foreground tracking-widest bg-muted/10 rounded-xl border border-dashed border-white/5 opacity-60">
+                            {t('trade')} {t(trade?.status)}
                         </div>
                     )}
                 </div>

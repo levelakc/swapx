@@ -286,6 +286,16 @@ export default function Messages() {
   const socket = useRef(null);
   const messagesEndRef = useRef(null);
 
+  const playNotificationSound = () => {
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log('Sound play error:', e));
+    } catch (e) {
+      console.log('Audio init error:', e);
+    }
+  };
+
   const { data: me } = useQuery({ queryKey: ['user', 'me'], queryFn: getMe });
 
   const [hiddenConvoIds, setHiddenConvoIds] = useState(() => {
@@ -370,6 +380,7 @@ export default function Messages() {
         setMessage('');
         queryClient.setQueryData(['messages', selectedConversationId], (old = []) => [...old, newMsg]);
         queryClient.invalidateQueries(['conversations']);
+        playNotificationSound();
     }
   });
 
@@ -384,6 +395,10 @@ export default function Messages() {
     newSocket.on('onlineUsers', (users) => setOnlineUsers(users));
     
     newSocket.on('newMessage', (newMsg) => {
+        if (newMsg.sender_email !== me?.email) {
+            playNotificationSound();
+        }
+
         // If we receive a message for a hidden conversation, unhide it!
         setHiddenConvoIds(prev => {
             if (prev.includes(newMsg.conversation_id)) {
@@ -403,12 +418,23 @@ export default function Messages() {
                 const updated = [...currentMessages, newMsg];
                 return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             });
+        } else if (newMsg.sender_email !== me?.email) {
+            // Alert user about message in ANOTHER conversation
+            toast(t('newMessageReceived'), {
+                description: newMsg.content.substring(0, 50) + (newMsg.content.length > 50 ? '...' : ''),
+                action: {
+                    label: t('view'),
+                    onClick: () => {
+                        handleSelectConversation(newMsg.conversation_id);
+                    }
+                }
+            });
         }
         queryClient.invalidateQueries(['conversations']);
     });
 
     return () => newSocket.disconnect();
-  }, [selectedConversationId, queryClient]);
+  }, [selectedConversationId, queryClient, me?.email]);
 
   useEffect(() => {
     if (selectedConversationId && socket.current) {
