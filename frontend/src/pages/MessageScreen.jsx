@@ -18,7 +18,7 @@ const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API
 
 export default function MessageScreen() {
   const { id: conversationId } = useParams();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [message, setMessage] = useState('');
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [selectedTradeId, setSelectedTradeId] = useState(null);

@@ -218,7 +218,7 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
     );
 }
 
-function ChatMessage({ msg, me, onOpenNegotiation, t }) {
+function ChatMessage({ msg, me, onOpenNegotiation, t, language }) {
     const isMe = msg.sender_email === me?.email;
     const isSystem = msg.sender_email === 'system@ahlafot.com' || msg.sender_email === 'system';
 
@@ -636,14 +636,14 @@ export default function Messages() {
                     <div className="flex justify-center p-12"><Loader2 className="animate-spin text-primary" /></div>
                 ) : messages.filter(m => ['offer', 'system', 'counter', 'accept', 'reject', 'cancelled'].includes(m.type)).length > 0 ? (
                     messages.filter(m => ['offer', 'system', 'counter', 'accept', 'reject', 'cancelled'].includes(m.type)).map((msg, idx) => (
-                        <ChatMessage 
-                            key={msg._id} 
-                            msg={msg} 
-                            me={me} 
-                            t={t} 
-                            onOpenNegotiation={() => setIsNegotiationOpen(true)} 
-                        />
-                    ))
+                        <ChatMessage
+                            key={msg._id}
+                            msg={msg}
+                            me={me}
+                            t={t}
+                            language={language}
+                            onOpenNegotiation={() => setIsNegotiationOpen(true)}
+                        />                    ))
                 ) : (
                     <div className="h-full flex flex-col items-center justify-center opacity-20 grayscale">
                         <MessageCircle size={64} />
