@@ -140,6 +140,7 @@ export const deleteItem = (id) => request(`/items/${id}`, {
 });
 
 export const getMyItems = () => request('/items/my');
+export const getMutualMatches = () => request('/items/matches');
 export const getPopularItems = (limit) => request(`/items/popular?limit=${limit}`);
 export const getSuggestedItems = (limit, lastCategory) => {
     const query = new URLSearchParams({ limit, lastCategory }).toString();

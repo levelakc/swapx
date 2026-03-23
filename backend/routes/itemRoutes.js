@@ -10,6 +10,7 @@ const {
   featureItem,
   getPopularItems,
   getSuggestedItems,
+  getMutualMatches,
 } = require('../controllers/itemController');
 const { protect, optionalProtect, authorize } = require('../middleware/authMiddleware');
 const upload = require('../utils/file-upload');
@@ -22,6 +23,7 @@ router.route('/')
 router.get('/my', protect, getMyItems);
 router.get('/popular', getPopularItems); // New route for popular items
 router.get('/suggested', optionalProtect, getSuggestedItems);
+router.get('/matches', protect, getMutualMatches);
 
 router.route('/:id')
   .get(getItemById)

@@ -26,7 +26,8 @@ export default function Browse({ listingType = 'item' }) {
     ],
     conditions: searchParams.get('conditions') ? searchParams.get('conditions').split(',') : [],
     cashOptions: searchParams.get('cashOptions') ? searchParams.get('cashOptions').split(',') : [],
-    location: searchParams.get('location') || ''
+    location: searchParams.get('location') || '',
+    attributes: {}
   });
 
   // Sync state FROM URL when searchParams change (e.g., navigation)
@@ -99,6 +100,7 @@ export default function Browse({ listingType = 'item' }) {
     location: filters.location,
     keyword: searchParams.get('keyword') || '',
     listing_type: listingType,
+    attributes: JSON.stringify(filters.attributes)
   };
 
   if (selectedCategory !== 'all') {
@@ -111,6 +113,14 @@ export default function Browse({ listingType = 'item' }) {
     keepPreviousData: true,
   });
   
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories
+  });
+
+  const selectedCategoryObj = categories.find(c => c._id === selectedCategory || c.name === selectedCategory);
+  const categoryLabel = selectedCategoryObj ? (selectedCategoryObj[`label_${language}`] || selectedCategoryObj.label_en) : '';
+
   const items = queryResult?.items || [];
   const totalPages = queryResult?.pages || 1;
 
@@ -170,6 +180,7 @@ export default function Browse({ listingType = 'item' }) {
         onFilterChange={setFilters} 
         isOpen={isSidebarOpen} 
         onClose={() => setIsSidebarOpen(false)} 
+        categoryName={categoryLabel}
       />
 
       {/* Main Content */}

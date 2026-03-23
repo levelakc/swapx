@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularItems, getSuggestedItems, getPopularServices, getSuggestedServices } from '../api/api';
 import HeroSection from '../components/home/HeroSection';
+import MutualMatches from '../components/home/MutualMatches';
 import PopularItems from '../components/home/PopularItems';
 import PopularServices from '../components/home/PopularServices';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -95,6 +96,11 @@ export default function Home() {
         </motion.div>
         
         <div className="container mx-auto px-4 space-y-24">
+          {/* Mutual Matches Section */}
+          <motion.div variants={itemVariants}>
+            <MutualMatches />
+          </motion.div>
+
           {/* Popular Items Section */}
           <motion.div variants={itemVariants}>
             <PopularItems 

@@ -44,6 +44,20 @@ const getItems = asyncHandler(async (req, res) => {
       }
     : {};
 
+  let attributeQuery = {};
+  if (req.query.attributes) {
+    try {
+      const parsedAttrs = JSON.parse(req.query.attributes);
+      Object.keys(parsedAttrs).forEach((key) => {
+        if (parsedAttrs[key] !== '' && parsedAttrs[key] !== null && parsedAttrs[key] !== false) {
+          attributeQuery[`attributes.${key}`] = parsedAttrs[key];
+        }
+      });
+    } catch (e) {
+      console.error('Error parsing attributes query:', e);
+    }
+  }
+
   let categoryQuery = {};
   if (req.query.category) {
     const isObjectId = /^[0-9a-fA-F]{24}$/.test(req.query.category);
@@ -82,8 +96,17 @@ const getItems = asyncHandler(async (req, res) => {
     ...keyword,
     ...categoryQuery,
     ...condition,
+    ...attributeQuery,
     status: 'active', // Only show active items
   };
+
+  if (req.query.location) {
+    query.location = { $regex: req.query.location, $options: 'i' };
+  }
+
+  if (req.query.listing_type) {
+    query.listing_type = req.query.listing_type;
+  }
 
   console.log('getItems query:', JSON.stringify(query));
   const count = await Item.countDocuments(query);
@@ -143,6 +166,21 @@ const createItem = asyncHandler(async (req, res) => {
     cash_flexibility,
   } = req.body;
 
+  // Handle stringified fields from FormData
+  let parsedAttributes = attributes;
+  if (typeof attributes === 'string') {
+    try {
+      parsedAttributes = JSON.parse(attributes);
+    } catch (e) {
+      parsedAttributes = {};
+    }
+  }
+
+  let parsedLookingFor = looking_for;
+  if (typeof looking_for === 'string') {
+    parsedLookingFor = looking_for.split(',').filter(Boolean);
+  }
+
   // Validate category by ID
   const categoryExists = await Category.findById(category);
   if (!categoryExists) {
@@ -169,8 +207,8 @@ const createItem = asyncHandler(async (req, res) => {
     condition,
     images: images || [],
     location: location || req.user.location || 'Not Specified',
-    attributes,
-    looking_for,
+    attributes: parsedAttributes,
+    looking_for: parsedLookingFor,
     cash_flexibility,
     created_by: req.user._id,
     seller_full_name: req.user.full_name || 'Ahlafot User',
@@ -245,8 +283,28 @@ const updateItem = asyncHandler(async (req, res) => {
     item.estimated_value = estimated_value || item.estimated_value;
     item.condition = condition || item.condition;
     item.location = location || item.location;
-    item.attributes = attributes || item.attributes;
-    item.looking_for = looking_for || item.looking_for;
+    
+    // Handle stringified fields from FormData
+    if (attributes !== undefined) {
+      let parsedAttributes = attributes;
+      if (typeof attributes === 'string') {
+        try {
+          parsedAttributes = JSON.parse(attributes);
+        } catch (e) {
+          parsedAttributes = item.attributes;
+        }
+      }
+      item.attributes = parsedAttributes;
+    }
+
+    if (looking_for !== undefined) {
+      let parsedLookingFor = looking_for;
+      if (typeof looking_for === 'string') {
+        parsedLookingFor = looking_for.split(',').filter(Boolean);
+      }
+      item.looking_for = parsedLookingFor;
+    }
+
     item.cash_flexibility = cash_flexibility || item.cash_flexibility;
     item.status = status || item.status;
     item.images = images || item.images;
@@ -407,6 +465,54 @@ const getSuggestedItems = asyncHandler(async (req, res) => {
   res.json({ items: selected });
 });
 
+// @desc    Get items that are mutual matches for the user's inventory
+// @route   GET /api/items/matches
+// @access  Private
+const getMutualMatches = asyncHandler(async (req, res) => {
+  const userItems = await Item.find({ created_by: req.user._id, status: 'active' });
+  
+  if (!userItems || userItems.length === 0) {
+    return res.json({ matches: [] });
+  }
+
+  const allMatches = [];
+  const seenItemIds = new Set();
+
+  for (const myItem of userItems) {
+    // 1. Find items whose category is in my "looking_for"
+    // 2. AND those items' "looking_for" contains my item's category
+    // 3. AND the value is within +/- 30% range
+    // 4. AND not my own item
+    
+    const valueMin = myItem.estimated_value * 0.7;
+    const valueMax = myItem.estimated_value * 1.3;
+
+    const matches = await Item.find({
+      status: 'active',
+      created_by: { $ne: req.user._id },
+      category: { $in: myItem.looking_for },
+      looking_for: myItem.category,
+      estimated_value: { $gte: valueMin, $lte: valueMax }
+    }).populate('created_by', 'name email avatar');
+
+    matches.forEach(match => {
+      if (!seenItemIds.has(match._id.toString())) {
+        allMatches.push({
+          item: match,
+          matchReason: `Matching your ${myItem.title}`,
+          matchedWith: myItem._id
+        });
+        seenItemIds.add(match._id.toString());
+      }
+    });
+  }
+
+  // Sort matches by recency
+  allMatches.sort((a, b) => b.item.createdAt - a.item.createdAt);
+
+  res.json({ matches: allMatches.slice(0, 20) }); // Limit to top 20 matches
+});
+
 
 module.exports = {
   getItems,
@@ -418,4 +524,5 @@ module.exports = {
   featureItem,
   getPopularItems,
   getSuggestedItems,
+  getMutualMatches,
 };

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ChevronRight, Package, Info } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '../../api/api';
 import ImageWithFallback from '../common/ImageWithFallback';
 
 const ItemDetailsModal = ({ isOpen, onClose, item }) => {
@@ -10,10 +12,28 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
   const { currency, convertCurrency } = useCurrency();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+    enabled: !!item?.looking_for?.length
+  });
+
   if (!item) return null;
 
   const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
+
+  const getCategoryLabel = (cat) => {
+    if (typeof cat === 'object' && cat !== null) {
+      return cat[`label_${language}`] || cat.label_en || cat.name;
+    }
+    // If it's an ID, find it in the categories list
+    const found = categories.find(c => c._id === cat);
+    if (found) {
+      return found[`label_${language}`] || found.label_en || found.name;
+    }
+    return cat; // Fallback to ID if not found
+  };
 
   const nextImage = (e) => {
     e.stopPropagation();
@@ -150,7 +170,7 @@ const ItemDetailsModal = ({ isOpen, onClose, item }) => {
                       <div className="flex flex-wrap gap-2">
                         {item.looking_for.map((cat, i) => (
                           <span key={i} className="px-3 py-1 bg-muted rounded-lg text-[10px] font-bold text-foreground border border-border">
-                            {typeof cat === 'object' ? (cat[`label_${language}`] || cat.label_en) : cat}
+                            {getCategoryLabel(cat)}
                           </span>
                         ))}
                       </div>

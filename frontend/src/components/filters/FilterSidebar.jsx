@@ -1,19 +1,33 @@
 import { useLanguage } from '../../contexts/LanguageContext';
-import { X } from 'lucide-react';
+import { X, ChevronDown, ChevronRight } from 'lucide-react';
+import { CATEGORY_ATTRIBUTES, getCategoryAttrKey } from '../../utils/categoryAttributes';
+import { useState } from 'react';
 
-export default function FilterSidebar({ filters, onFilterChange, isOpen, onClose }) {
-  const { t } = useLanguage();
+export default function FilterSidebar({ filters, onFilterChange, isOpen, onClose, categoryName }) {
+  const { t, language } = useLanguage();
+  const [expandedSection, setExpandedSection] = useState(null);
+
+  const categoryAttrKey = getCategoryAttrKey(categoryName);
+  const attrFields = categoryAttrKey ? CATEGORY_ATTRIBUTES[categoryAttrKey].fields : [];
 
   const handleSliderChange = (e) => {
     onFilterChange({ ...filters, priceRange: [filters.priceRange[0], parseInt(e.target.value)] });
   };
   
   const handleCheckboxChange = (group, value) => {
-    const currentValues = filters[group];
+    const currentValues = filters[group] || [];
     const newValues = currentValues.includes(value)
       ? currentValues.filter(v => v !== value)
       : [...currentValues, value];
     onFilterChange({ ...filters, [group]: newValues });
+  };
+
+  const handleAttributeChange = (name, value) => {
+    const currentAttrs = filters.attributes || {};
+    onFilterChange({ 
+        ...filters, 
+        attributes: { ...currentAttrs, [name]: value } 
+    });
   };
 
   const conditionOptions = ['new', 'like_new', 'excellent', 'good', 'fair'];
@@ -43,6 +57,52 @@ export default function FilterSidebar({ filters, onFilterChange, isOpen, onClose
         </div>
 
         <div className="space-y-6">
+        {/* Dynamic Category Filters */}
+        {attrFields.length > 0 && (
+            <div className="space-y-4 pb-6 border-b border-border">
+                <h4 className="font-black text-xs uppercase tracking-widest text-primary flex items-center gap-2">
+                    {categoryName} {t('specificFilters', 'Filters')}
+                </h4>
+                {attrFields.map(field => {
+                    if (field.type === 'select') {
+                        return (
+                            <div key={field.name}>
+                                <label className="block text-xs font-bold mb-2 uppercase text-muted-foreground">
+                                    {language === 'he' ? field.label_he : field.label_en}
+                                </label>
+                                <select 
+                                    className="w-full bg-muted border-none rounded-lg p-2 text-sm focus:ring-2 ring-primary/20 outline-none"
+                                    value={filters.attributes?.[field.name] || ''}
+                                    onChange={(e) => handleAttributeChange(field.name, e.target.value)}
+                                >
+                                    <option value="">{t('all', 'All')}</option>
+                                    {field.options.map(opt => (
+                                        <option key={opt} value={opt}>{opt}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    }
+                    if (field.type === 'boolean') {
+                        return (
+                            <label key={field.name} className="flex items-center justify-between group cursor-pointer">
+                                <span className="text-sm font-bold group-hover:text-primary transition-colors">
+                                    {language === 'he' ? field.label_he : field.label_en}
+                                </span>
+                                <input 
+                                    type="checkbox"
+                                    checked={!!filters.attributes?.[field.name]}
+                                    onChange={(e) => handleAttributeChange(field.name, e.target.checked)}
+                                    className="form-checkbox h-4 w-4 text-primary rounded border-muted bg-muted"
+                                />
+                            </label>
+                        );
+                    }
+                    return null;
+                })}
+            </div>
+        )}
+
         <div>
           <h4 className="font-semibold mb-2">{t('priceRange')}</h4>
           <input 

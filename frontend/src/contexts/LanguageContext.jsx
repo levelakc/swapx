@@ -336,6 +336,8 @@ const translations = {
         title: "Admin Dashboard",
         description: "System management area. Monitor trades, users, and categories to ensure a safe and active community."
     },
+    mutualMatches: "Mutual Matches",
+    mutualMatchesDesc: "Items from users looking for what you have! Perfect for a straight swap.",
     share: "Share",
     shareItem: "Share an Item",
     noItemsToShare: "No items to share.",
@@ -716,6 +718,8 @@ const translations = {
         title: "לוח בקרה למנהל",
         description: "אזור ניהול המערכת. עקבו אחר טריידים, משתמשים וקטגוריות כדי להבטיח קהילה בטוחה ופעילה."
     },
+    mutualMatches: "הצעות להתאמה",
+    mutualMatchesDesc: "פריטים של משתמשים שמחפשים בדיוק את מה שיש לך! מושלם להחלפה ישירה.",
     share: 'שתף',
     shareItem: "שתף פריט",
     noItemsToShare: "אין פריטים לשתף.",

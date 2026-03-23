@@ -9,6 +9,7 @@ import { Loader2, UploadCloud, Info, X, Type, FileText, Tag, DollarSign, Image a
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import { CATEGORY_ATTRIBUTES, getCategoryAttrKey } from '../utils/categoryAttributes';
 
 export default function CreateItem({ id: propsId, onSuccess }) {
   const { id: paramId } = useParams();
@@ -53,6 +54,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
             social_instagram: itemToEdit.social_instagram,
             social_facebook: itemToEdit.social_facebook,
             google_reviews_link: itemToEdit.google_reviews_link,
+            ...(itemToEdit.attributes || {})
         });
         setListingType(itemToEdit.listing_type || 'item');
         const existingImages = (itemToEdit.images || []).map((img, i) => ({
@@ -147,6 +149,10 @@ export default function CreateItem({ id: propsId, onSuccess }) {
     });
   };
 
+  const selectedCategoryId = watch('category');
+  const selectedCategoryObj = categories.find(c => c._id === selectedCategoryId);
+  const categoryAttrKey = getCategoryAttrKey(selectedCategoryObj?.name || selectedCategoryObj?.label_en);
+
   const saveMutation = useMutation({
     mutationFn: (itemData) => isEdit ? apiUpdateItem(id, itemData) : apiCreateItem(itemData),
     onSuccess: (newItem) => {
@@ -178,12 +184,23 @@ export default function CreateItem({ id: propsId, onSuccess }) {
     // Sort images so main is first, then extract either the File or the existing string URL
     const sortedImages = [...images].sort((a, b) => b.isMain - a.isMain).map(img => img.file);
     
+    // Collect category specific attributes
+    const attributes = {};
+    if (categoryAttrKey && CATEGORY_ATTRIBUTES[categoryAttrKey]) {
+        CATEGORY_ATTRIBUTES[categoryAttrKey].fields.forEach(field => {
+            if (data[field.name] !== undefined) {
+                attributes[field.name] = data[field.name];
+            }
+        });
+    }
+
     const itemData = {
       ...data,
       estimated_value: Number(data.estimated_value),
       images: sortedImages,
       listing_type: listingType,
       price_type: listingType === 'service' ? 'hourly' : 'fixed',
+      attributes: JSON.stringify(attributes), // Send as stringified object for FormData
     };
 
     saveMutation.mutate(itemData);
@@ -376,11 +393,58 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                     {...register('location')} 
                     className="w-full bg-secondary/50 border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4"
                   />
-                </div>
-              </div>
-            </div>
+                  </div>
+                  </div>
+                  </div>
 
-            {/* Service Specific Fields */}
+                  {/* Dynamic Category Attributes */}
+                  {categoryAttrKey && CATEGORY_ATTRIBUTES[categoryAttrKey] && (
+                  <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="space-y-6"
+                  >
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                  <Plus size={16} /> {t('additionalDetails', 'Additional Details')}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-primary/5 rounded-[2rem] border border-primary/10">
+                  {CATEGORY_ATTRIBUTES[categoryAttrKey].fields.map(field => (
+                    <div key={field.name}>
+                      <label className="block text-sm font-medium mb-2">{language === 'he' ? field.label_he : field.label_en}</label>
+                      {field.type === 'select' ? (
+                        <select 
+                          {...register(field.name)} 
+                          className="w-full bg-background border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4"
+                        >
+                          <option value="">{t('select', 'Select')}...</option>
+                          {field.options.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : field.type === 'boolean' ? (
+                        <div className="flex items-center h-[52px]">
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" {...register(field.name)} className="sr-only peer" />
+                            <div className="w-11 h-6 bg-muted rounded-full peer peer-focus:ring-4 peer-focus:ring-primary/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                          </label>
+                        </div>
+                      ) : (
+                        <input 
+                          type={field.type} 
+                          {...register(field.name)} 
+                          min={field.min}
+                          max={field.max}
+                          placeholder={`${language === 'he' ? 'הכנס' : 'Enter'} ${language === 'he' ? field.label_he : field.label_en}`}
+                          className="w-full bg-background border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4"
+                        />
+                      )}
+                    </div>
+                  ))}
+                  </div>
+                  </motion.div>
+                  )}
+
+                  {/* Service Specific Fields */}
             {listingType === 'service' && (
                 <div className="space-y-6">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
@@ -526,6 +590,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                                         {isLoadingCategories ? <option>{t('loading')}</option> : 
                                             categories
                                                 .filter(c => !selectedIds.includes(c._id))
+                                                .filter(c => c.name.toLowerCase() !== 'services' && c.name.toLowerCase() !== 'service' && c.label_en?.toLowerCase() !== 'services')
                                                 .map(c => <option key={c._id} value={c._id}>{c[`label_${language}`] || c.label_en}</option>)
                                         }
                                     </select>
