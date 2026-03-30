@@ -8,6 +8,7 @@ import ServiceFilterSidebar from '../components/filters/ServiceFilterSidebar';
 import { Loader2, Search, Filter } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import PageInfo from '../components/common/PageInfo';
+import SEO from '../components/common/SEO';
 
 export default function BrowseServices() {
   const { t } = useLanguage();
@@ -77,6 +78,10 @@ export default function BrowseServices() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start">
+      <SEO 
+        title={t('browseServices', 'Browse Services')}
+        description={t('browseServicesDescription', 'Find professional services and skilled traders on Ahlafot.')}
+      />
       {/* Sidebar */}
       <ServiceFilterSidebar 
         filters={filters} 

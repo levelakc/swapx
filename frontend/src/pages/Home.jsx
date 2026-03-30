@@ -7,6 +7,7 @@ import PopularItems from '../components/home/PopularItems';
 import PopularServices from '../components/home/PopularServices';
 import { useLanguage } from '../contexts/LanguageContext';
 import FloatingBackground from '../components/home/FloatingBackground';
+import SEO from '../components/common/SEO';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -84,6 +85,10 @@ export default function Home() {
 
   return (
     <>
+      <SEO 
+        title={t('homeTitle', 'Home')}
+        description={t('homeTitleDesc', 'Ahlafot - Trade Anything for Anything. The ultimate marketplace for items and services exchange.')}
+      />
       <FloatingBackground />
       <motion.div 
         className="space-y-16 pb-20 relative z-10"

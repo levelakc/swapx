@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import SEO from '../components/common/SEO';
 
 const content = {
   en: {
@@ -66,6 +67,10 @@ export default function StaticPage() {
 
   return (
     <div className="container mx-auto p-8 max-w-4xl">
+      <SEO 
+        title={pageData.title}
+        description={pageData.text.substring(0, 160)}
+      />
       <div className="bg-background rounded-2xl shadow-lg p-10 border border-border">
         <h1 className="text-4xl font-bold mb-6 text-primary">{pageData.title}</h1>
         <div className="prose dark:prose-invert max-w-none">

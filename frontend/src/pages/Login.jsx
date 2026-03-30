@@ -8,6 +8,7 @@ import { Facebook, Globe } from 'lucide-react';
 import { useEffect } from 'react';
 import logoWithSlogan from '../imgs/3.jpg';
 import ImageWithFallback from '../components/common/ImageWithFallback';
+import SEO from '../components/common/SEO';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
+      <SEO title={t('login')} description={t('signInToAccount')} />
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <Link to="/">

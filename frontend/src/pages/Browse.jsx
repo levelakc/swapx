@@ -9,6 +9,7 @@ import FilterSidebar from '../components/filters/FilterSidebar';
 import { Loader2, LayoutGrid, List, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import PageInfo from '../components/common/PageInfo';
+import SEO from '../components/common/SEO';
 
 export default function Browse({ listingType = 'item' }) {
   const { t, language } = useLanguage();
@@ -174,6 +175,10 @@ export default function Browse({ listingType = 'item' }) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start">
+      <SEO 
+        title={`${categoryLabel || t('allCategories')} | ${t('browseItems')}`}
+        description={`${t('browseDescriptionPrefix', 'Browse')} ${categoryLabel || t('allCategories')} ${t('browseDescriptionSuffix', 'on Ahlafot marketplace.')}`}
+      />
       {/* Sidebar */}
       <FilterSidebar 
         filters={filters} 

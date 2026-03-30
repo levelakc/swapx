@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import AuthModal from '../components/common/AuthModal';
 import ImageGallery from '../components/common/ImageGallery';
+import SEO from '../components/common/SEO';
 
 export default function ItemDetail() {
   const { id } = useParams();
@@ -94,8 +95,35 @@ export default function ItemDetail() {
     return <div className="text-center py-20">Item not found</div>;
   }
 
+  const jsonLd = item ? {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": item.title,
+    "image": item.images,
+    "description": item.description,
+    "brand": {
+      "@type": "Brand",
+      "name": "Ahlafot"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": currency === 'ILS' ? 'ILS' : 'USD',
+      "price": displayValue,
+      "itemCondition": `https://schema.org/${item.condition === 'new' ? 'NewCondition' : 'UsedCondition'}`,
+      "availability": "https://schema.org/InStock"
+    }
+  } : null;
+
   return (
     <div className="container mx-auto p-4 max-w-7xl">
+      <SEO 
+        title={item.title}
+        description={item.description?.substring(0, 160)}
+        ogImage={item.images?.[0]}
+        ogType="product"
+        jsonLd={jsonLd}
+      />
       {/* Navigation & Back Button */}
       <div className="flex items-center justify-between mb-6">
         <button 

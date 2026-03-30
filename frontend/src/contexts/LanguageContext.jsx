@@ -847,9 +847,11 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('language', language);
     const rtlLanguages = ['he'];
-    setDir(rtlLanguages.includes(language) ? 'rtl' : 'ltr');
-    document.documentElement.dir = dir;
-  }, [language, dir]);
+    const newDir = rtlLanguages.includes(language) ? 'rtl' : 'ltr';
+    setDir(newDir);
+    document.documentElement.dir = newDir;
+    document.documentElement.lang = language;
+  }, [language]);
 
   const t = (key, defaultValue) => {
     if (!key || typeof key !== 'string') return defaultValue || key;

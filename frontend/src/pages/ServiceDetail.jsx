@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import AuthModal from '../components/common/AuthModal';
 import ImageGallery from '../components/common/ImageGallery';
+import SEO from '../components/common/SEO';
 
 export default function ServiceDetail() {
   const { id } = useParams();
@@ -92,8 +93,37 @@ export default function ServiceDetail() {
   const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
+  const jsonLd = service ? {
+    "@context": "https://schema.org/",
+    "@type": "Service",
+    "serviceType": service.category,
+    "provider": {
+      "@type": "Person",
+      "name": service.provider_name
+    },
+    "description": service.description,
+    "name": service.title,
+    "image": service.images,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": currency === 'ILS' ? 'ILS' : 'USD',
+      "price": displayRate
+    },
+    "aggregateRating": reviews.length > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length,
+      "reviewCount": reviews.length
+    } : undefined
+  } : null;
+
   return (
     <div className="container mx-auto p-4 max-w-7xl">
+      <SEO 
+        title={service.title}
+        description={service.description?.substring(0, 160)}
+        ogImage={service.images?.[0]}
+        jsonLd={jsonLd}
+      />
       {/* Navigation & Back Button */}
       <div className="flex items-center justify-between mb-6">
         <button 
