@@ -9,7 +9,8 @@ export function CurrencyProvider({ children }) {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       // Use the backend proxy for exchange rates
-      const API_URL = `/api/exchange-rate/latest/USD`; 
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+      const API_URL = `${API_BASE_URL}/exchange-rate/latest/USD`; 
 
       try {
         const response = await fetch(API_URL);

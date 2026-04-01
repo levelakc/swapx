@@ -23,6 +23,7 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
   });
 
   const { mainCats, subCats } = useMemo(() => {
+    if (!Array.isArray(categories)) return { mainCats: [], subCats: [] };
     const main = categories.filter(c => !c.parent && c.name !== 'services_main');
     const sub = categories.filter(c => c.parent);
     return { mainCats: main, subCats: sub };
@@ -32,7 +33,7 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
 
   // Sync active main category from selectedCategory
   useEffect(() => {
-    if (categories.length > 0 && selectedCategory !== lastSelectedCategoryRef.current) {
+    if (Array.isArray(categories) && categories.length > 0 && selectedCategory !== lastSelectedCategoryRef.current) {
         lastSelectedCategoryRef.current = selectedCategory;
 
         if (selectedCategory === 'all') {
@@ -56,7 +57,7 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory }) {
   }, [selectedCategory, mainCats, subCats, categories]);
 
   // Handle Search Mode (Flattened list)
-  if (searchTerm) {
+  if (searchTerm && Array.isArray(categories)) {
       const filtered = categories.filter(cat => {
           const label = cat[`label_${language}`] || cat.label_en;
           return label?.toLowerCase().includes(searchTerm.toLowerCase());

@@ -119,7 +119,7 @@ export default function Browse({ listingType = 'item' }) {
     queryFn: getCategories
   });
 
-  const selectedCategoryObj = categories.find(c => c._id === selectedCategory || c.name === selectedCategory);
+  const selectedCategoryObj = Array.isArray(categories) ? categories.find(c => c._id === selectedCategory || c.name === selectedCategory) : null;
   const categoryLabel = selectedCategoryObj ? (selectedCategoryObj[`label_${language}`] || selectedCategoryObj.label_en) : '';
 
   const items = queryResult?.items || [];

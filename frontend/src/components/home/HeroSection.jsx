@@ -23,7 +23,9 @@ export default function HeroSection() {
     queryFn: getCategories,
   });
 
-  const mainCategories = categories.filter(c => !c.parent && c.name !== 'services_main' && c.name !== 'other_main');
+  const mainCategories = Array.isArray(categories) 
+    ? categories.filter(c => !c.parent && c.name !== 'services_main' && c.name !== 'other_main')
+    : [];
 
   const handleSearch = (e) => {
     e.preventDefault();
