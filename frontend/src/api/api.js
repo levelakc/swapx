@@ -1,9 +1,9 @@
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const getToken = () => {
-  const user = JSON.parse(localStorage.getItem('base44_user'));
-  return user?.token;
-};
+  const user = JSON.parse(localStorage.getItem('swapx_user'));
+  return user ? user.token : null;
+  };
 
 const request = async (endpoint, options = {}) => {
   const token = getToken();

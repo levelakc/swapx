@@ -19,7 +19,7 @@ export default function Register() {
   const registerMutation = useMutation({
     mutationFn: (userData) => registerUser(userData),
     onSuccess: (data) => {
-      localStorage.setItem('base44_user', JSON.stringify(data)); // Assuming direct login after registration
+      localStorage.setItem('swapx_user', JSON.stringify(data)); // Assuming direct login after registration
       toast.success('Registration successful! You are now logged in.');
       navigate('/profile');
       window.location.reload(); // To refresh user state in NavBar

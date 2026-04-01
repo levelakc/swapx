@@ -202,7 +202,7 @@ export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conver
 
   useEffect(() => {
     if (!isOpen || !conversationId) return;
-    const userData = localStorage.getItem('base44_user');
+    const userData = localStorage.getItem('swapx_user');
     if (!userData) return;
     const token = JSON.parse(userData)?.token;
     const newSocket = io(SOCKET_URL, { auth: { token } });

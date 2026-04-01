@@ -397,7 +397,7 @@ export default function Messages() {
 
   // Socket setup
   useEffect(() => {
-    const userData = localStorage.getItem('base44_user');
+    const userData = localStorage.getItem('swapx_user');
     if (!userData) return;
     const token = JSON.parse(userData)?.token;
     const newSocket = io(SOCKET_URL, { auth: { token } });

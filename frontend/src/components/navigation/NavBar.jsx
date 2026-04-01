@@ -64,7 +64,7 @@ export default function NavBar() {
   }, 0);
 
   const handleLogout = () => {
-    localStorage.removeItem('base44_user');
+    localStorage.removeItem('swapx_user');
     window.location.reload();
   };
 

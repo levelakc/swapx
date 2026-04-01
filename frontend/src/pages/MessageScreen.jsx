@@ -75,7 +75,7 @@ export default function MessageScreen() {
 
   // Socket setup
   useEffect(() => {
-    const userData = localStorage.getItem('base44_user');
+    const userData = localStorage.getItem('swapx_user');
     if (!userData || !conversationId) return;
     const token = JSON.parse(userData)?.token;
     

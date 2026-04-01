@@ -32,15 +32,15 @@ export default function Login() {
         // Ideally we fetch /auth/me with the token to get the user object
         // But for now, let's construct a minimal user object or fetch it.
         // Better: Save token, then redirect to profile where data will be fetched.
-        // We need to save it in the same format as 'base44_user' usually stores (user object + token).
+        // We need to save it in the same format as 'swapx_user' usually stores (user object + token).
         // Since we only have token, we can't save full object yet.
-        // But 'api.js' getToken() reads from 'base44_user'.token.
+        // But 'api.js' getToken() reads from 'swapx_user'.token.
         // So we can save { token }.
         
         // However, 'getMe' relies on the token.
         // Let's do a quick hack: save token, then fetch user, then save full object?
         // Or simply:
-        localStorage.setItem('base44_user', JSON.stringify({ token }));
+        localStorage.setItem('swapx_user', JSON.stringify({ token }));
         
         // Redirect to profile or home, let the app handle fetching user data if needed.
         // We might want to reload to update NavBar.
@@ -52,7 +52,7 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: ({ email, password }) => login(email, password),
     onSuccess: (data, variables) => {
-      localStorage.setItem('base44_user', JSON.stringify(data));
+      localStorage.setItem('swapx_user', JSON.stringify(data));
       
       if (variables.rememberMe) {
         localStorage.setItem('remembered_email', variables.email);

@@ -30,7 +30,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
         response = await register(formData);
       }
       
-      localStorage.setItem('base44_user', JSON.stringify(response));
+      localStorage.setItem('swapx_user', JSON.stringify(response));
       toast.success(isLogin ? t('loginSuccess', 'Logged in successfully!') : t('registerSuccess', 'Registered successfully!'));
       if (onLoginSuccess) onLoginSuccess(response);
       onClose();

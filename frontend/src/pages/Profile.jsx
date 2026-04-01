@@ -59,7 +59,7 @@ export default function Profile() {
   };
   
   const handleLogout = () => {
-    localStorage.removeItem('base44_user');
+    localStorage.removeItem('swapx_user');
     window.location.href = '/';
   };
 
