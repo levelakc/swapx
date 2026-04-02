@@ -47,7 +47,10 @@ export const register = (userData) => request('/auth/register', {
     body: JSON.stringify(userData),
 });
 
-export const getMe = () => request('/auth/me');
+export const getMe = () => {
+    if (!getToken()) return Promise.resolve(null);
+    return request('/auth/me');
+};
 
 export const claimDailyReward = () => request('/auth/claim-daily', {
     method: 'POST',
@@ -146,7 +149,10 @@ export const deleteItem = (id) => request(`/items/${id}`, {
 });
 
 export const getMyItems = () => request('/items/my');
-export const getMutualMatches = () => request('/items/matches');
+export const getMutualMatches = () => {
+    if (!getToken()) return Promise.resolve({ matches: [] });
+    return request('/items/matches');
+};
 export const getPopularItems = (limit) => request(`/items/popular?limit=${limit}`);
 export const getSuggestedItems = (limit, lastCategory) => {
     const query = new URLSearchParams({ limit, lastCategory }).toString();
