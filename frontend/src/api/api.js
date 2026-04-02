@@ -24,8 +24,9 @@ const request = async (endpoint, options = {}) => {
   });
 
   if (response.status === 401) {
-    localStorage.removeItem('swapx_user');
-    window.location.reload();
+    if (token) {
+      localStorage.removeItem('swapx_user');
+    }
   }
 
   if (!response.ok) {
