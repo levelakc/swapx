@@ -23,6 +23,11 @@ const request = async (endpoint, options = {}) => {
     headers,
   });
 
+  if (response.status === 401) {
+    localStorage.removeItem('swapx_user');
+    window.location.reload();
+  }
+
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || 'Something went wrong');

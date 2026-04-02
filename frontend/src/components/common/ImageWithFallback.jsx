@@ -29,7 +29,6 @@ export default function ImageWithFallback({ src, alt, className, ...props }) {
       alt={alt}
       className={className}
       onError={() => {
-        console.warn(`Failed to load image: ${src}`);
         setError(true);
       }}
       {...props}
