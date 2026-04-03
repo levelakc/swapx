@@ -6,6 +6,7 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight, Share2, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { showToast } from '../Layout';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import AuthModal from '../components/common/AuthModal';
 import ImageGallery from '../components/common/ImageGallery';
