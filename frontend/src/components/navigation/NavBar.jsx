@@ -245,10 +245,10 @@ export default function NavBar() {
                                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">{t('signIn')}</span>
                             </Link>
                             <Link to="/register" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1.5 group transition-all">
-                                <div className="p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                                <div className="p-3 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
                                     <InfinityIcon size={22} />
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">{t('register')}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary dark:text-primary-foreground/90 transition-colors">{t('register')}</span>
                             </Link>
                         </>
                     ) : (

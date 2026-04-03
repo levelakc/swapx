@@ -9,7 +9,11 @@ export default function ImageWithFallback({ src, alt, className, ...props }) {
     setError(false);
   }, [src]);
 
-  const isInvalidSrc = !src || src === '' || src === 'undefined' || src === 'null';
+  const problematicImages = [
+    'photo-1585072045512-1f7d730a84f5'
+  ];
+
+  const isInvalidSrc = !src || src === '' || src === 'undefined' || src === 'null' || problematicImages.some(p => src.includes(p));
 
   if (error || isInvalidSrc) {
     return (

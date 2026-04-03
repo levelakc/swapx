@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getItem, getCategories, getMe, getItems } from '../api/api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getItem, getCategories, getMe, getItems, createConversation } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ArrowRight, Share2 } from 'lucide-react';
+import { Loader2, Tag, MapPin, Repeat, CircleDollarSign, Sparkles, ChevronLeft, ArrowRight, Share2, MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import ItemCard from '../components/items/ItemCard';
@@ -54,6 +54,33 @@ export default function ItemDetail() {
     queryKey: ['item', id],
     queryFn: () => getItem(id),
   });
+
+  const conversationMutation = useMutation({
+    mutationFn: createConversation,
+    onSuccess: (data) => {
+        navigate('/messages', { state: { openChatId: data._id } });
+    },
+    onError: (err) => toast.error(err.message)
+  });
+
+  const handleChat = () => {
+    if (!user) {
+        setIsAuthModalOpen(true);
+        return;
+    }
+    
+    // Prevent self-chat
+    const itemOwnerId = item.created_by?._id || item.user?._id || item.user;
+    if (user._id === itemOwnerId) {
+        toast.error(t('cannotChatWithSelf', 'You cannot chat with yourself!'));
+        return;
+    }
+
+    conversationMutation.mutate({
+        recipientId: itemOwnerId,
+        itemId: item._id
+    });
+  };
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -218,26 +245,36 @@ export default function ItemDetail() {
                     </div>
                 </div>
 
-                <button 
-                    onClick={() => {
-                        if (!user) {
-                            setIsAuthModalOpen(true);
-                            return;
-                        }
-                        
-                        // Prevent self-offering
-                        const itemOwnerId = item.created_by?._id || item.user?._id || item.user;
-                        if (user._id === itemOwnerId) {
-                            toast.error(t('cannotOfferToSelf', 'You cannot make an offer on your own item!'));
-                            return;
-                        }
-                        
-                        setIsTradeDeckOpen(true);
-                    }}
-                    className="mt-8 w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-95 text-lg"
-                >
-                    {t('makeOffer')}
-                </button>
+                <div className="grid grid-cols-1 gap-3 mt-8">
+                    <button 
+                        onClick={() => {
+                            if (!user) {
+                                setIsAuthModalOpen(true);
+                                return;
+                            }
+                            
+                            const itemOwnerId = item.created_by?._id || item.user?._id || item.user;
+                            if (user._id === itemOwnerId) {
+                                toast.error(t('cannotOfferToSelf', 'You cannot make an offer on your own item!'));
+                                return;
+                            }
+                            
+                            setIsTradeDeckOpen(true);
+                        }}
+                        className="w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-95 text-lg flex items-center justify-center gap-2"
+                    >
+                        {t('makeOffer')}
+                    </button>
+                    
+                    <button 
+                        onClick={handleChat}
+                        disabled={conversationMutation.isLoading}
+                        className="w-full bg-secondary text-secondary-foreground font-black py-4 rounded-2xl hover:bg-secondary/80 transition-all active:scale-95 text-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                        {conversationMutation.isLoading ? <Loader2 className="animate-spin" /> : <MessageCircle size={22} />}
+                        {t('chatWithUser', 'Chat with Owner')}
+                    </button>
+                </div>
             </div>
           </div>
           
@@ -290,7 +327,8 @@ export default function ItemDetail() {
         onClose={() => setIsAuthModalOpen(false)}
         onLoginSuccess={() => {
             queryClient.invalidateQueries(['user', 'me']);
-            setIsTradeDeckOpen(true);
+            // Check which action was intended? For now just handle chat if that was last clicked
+            // or just let them click again.
         }}
       />
     </div>

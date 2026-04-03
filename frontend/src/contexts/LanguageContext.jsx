@@ -418,6 +418,11 @@ const translations = {
     newOfferReceived: 'New Offer Received!',
     openToViewAndChat: 'Open to view items and talk',
     offerRemovedFromChat: 'Offer removed from the chat',
+    authFailed: 'Authentication failed',
+    invalidEmailPassword: 'Invalid email or password',
+    loginSuccess: 'Logged in successfully!',
+    registerSuccess: 'Registered successfully!',
+    registrationFailed: 'Registration failed',
   },
   he: {
     google: "Google",
@@ -837,6 +842,11 @@ const translations = {
     newOfferReceived: 'התקבלה הצעה חדשה!',
     openToViewAndChat: 'פתח כדי לצפות בפריטים ולדבר',
     offerRemovedFromChat: 'ההצעה הוסרה על ידי אחד הצדדים.',
+    authFailed: 'האימות נכשל',
+    invalidEmailPassword: 'אימייל או סיסמה שגויים',
+    loginSuccess: 'התחברת בהצלחה!',
+    registerSuccess: 'נרשמת בהצלחה!',
+    registrationFailed: 'ההרשמה נכשלה',
   },
 };
 

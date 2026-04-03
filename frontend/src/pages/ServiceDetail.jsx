@@ -1,11 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getService, getMe, getReviews, addReview } from '../api/api';
+import { getService, getMe, getReviews, addReview, createConversation } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight, Share2 } from 'lucide-react';
+import { Loader2, MapPin, Clock, User, Briefcase, DollarSign, Globe, Instagram, Facebook, Map, Star, Send, Calendar, ChevronLeft, ArrowRight, Share2, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
-import TradeDeck from '../components/trade/TradeDeck';
 import { toast } from 'sonner';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import AuthModal from '../components/common/AuthModal';
@@ -18,12 +17,12 @@ export default function ServiceDetail() {
   const { t, dir } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const queryClient = useQueryClient();
-  const [isTradeDeckOpen, setIsTradeDeckOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
 
   const handleShare = async () => {
+    // ... rest of handleShare
     if (navigator.share) {
       try {
         await navigator.share({
@@ -58,6 +57,32 @@ export default function ServiceDetail() {
     enabled: !!service,
   });
 
+  const conversationMutation = useMutation({
+    mutationFn: createConversation,
+    onSuccess: (data) => {
+        navigate('/messages', { state: { openChatId: data._id } });
+    },
+    onError: (err) => toast.error(err.message)
+  });
+
+  const handleSchedule = () => {
+    if (!user) {
+        setIsAuthModalOpen(true);
+        return;
+    }
+    
+    // Prevent self-chat
+    if (user._id === service.provider?._id || user._id === service.provider) {
+        toast.error(t('cannotChatWithSelf', 'You cannot chat with yourself!'));
+        return;
+    }
+
+    conversationMutation.mutate({
+        recipientId: service.provider?._id || service.provider,
+        serviceId: service._id
+    });
+  };
+
   const reviewMutation = useMutation({
     mutationFn: addReview,
     onSuccess: () => {
@@ -84,10 +109,6 @@ export default function ServiceDetail() {
 
   if (!service) {
     return <div className="text-center py-20">Service not found</div>;
-  }
-
-  const onTradeSubmit = (tradeData) => {
-    setIsTradeDeckOpen(false);
   }
 
   const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
@@ -270,40 +291,23 @@ export default function ServiceDetail() {
             </div>
 
             <button 
-              onClick={() => {
-                if (!user) {
-                    setIsAuthModalOpen(true);
-                    return;
-                }
-                setIsTradeDeckOpen(true);
-              }}
-              className="mt-8 w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 text-lg active:scale-95"
+              onClick={handleSchedule}
+              disabled={conversationMutation.isLoading}
+              className="mt-8 w-full bg-primary text-primary-content font-black py-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 text-lg active:scale-95 disabled:opacity-50"
             >
-              <Calendar size={22} />
+              {conversationMutation.isLoading ? <Loader2 className="animate-spin" /> : <MessageCircle size={22} />}
               {t('scheduleDate')}
             </button>
           </div>
         </div>
       </div>
-      
-      <TradeDeck 
-        isOpen={isTradeDeckOpen} 
-        onClose={() => setIsTradeDeckOpen(false)} 
-        targetItem={{
-            ...service,
-            estimated_value: service.hourly_rate,
-            is_service: true,
-            receiver_email: service.provider_email
-        }} 
-        onSubmit={onTradeSubmit} 
-      />
 
       <AuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)}
         onLoginSuccess={() => {
             queryClient.invalidateQueries(['user', 'me']);
-            setIsTradeDeckOpen(true);
+            handleSchedule();
         }}
       />
     </div>

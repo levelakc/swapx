@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Loader2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { login, register } from '../../api/api';
-import { toast } from 'sonner';
+import { showToast } from '../../Layout';
 
 export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
   const { t, dir } = useLanguage();
@@ -31,13 +31,12 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
       }
       
       localStorage.setItem('swapx_user', JSON.stringify(response));
-      toast.success(isLogin ? t('loginSuccess', 'Logged in successfully!') : t('registerSuccess', 'Registered successfully!'));
+      showToast(isLogin ? t('loginSuccess') : t('registerSuccess'), 'success');
       if (onLoginSuccess) onLoginSuccess(response);
       onClose();
-      // Optional: window.location.reload() or update state via context if needed
-      // For now, most of our components use useQuery which will refetch on mount or we can invalidate
     } catch (error) {
-      toast.error(error.message || 'Authentication failed');
+      const errorMsg = error.message === 'Invalid email or password' ? t('invalidEmailPassword') : (t(error.message) || t('authFailed'));
+      showToast(errorMsg, 'error');
     } finally {
       setIsLoading(false);
     }

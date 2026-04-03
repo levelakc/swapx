@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { login } from '../api/api';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { toast } from 'sonner';
+import { showToast } from '../Layout';
 import { Facebook, Globe } from 'lucide-react';
 import { useEffect } from 'react';
 import logoWithSlogan from '../imgs/3.jpg';
@@ -61,15 +61,16 @@ export default function Login() {
       }
 
       if (data.dailyReward) {
-        toast.success('You received 5 coins for your daily login!');
+        showToast(t('claimRewardSuccess').replace('{amount}', '5'), 'success');
       } else {
-        toast.success('Logged in successfully!');
+        showToast(t('loginSuccess'), 'success');
       }
       navigate('/profile');
       window.location.reload(); // To refresh user state in NavBar
     },
     onError: (error) => {
-      toast.error(error.message || 'Login failed');
+      const errorMsg = error.message === 'Invalid email or password' ? t('invalidEmailPassword') : (t(error.message) || t('authFailed'));
+      showToast(errorMsg, 'error');
     },
   });
 

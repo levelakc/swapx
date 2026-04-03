@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { register as registerUser } from '../api/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { toast } from 'sonner';
+import { showToast } from '../Layout';
 import { Facebook, Globe } from 'lucide-react';
 import logoWithSlogan from '../imgs/3.jpg';
 import ImageWithFallback from '../components/common/ImageWithFallback';
@@ -20,12 +20,12 @@ export default function Register() {
     mutationFn: (userData) => registerUser(userData),
     onSuccess: (data) => {
       localStorage.setItem('swapx_user', JSON.stringify(data)); // Assuming direct login after registration
-      toast.success('Registration successful! You are now logged in.');
+      showToast(t('registerSuccess'), 'success');
       navigate('/profile');
       window.location.reload(); // To refresh user state in NavBar
     },
     onError: (error) => {
-      toast.error(error.message || 'Registration failed');
+      showToast(t(error.message) || t('registrationFailed'), 'error');
     },
   });
 
