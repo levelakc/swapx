@@ -4,6 +4,7 @@ const {
   getServices,
   getServiceById,
   createService,
+  updateService,
   getPopularServices,
   getSuggestedServices,
 } = require('../controllers/serviceController');
