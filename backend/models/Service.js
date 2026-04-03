@@ -41,6 +41,10 @@ const serviceSchema = mongoose.Schema(
     provider_avatar: {
       type: String,
     },
+    provider_email: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: ['active', 'inactive'],
