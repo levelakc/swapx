@@ -583,17 +583,35 @@ const seedData = async () => {
             
             const hourly_rate = Math.floor(Math.random() * (asset.max_price - asset.min_price + 1)) + asset.min_price;
 
+            const serviceDescriptionsHe = [
+                `שירות ${asset.title_he || asset.title} מקצועי ומסור. אני מביא איתי ניסיון רב, תשומת לב לפרטים הקטנים ומחויבות לתוצאה מושלמת עבורכם.`,
+                `מחפשים ${asset.title_he || asset.title}? הגעתם למקום הנכון! שירות אמין, מהיר ואיכותי עם דגש על שביעות רצון הלקוח.`,
+                `מומחה ב${asset.title_he || asset.title} עם המלצות רבות. זמין לעבודות באזור ${owner.location || 'המרכז'}. צרו קשר לפרטים נוספים.`
+            ];
+            const serviceDescriptionsEn = [
+                `Professional and dedicated ${asset.title} service. I bring extensive experience, attention to detail, and a commitment to perfect results.`,
+                `Looking for ${asset.title}? You've come to the right place! Reliable, fast, and high-quality service with an emphasis on customer satisfaction.`,
+                `Expert in ${asset.title} with many recommendations. Available for work in the ${owner.location || 'central'} area. Contact for more details.`
+            ];
+
+            const descIndex = i % serviceDescriptionsHe.length;
+
             allServices.push({
                 title: asset.title_he || asset.title,
-                description: `שירות ${asset.title_he || asset.title} מקצועי באיכות גבוהה ואמינות ללא פשרות. מחפש הצעות החלפה מעניינות עבור השירותים שלי.`,
-                category: 'Professional Services',
+                description: serviceDescriptionsHe[descIndex],
+                description_translations: {
+                    en: serviceDescriptionsEn[descIndex],
+                    he: serviceDescriptionsHe[descIndex]
+                },
+                category: category.label_he || 'שירותים מקצועיים',
                 hourly_rate: hourly_rate,
                 availability: '09:00 - 17:00',
                 location: owner.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],
                 images: [asset.url],
                 provider: owner._id,
                 provider_name: owner.full_name,
-                provider_avatar: owner.avatar
+                provider_avatar: owner.avatar,
+                provider_email: owner.email
             });
           }
           continue; 

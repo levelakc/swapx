@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import TradeDeck from '../components/trade/TradeDeck';
 import ItemCard from '../components/items/ItemCard';
 import { toast } from 'sonner';
+import { showToast } from '../Layout';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import AuthModal from '../components/common/AuthModal';
 import ImageGallery from '../components/common/ImageGallery';
@@ -60,7 +61,10 @@ export default function ItemDetail() {
     onSuccess: (data) => {
         navigate('/messages', { state: { openChatId: data._id } });
     },
-    onError: (err) => toast.error(err.message)
+    onError: (err) => {
+        const msg = err.message === 'Other participant not found' ? t('participantNotFound') : (t(err.message) || t('authFailed'));
+        showToast(msg, 'error');
+    }
   });
 
   const handleChat = () => {
@@ -72,13 +76,19 @@ export default function ItemDetail() {
     // Prevent self-chat
     const itemOwnerId = item.created_by?._id || item.user?._id || item.user;
     if (user._id === itemOwnerId) {
-        toast.error(t('cannotChatWithSelf', 'You cannot chat with yourself!'));
+        showToast(t('cannotChatSelf'), 'error');
+        return;
+    }
+
+    const itemOwnerEmail = item.created_by?.email || item.seller_email; // Seller email might be needed
+    if (!itemOwnerEmail) {
+        showToast(t('participantNotFound'), 'error');
         return;
     }
 
     conversationMutation.mutate({
-        recipientId: itemOwnerId,
-        itemId: item._id
+        participant_email: itemOwnerEmail,
+        related_item_id: item._id
     });
   };
 

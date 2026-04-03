@@ -62,7 +62,10 @@ export default function ServiceDetail() {
     onSuccess: (data) => {
         navigate('/messages', { state: { openChatId: data._id } });
     },
-    onError: (err) => toast.error(err.message)
+    onError: (err) => {
+        const msg = err.message === 'Other participant not found' ? t('participantNotFound') : (t(err.message) || t('authFailed'));
+        showToast(msg, 'error');
+    }
   });
 
   const handleSchedule = () => {
@@ -72,14 +75,21 @@ export default function ServiceDetail() {
     }
     
     // Prevent self-chat
-    if (user._id === service.provider?._id || user._id === service.provider) {
-        toast.error(t('cannotChatWithSelf', 'You cannot chat with yourself!'));
+    const providerId = service.provider?._id || service.provider;
+    if (user._id === providerId) {
+        showToast(t('cannotChatSelf'), 'error');
+        return;
+    }
+
+    const providerEmail = service.provider?.email || service.provider_email;
+    if (!providerEmail) {
+        showToast(t('participantNotFound'), 'error');
         return;
     }
 
     conversationMutation.mutate({
-        recipientId: service.provider?._id || service.provider,
-        serviceId: service._id
+        participant_email: providerEmail,
+        related_item_id: null // Or service info if needed, but backend expects item_id
     });
   };
 

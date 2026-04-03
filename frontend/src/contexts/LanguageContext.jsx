@@ -423,6 +423,9 @@ const translations = {
     loginSuccess: 'Logged in successfully!',
     registerSuccess: 'Registered successfully!',
     registrationFailed: 'Registration failed',
+    participantNotFound: 'Other participant not found',
+    cannotChatSelf: 'Cannot chat with yourself',
+    itemNotFound: 'Item not found',
   },
   he: {
     google: "Google",
@@ -847,6 +850,9 @@ const translations = {
     loginSuccess: 'התחברת בהצלחה!',
     registerSuccess: 'נרשמת בהצלחה!',
     registrationFailed: 'ההרשמה נכשלה',
+    participantNotFound: 'המשתמש השני לא נמצא',
+    cannotChatSelf: 'אינך יכול לשלוח הודעה לעצמך',
+    itemNotFound: 'הפריט לא נמצא',
   },
 };
 
