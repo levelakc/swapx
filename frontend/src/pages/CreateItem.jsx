@@ -1,6 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCategories, createCategory, createItem as apiCreateItem, getItem, updateItem as apiUpdateItem } from '../api/api';
+import { getCategories, createCategory, createItem as apiCreateItem, getItem, updateItem as apiUpdateItem, createService as apiCreateService, updateService as apiUpdateService } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -154,7 +154,12 @@ export default function CreateItem({ id: propsId, onSuccess }) {
   const categoryAttrKey = getCategoryAttrKey(selectedCategoryObj?.name || selectedCategoryObj?.label_en);
 
   const saveMutation = useMutation({
-    mutationFn: (itemData) => isEdit ? apiUpdateItem(id, itemData) : apiCreateItem(itemData),
+    mutationFn: (itemData) => {
+        if (listingType === 'service') {
+            return isEdit ? apiUpdateService(id, itemData) : apiCreateService(itemData);
+        }
+        return isEdit ? apiUpdateItem(id, itemData) : apiCreateItem(itemData);
+    },
     onSuccess: (newItem) => {
       toast.success(isEdit ? t('itemUpdatedSuccess', 'Item updated successfully!') : t('itemListedSuccess', 'Item listed successfully!'));
       queryClient.invalidateQueries(['items', 'my']);

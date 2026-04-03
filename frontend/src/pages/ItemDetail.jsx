@@ -120,6 +120,9 @@ export default function ItemDetail() {
   const displayValue = currency === 'ILS' ? convertCurrency(item?.estimated_value || 0, 'USD', 'ILS') : item?.estimated_value || 0;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
+  const displayTitle = item?.title_translations?.[language] || item?.title;
+  const displayDescription = item?.description_translations?.[language] || item?.description;
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-96"><Loader2 className="w-12 h-12 animate-spin text-primary" /></div>;
   }
@@ -135,9 +138,9 @@ export default function ItemDetail() {
   const jsonLd = item ? {
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": item.title,
+    "name": displayTitle,
     "image": item.images,
-    "description": item.description,
+    "description": displayDescription,
     "brand": {
       "@type": "Brand",
       "name": "Ahlafot"
@@ -155,8 +158,8 @@ export default function ItemDetail() {
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <SEO 
-        title={item.title}
-        description={item.description?.substring(0, 160)}
+        title={displayTitle}
+        description={displayDescription?.substring(0, 160)}
         ogImage={item.images?.[0]}
         ogType="product"
         jsonLd={jsonLd}
@@ -184,7 +187,7 @@ export default function ItemDetail() {
         <div className="lg:col-span-2 space-y-6">
           {/* Image Gallery Slider */}
           <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10 aspect-video">
-            <ImageGallery images={item.images} title={item.title} />
+            <ImageGallery images={item.images} title={displayTitle} />
           </div>
 
           {/* Description Section */}
@@ -193,7 +196,7 @@ export default function ItemDetail() {
                <span className="w-2 h-8 bg-primary rounded-full inline-block"></span>
                {t('description', 'Description')}
             </h2>
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{item.description}</p>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{displayDescription}</p>
           </div>
         </div>
 
@@ -210,7 +213,7 @@ export default function ItemDetail() {
                     </div>
                 )}
                 
-                <h1 className="text-4xl font-black mb-2 text-foreground">{item.title}</h1>
+                <h1 className="text-4xl font-black mb-2 text-foreground">{displayTitle}</h1>
                 <div className="flex items-baseline gap-2 mb-6">
                     <span className="text-3xl font-black text-primary">{currencySymbol}{displayValue.toLocaleString()}</span>
                     <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{t('estimatedValue')}</span>

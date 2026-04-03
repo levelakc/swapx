@@ -91,6 +91,50 @@ export const getItem = (id) => request(`/items/${id}`);
 
 export const getService = (id) => request(`/services/${id}`);
 
+export const createService = (serviceData) => {
+    const formData = new FormData();
+    Object.keys(serviceData).forEach(key => {
+        if (key === 'images') {
+            serviceData.images.forEach(image => {
+                formData.append('images', image);
+            });
+        } else {
+            formData.append(key, serviceData[key]);
+        }
+    });
+
+    return fetch(`${API_URL}/services`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${getToken()}`,
+            'Accept-Language': localStorage.getItem('language') || 'en',
+        },
+    }).then(res => res.json());
+};
+
+export const updateService = (id, serviceData) => {
+    const formData = new FormData();
+    Object.keys(serviceData).forEach(key => {
+        if (key === 'images') {
+            serviceData.images.forEach(image => {
+                formData.append('images', image);
+            });
+        } else {
+            formData.append(key, serviceData[key]);
+        }
+    });
+
+    return fetch(`${API_URL}/services/${id}`, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+            Authorization: `Bearer ${getToken()}`,
+            'Accept-Language': localStorage.getItem('language') || 'en',
+        },
+    }).then(res => res.json());
+};
+
 export const getReviews = (serviceId) => request(`/reviews/${serviceId}`);
 
 export const addReview = (reviewData) => request('/reviews', {

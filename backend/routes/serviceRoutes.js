@@ -21,6 +21,7 @@ router.route('/suggested')
   .get(optionalProtect, getSuggestedServices);
 
 router.route('/:id')
-  .get(getServiceById);
+  .get(getServiceById)
+  .put(protect, upload.array('images', 5), updateService);
 
 module.exports = router;

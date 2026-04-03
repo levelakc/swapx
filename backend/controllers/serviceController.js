@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Service = require('../models/Service');
 const Category = require('../models/Category');
+const { translateText } = require('../services/translationService');
 
 // @desc    Get all services
 // @route   GET /api/services
@@ -68,7 +69,21 @@ const getServiceById = asyncHandler(async (req, res) => {
   if (service) {
     service.views = (service.views || 0) + 1;
     await service.save();
-    res.json(service);
+
+    // Convert to object to modify for response without affecting DB
+    const serviceObj = service.toObject();
+
+    const lang = req.headers['accept-language'];
+    const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
+
+    if (service.description_translations && service.description_translations.has(targetLang)) {
+      serviceObj.description = service.description_translations.get(targetLang);
+    }
+    if (service.title_translations && service.title_translations.has(targetLang)) {
+        serviceObj.title = service.title_translations.get(targetLang);
+    }
+
+    res.json(serviceObj);
   } else {
     res.status(404);
     throw new Error('Service not found');
@@ -79,25 +94,110 @@ const getServiceById = asyncHandler(async (req, res) => {
 // @route   POST /api/services
 // @access  Private
 const createService = asyncHandler(async (req, res) => {
-  const { title, description, category, hourly_rate, availability, location } = req.body;
+  const { title, description, category, hourly_rate, availability, location, website, social_instagram, social_facebook, google_reviews_link } = req.body;
+
+  // Validate category if ID is provided
+  let categoryName = category;
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(category);
+  if (isObjectId) {
+    const categoryExists = await Category.findById(category);
+    if (categoryExists) {
+      categoryName = categoryExists.name;
+    }
+  }
 
   const images = req.files ? req.files.map((file) => `/uploads/${file.filename}`) : [];
 
+  // Advanced Translation Tech: Automatically translate to EN and HE
+  const title_en = await translateText(title, 'en');
+  const title_he = await translateText(title, 'he');
+  const desc_en = await translateText(description, 'en');
+  const desc_he = await translateText(description, 'he');
+
   const service = new Service({
     title,
+    title_translations: new Map([['en', title_en], ['he', title_he]]),
     description,
-    category,
-    hourly_rate,
+    description_translations: new Map([['en', desc_en], ['he', desc_he]]),
+    category: categoryName,
+    hourly_rate: Number(hourly_rate),
     availability,
     location,
     images,
     provider: req.user._id,
     provider_name: req.user.full_name,
     provider_avatar: req.user.avatar,
+    provider_email: req.user.email,
+    website,
+    social_instagram,
+    social_facebook,
+    google_reviews_link
   });
 
   const createdService = await service.save();
   res.status(201).json(createdService);
+});
+
+// @desc    Update a service
+// @route   PUT /api/services/:id
+// @access  Private
+const updateService = asyncHandler(async (req, res) => {
+  const { title, description, category, hourly_rate, availability, location, website, social_instagram, social_facebook, google_reviews_link, status } = req.body;
+
+  const service = await Service.findById(req.params.id);
+
+  if (service) {
+    if (service.provider.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error('Not authorized to update this service');
+    }
+
+    if (title && title !== service.title) {
+        service.title = title;
+        const title_en = await translateText(title, 'en');
+        const title_he = await translateText(title, 'he');
+        service.title_translations = new Map([['en', title_en], ['he', title_he]]);
+    }
+    
+    if (description && description !== service.description) {
+        service.description = description;
+        const desc_en = await translateText(description, 'en');
+        const desc_he = await translateText(description, 'he');
+        service.description_translations = new Map([['en', desc_en], ['he', desc_he]]);
+    }
+
+    if (category) {
+        let categoryName = category;
+        const isObjectId = /^[0-9a-fA-F]{24}$/.test(category);
+        if (isObjectId) {
+            const categoryExists = await Category.findById(category);
+            if (categoryExists) {
+                categoryName = categoryExists.name;
+            }
+        }
+        service.category = categoryName;
+    }
+
+    service.hourly_rate = hourly_rate ? Number(hourly_rate) : service.hourly_rate;
+    service.availability = availability || service.availability;
+    service.location = location || service.location;
+    service.website = website !== undefined ? website : service.website;
+    service.social_instagram = social_instagram !== undefined ? social_instagram : service.social_instagram;
+    service.social_facebook = social_facebook !== undefined ? social_facebook : service.social_facebook;
+    service.google_reviews_link = google_reviews_link !== undefined ? google_reviews_link : service.google_reviews_link;
+    service.status = status || service.status;
+
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+        service.images = [...service.images, ...newImages];
+    }
+
+    const updatedService = await service.save();
+    res.json(updatedService);
+  } else {
+    res.status(404);
+    throw new Error('Service not found');
+  }
 });
 
 // @desc    Get popular services
@@ -170,6 +270,7 @@ module.exports = {
   getServices,
   getServiceById,
   createService,
+  updateService,
   getPopularServices,
   getSuggestedServices,
 };

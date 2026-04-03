@@ -6,11 +6,13 @@ import FuturisticCard from '../futuristicCard/FuturisticCard';
 import ImageWithFallback from '../common/ImageWithFallback';
 
 export default function ServiceCard({ service }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
 
   const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
+
+  const displayTitle = service.title_translations?.[language] || service.title;
 
   return (
     <Link to={`/service/${service._id}`} className="block h-full">
@@ -19,7 +21,7 @@ export default function ServiceCard({ service }) {
           <div className="relative w-full h-48">
             <ImageWithFallback
               src={service.images?.[0]}
-              alt={service.title}
+              alt={displayTitle}
               className="w-full h-full object-cover rounded-t-lg"
             />
             <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm text-foreground px-2 py-1 rounded-full text-xs font-bold border border-white/10 shadow-lg">
@@ -39,7 +41,7 @@ export default function ServiceCard({ service }) {
                <span className="text-[11px] font-bold text-muted-foreground truncate">{service.provider_name}</span>
             </div>
             
-            <h3 className="text-lg font-bold truncate text-foreground mb-3">{service.title}</h3>
+            <h3 className="text-lg font-bold truncate text-foreground mb-3">{displayTitle}</h3>
             
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto mb-4">
               <div className="flex items-center text-[11px] text-muted-foreground">

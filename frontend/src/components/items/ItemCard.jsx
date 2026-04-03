@@ -28,6 +28,8 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
   const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
+  const displayTitle = item.title_translations?.[language] || item.title;
+
   const handleEdit = (e) => {
     e.preventDefault();
     onEdit(item._id);

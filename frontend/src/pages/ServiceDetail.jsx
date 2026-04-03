@@ -15,7 +15,7 @@ import SEO from '../components/common/SEO';
 export default function ServiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t, dir } = useLanguage();
+  const { t, dir, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
   const queryClient = useQueryClient();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -125,6 +125,9 @@ export default function ServiceDetail() {
   const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
+  const displayTitle = service.title_translations?.[language] || service.title;
+  const displayDescription = service.description_translations?.[language] || service.description;
+
   const jsonLd = service ? {
     "@context": "https://schema.org/",
     "@type": "Service",
@@ -133,8 +136,8 @@ export default function ServiceDetail() {
       "@type": "Person",
       "name": service.provider_name
     },
-    "description": service.description,
-    "name": service.title,
+    "description": displayDescription,
+    "name": displayTitle,
     "image": service.images,
     "offers": {
       "@type": "Offer",
@@ -179,7 +182,7 @@ export default function ServiceDetail() {
         <div className="lg:col-span-2 space-y-6">
           {/* Image Gallery Slider */}
           <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10 aspect-video">
-            <ImageGallery images={service.images} title={service.title} />
+            <ImageGallery images={service.images} title={displayTitle} />
           </div>
           
           {/* Description */}
@@ -188,7 +191,7 @@ export default function ServiceDetail() {
                <span className="w-2 h-8 bg-primary rounded-full inline-block"></span>
                {t('description', 'Description')}
             </h2>
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{service.description}</p>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{displayDescription}</p>
             
             {/* Social Links */}
             <div className="mt-8 flex flex-wrap gap-4">
@@ -269,7 +272,7 @@ export default function ServiceDetail() {
           <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10 sticky top-24">
             <div className="flex items-start justify-between mb-6">
                 <div>
-                    <h1 className="text-3xl font-black text-foreground mb-2">{service.title}</h1>
+                    <h1 className="text-3xl font-black text-foreground mb-2">{displayTitle}</h1>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
                         <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary">
                             <User size={14} />
