@@ -122,7 +122,8 @@ export default function ServiceDetail() {
     return <div className="text-center py-20">Service not found</div>;
   }
 
-  const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
+  const rate = service.hourly_rate || 0;
+  const displayRate = currency === 'ILS' ? convertCurrency(rate, 'USD', 'ILS') : rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   const displayTitle = service.title_translations?.[language] || service.title;
@@ -142,7 +143,7 @@ export default function ServiceDetail() {
     "offers": {
       "@type": "Offer",
       "priceCurrency": currency === 'ILS' ? 'ILS' : 'USD',
-      "price": displayRate
+      "price": displayRate || 0
     },
     "aggregateRating": reviews.length > 0 ? {
       "@type": "AggregateRating",
@@ -283,7 +284,7 @@ export default function ServiceDetail() {
             </div>
 
             <div className="bg-primary/5 rounded-2xl p-6 mb-8 border border-primary/10">
-                <p className="text-4xl font-black text-primary mb-1">{currencySymbol}{displayRate.toLocaleString()}</p>
+                <p className="text-4xl font-black text-primary mb-1">{currencySymbol}{(displayRate || 0).toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">{t('hourlyRate')}</p>
             </div>
 

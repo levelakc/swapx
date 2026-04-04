@@ -9,7 +9,8 @@ export default function ServiceCard({ service }) {
   const { t, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
 
-  const displayRate = currency === 'ILS' ? convertCurrency(service.hourly_rate, 'USD', 'ILS') : service.hourly_rate;
+  const rate = service.hourly_rate || 0;
+  const displayRate = currency === 'ILS' ? convertCurrency(rate, 'USD', 'ILS') : rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
   const displayTitle = service.title_translations?.[language] || service.title;
@@ -25,7 +26,7 @@ export default function ServiceCard({ service }) {
               className="w-full h-full object-cover rounded-t-lg"
             />
             <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm text-foreground px-2 py-1 rounded-full text-xs font-bold border border-white/10 shadow-lg">
-              {currencySymbol}{displayRate.toLocaleString()}{t('perHour')}
+              {currencySymbol}{(displayRate || 0).toLocaleString()}{t('perHour')}
             </div>
           </div>
           
