@@ -603,7 +603,7 @@ const seedData = async () => {
                     en: serviceDescriptionsEn[descIndex],
                     he: serviceDescriptionsHe[descIndex]
                 },
-                category: category.label_he || 'שירותים מקצועיים',
+                category: category.name,
                 hourly_rate: hourly_rate,
                 availability: '09:00 - 17:00',
                 location: owner.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],

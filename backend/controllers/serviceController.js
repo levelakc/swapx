@@ -76,18 +76,12 @@ const getServiceById = asyncHandler(async (req, res) => {
     const lang = req.headers['accept-language'];
     const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
 
-    // Helper to safely get translation from Map OR plain object
-    const getTranslation = (source, key) => {
-        if (!source) return null;
-        if (typeof source.get === 'function') return source.get(key);
-        return source[key];
-    };
-
-    const transDesc = getTranslation(service.description_translations, targetLang);
-    if (transDesc) serviceObj.description = transDesc;
-
-    const transTitle = getTranslation(service.title_translations, targetLang);
-    if (transTitle) serviceObj.title = transTitle;
+    if (service.description_translations && service.description_translations[targetLang]) {
+      serviceObj.description = service.description_translations[targetLang];
+    }
+    if (service.title_translations && service.title_translations[targetLang]) {
+        serviceObj.title = service.title_translations[targetLang];
+    }
 
     res.json(serviceObj);
   } else {
