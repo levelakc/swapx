@@ -76,11 +76,14 @@ const getServiceById = asyncHandler(async (req, res) => {
     const lang = req.headers['accept-language'];
     const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
 
-    if (service.description_translations && service.description_translations.has(targetLang)) {
-      serviceObj.description = service.description_translations.get(targetLang);
+    // ONLY overwrite if the translation actually exists in the Map
+    if (service.description_translations && typeof service.description_translations.has === 'function' && service.description_translations.has(targetLang)) {
+      const trans = service.description_translations.get(targetLang);
+      if (trans) serviceObj.description = trans;
     }
-    if (service.title_translations && service.title_translations.has(targetLang)) {
-        serviceObj.title = service.title_translations.get(targetLang);
+    if (service.title_translations && typeof service.title_translations.has === 'function' && service.title_translations.has(targetLang)) {
+        const trans = service.title_translations.get(targetLang);
+        if (trans) serviceObj.title = trans;
     }
 
     res.json(serviceObj);
@@ -127,7 +130,7 @@ const createService = asyncHandler(async (req, res) => {
     provider: req.user._id,
     provider_name: req.user.full_name,
     provider_avatar: req.user.avatar,
-    provider_email: req.user.email,
+    provider_email: req.user.email || 'not-provided@ahlafot.co.il',
     website,
     social_instagram,
     social_facebook,
