@@ -583,15 +583,19 @@ const seedData = async () => {
             
             const hourly_rate = Math.floor(Math.random() * (asset.max_price - asset.min_price + 1)) + asset.min_price;
 
-            const serviceDescriptionsHe = [
-                `שירות ${asset.title_he || asset.title} מקצועי ומסור. אני מביא איתי ניסיון רב, תשומת לב לפרטים הקטנים ומחויבות לתוצאה מושלמת עבורכם.`,
-                `מחפשים ${asset.title_he || asset.title}? הגעתם למקום הנכון! שירות אמין, מהיר ואיכותי עם דגש על שביעות רצון הלקוח.`,
-                `מומחה ב${asset.title_he || asset.title} עם המלצות רבות. זמין לעבודות באזור ${owner.location || 'המרכז'}. צרו קשר לפרטים נוספים.`
+                         const serviceDescriptionsHe = [
+                "שירות ${asset.title_he || asset.title} מקצועי ואיכותי ברמה הגבוהה ביותר. מעל 10 שנות ניסיון בתחום, הקפדה על לוחות זמנים ותוצאה מושלמת.",
+                "זקוקים ל${asset.title_he || asset.title}? אני כאן בשבילכם! שירות אמין, יחס אישי ומחירים הוגנים. התחייבות לשביעות רצון מלאה.",
+                "מומחה ל${asset.title_he || asset.title} עם מאות לקוחות מרוצים. מספק פתרונות מתקדמים ומקצועיים לכל צורך. זמין באזור ${owner.location || "המרכז"}.",
+                "הכירו את שירות ה${asset.title_he || asset.title} המוביל שלנו. שירות מהיר, יעיל ויסודי עם שימוש בציוד וחומרים מהשורה הראשונה.",
+                "פתרונות ${asset.title_he || asset.title} מקיפים לעסקים ולקוחות פרטיים. ניסיון עשיר, מקצועיות ללא פשרות וזמינות גבוהה לכל פרויקט."
             ];
-            const serviceDescriptionsEn = [
-                `Professional and dedicated ${asset.title} service. I bring extensive experience, attention to detail, and a commitment to perfect results.`,
-                `Looking for ${asset.title}? You've come to the right place! Reliable, fast, and high-quality service with an emphasis on customer satisfaction.`,
-                `Expert in ${asset.title} with many recommendations. Available for work in the ${owner.location || 'central'} area. Contact for more details.`
+                         const serviceDescriptionsEn = [
+                "Top-tier ${asset.title} services provided by a certified professional with extensive experience. Committed to excellence and 100% customer satisfaction.",
+                "Looking for a reliable ${asset.title} expert? You found one! Fast, efficient, and high-quality service tailored specifically to your project requirements.",
+                "Specialized in ${asset.title} with a proven track record of successful projects. Serving the ${owner.location || "central"} area with dedication and skill.",
+                "Professional ${asset.title} solutions for commercial and residential needs. We bring the right tools and expertise to get the job done perfectly.",
+                "Quality ${asset.title} you can trust. Over a decade of experience, attention to detail, and a commitment to delivering results that exceed expectations."
             ];
 
             const descIndex = i % serviceDescriptionsHe.length;
