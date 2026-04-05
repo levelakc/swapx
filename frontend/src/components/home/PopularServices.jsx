@@ -33,7 +33,7 @@ export default function PopularServices({ services, title, onRefresh, isLoading 
             </button>
             
             <Link 
-              to="/browse-services" 
+              to="/services" 
               className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all active:scale-95 shadow-lg shadow-primary/20"
             >
               {t('viewAll')}

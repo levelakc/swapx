@@ -34,6 +34,9 @@ const itemSchema = mongoose.Schema(
     subcategory: {
       type: String,
     },
+    brand: {
+      type: String,
+    },
     estimated_value: {
       type: Number,
       required: true,

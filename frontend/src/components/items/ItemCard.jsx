@@ -28,7 +28,7 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
   const displayValue = currency === 'ILS' ? convertCurrency(item.estimated_value, 'USD', 'ILS') : item.estimated_value;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
-  const displayTitle = item.title_translations?.[language] || item.title;
+  const displayTitle = item.title_translations?.[language] || item.title || 'No Title';
 
   const handleEdit = (e) => {
     e.preventDefault();
@@ -63,9 +63,22 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
           </div>
           
           <div className="p-4 flex-1 flex flex-col">
-            <h3 className="text-lg font-bold truncate text-foreground mb-1">{t(item.title)}</h3>
+            <div className="flex justify-between items-start mb-1 min-w-0">
+               <h3 className="text-lg font-bold truncate text-foreground flex-1">{displayTitle}</h3>
+               {item.brand && (
+                 <span className="text-[9px] font-black bg-primary/10 text-primary px-1.5 py-0.5 rounded-md uppercase tracking-wider border border-primary/20 ml-2 shrink-0">
+                    {item.brand}
+                 </span>
+               )}
+            </div>
             
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto">
+              {item.brand && (
+                <div className="flex items-center text-[11px] text-amber-400 font-bold col-span-2 mb-1">
+                  <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
+                  <span className="truncate">{t('brand')}: {item.brand}</span>
+                </div>
+              )}
               <div className="flex items-center text-[11px] text-muted-foreground">
                 <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate capitalize">{t(item.condition)}</span>

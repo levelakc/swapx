@@ -7,16 +7,16 @@ const serviceSchema = mongoose.Schema(
       required: true,
     },
     title_translations: {
-      en: { type: String },
-      he: { type: String }
+      type: Map,
+      of: String,
     },
     description: {
       type: String,
       required: true,
     },
     description_translations: {
-      en: { type: String },
-      he: { type: String }
+      type: Map,
+      of: String,
     },
     category: {
       type: String, // e.g. "Home Improvement", "Digital Services"

@@ -111,11 +111,32 @@ const getItems = asyncHandler(async (req, res) => {
   console.log('getItems query:', JSON.stringify(query));
   const count = await Item.countDocuments(query);
   const items = await Item.find(query)
+    .populate('created_by', 'full_name email avatar location')
     .sort({ isFeatured: -1, featuredUntil: -1, createdAt: -1 }) // Sort featured items first, then by recency
     .limit(limit || pageSize) // Apply limit if provided, otherwise use pageSize
     .skip(pageSize * (page - 1));
 
-  res.json({ items, page, pages: Math.ceil(count / (limit || pageSize)) });
+  const lang = req.headers['accept-language'];
+  const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
+
+  const translatedItems = items.map(item => {
+    const itemObj = item.toObject();
+    
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
+    };
+
+    itemObj.description = getTranslation(itemObj.description_translations, targetLang, itemObj.description);
+    itemObj.title = getTranslation(itemObj.title_translations, targetLang, itemObj.title);
+
+    return itemObj;
+  });
+
+  res.json({ items: translatedItems, page, pages: Math.ceil(count / (limit || pageSize)) });
 });
 
 // @desc    Get single item by ID
@@ -136,17 +157,16 @@ const getItemById = asyncHandler(async (req, res) => {
     const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
 
     // Helper to safely get translation from Map OR plain object
-    const getTranslation = (source, key) => {
-        if (!source) return null;
-        if (typeof source.get === 'function') return source.get(key);
-        return source[key];
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
     };
 
-    const transDesc = getTranslation(item.description_translations, targetLang);
-    if (transDesc) itemObj.description = transDesc;
-
-    const transTitle = getTranslation(item.title_translations, targetLang);
-    if (transTitle) itemObj.title = transTitle;
+    itemObj.description = getTranslation(itemObj.description_translations, targetLang, itemObj.description);
+    itemObj.title = getTranslation(itemObj.title_translations, targetLang, itemObj.title);
 
     res.json(itemObj);
   } else {
@@ -164,6 +184,7 @@ const createItem = asyncHandler(async (req, res) => {
     description,
     category,
     subcategory,
+    brand,
     estimated_value,
     condition,
     location,
@@ -209,6 +230,7 @@ const createItem = asyncHandler(async (req, res) => {
     description_translations: new Map([['en', desc_en], ['he', desc_he]]),
     category: categoryExists.name,
     subcategory,
+    brand,
     estimated_value,
     condition,
     images: images || [],
@@ -236,6 +258,7 @@ const updateItem = asyncHandler(async (req, res) => {
     description,
     category,
     subcategory,
+    brand,
     estimated_value,
     condition,
     location,
@@ -286,6 +309,7 @@ const updateItem = asyncHandler(async (req, res) => {
     }
 
     item.subcategory = subcategory || item.subcategory;
+    item.brand = brand || item.brand;
     item.estimated_value = estimated_value || item.estimated_value;
     item.condition = condition || item.condition;
     item.location = location || item.location;

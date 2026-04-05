@@ -57,18 +57,42 @@ const getServices = asyncHandler(async (req, res) => {
     status: 'active',
   };
 
-  const services = await Service.find(query).sort({ createdAt: -1 });
-  res.json(services);
+  const services = await Service.find(query)
+    .populate('provider', 'full_name email avatar')
+    .sort({ createdAt: -1 });
+
+  const lang = req.headers['accept-language'];
+  const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
+
+  const translatedServices = services.map(service => {
+    const serviceObj = service.toObject();
+    
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
+    };
+
+    serviceObj.description = getTranslation(serviceObj.description_translations, targetLang, serviceObj.description);
+    serviceObj.title = getTranslation(serviceObj.title_translations, targetLang, serviceObj.title);
+
+    return serviceObj;
+  });
+
+  res.json(translatedServices);
 });
 
 // @desc    Get single service by ID
 // @route   GET /api/services/:id
 // @access  Public
 const getServiceById = asyncHandler(async (req, res) => {
-  const service = await Service.findById(req.params.id).populate('provider', 'name email');
+  const service = await Service.findById(req.params.id).populate('provider', 'full_name email');
   if (service) {
+    // Increment views without saving the whole document here to avoid race conditions or overwrites
+    await Service.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
     service.views = (service.views || 0) + 1;
-    await service.save();
 
     // Convert to object to modify for response without affecting DB
     const serviceObj = service.toObject();
@@ -76,12 +100,20 @@ const getServiceById = asyncHandler(async (req, res) => {
     const lang = req.headers['accept-language'];
     const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
 
-    if (service.description_translations && service.description_translations[targetLang]) {
-      serviceObj.description = service.description_translations[targetLang];
-    }
-    if (service.title_translations && service.title_translations[targetLang]) {
-        serviceObj.title = service.title_translations[targetLang];
-    }
+    // Helper to safely get translation from Map OR plain object
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
+    };
+
+    const transDesc = getTranslation(serviceObj.description_translations, targetLang, serviceObj.description);
+    serviceObj.description = transDesc;
+
+    const transTitle = getTranslation(serviceObj.title_translations, targetLang, serviceObj.title);
+    serviceObj.title = transTitle;
 
     res.json(serviceObj);
   } else {
@@ -205,15 +237,33 @@ const updateService = asyncHandler(async (req, res) => {
 // @access  Public
 const getPopularServices = asyncHandler(async (req, res) => {
   const limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  // Fetch more than limit to allow for random sampling on refresh
   const poolSize = limit * 3;
   
   const popularServices = await Service.find({ status: 'active' })
+    .populate('provider', 'full_name email avatar')
     .sort({ views: -1 })
     .limit(poolSize);
 
-  // Randomly sample 'limit' services from the 'poolSize' popular ones
-  const shuffled = popularServices.sort(() => 0.5 - Math.random());
+  const lang = req.headers['accept-language'];
+  const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
+
+  const translatedServices = popularServices.map(service => {
+    const serviceObj = service.toObject();
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
+    };
+
+    serviceObj.description = getTranslation(serviceObj.description_translations, targetLang, serviceObj.description);
+    serviceObj.title = getTranslation(serviceObj.title_translations, targetLang, serviceObj.title);
+
+    return serviceObj;
+  });
+
+  const shuffled = translatedServices.sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, limit);
 
   res.json({ services: selected });
@@ -227,7 +277,6 @@ const getSuggestedServices = asyncHandler(async (req, res) => {
   const poolSize = limit * 3;
   let preferredCategories = [];
 
-  // Check for category search in query (from frontend cookie or state)
   if (req.query.lastCategory && !preferredCategories.includes(req.query.lastCategory)) {
     preferredCategories.push(req.query.lastCategory);
   }
@@ -237,30 +286,48 @@ const getSuggestedServices = asyncHandler(async (req, res) => {
     query.category = { $in: preferredCategories };
   }
 
-  // Exclude provider's own services if logged in
   if (req.user) {
     query.provider = { $ne: req.user._id };
   }
 
   let suggestedPool = await Service.find(query)
+    .populate('provider', 'full_name email avatar')
     .sort({ createdAt: -1 })
     .limit(poolSize);
 
-  // Fallback if not enough services found in preferred categories
   if (suggestedPool.length < poolSize) {
     const additionalServices = await Service.find({ 
       status: 'active', 
       _id: { $nin: suggestedPool.map(s => s._id) },
       ...(req.user ? { provider: { $ne: req.user._id } } : {})
     })
+    .populate('provider', 'full_name email avatar')
     .sort({ createdAt: -1 })
     .limit(poolSize - suggestedPool.length);
     
     suggestedPool = [...suggestedPool, ...additionalServices];
   }
 
-  // Randomly sample 'limit' services from the 'poolSize' suggested ones
-  const shuffled = suggestedPool.sort(() => 0.5 - Math.random());
+  const lang = req.headers['accept-language'];
+  const targetLang = lang && lang.startsWith('he') ? 'he' : 'en';
+
+  const translatedServices = suggestedPool.map(service => {
+    const serviceObj = service.toObject();
+    const getTranslation = (source, key, fallback) => {
+        if (!source) return fallback;
+        let val;
+        if (typeof source.get === 'function') val = source.get(key);
+        else val = source[key];
+        return val || fallback;
+    };
+
+    serviceObj.description = getTranslation(serviceObj.description_translations, targetLang, serviceObj.description);
+    serviceObj.title = getTranslation(serviceObj.title_translations, targetLang, serviceObj.title);
+
+    return serviceObj;
+  });
+
+  const shuffled = translatedServices.sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, limit);
 
   res.json({ services: selected });

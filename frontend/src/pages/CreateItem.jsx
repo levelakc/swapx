@@ -392,6 +392,15 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                 </div>
 
                 <div>
+                  <label className="block text-sm font-medium mb-2">{t('brand', 'Brand')}</label>
+                  <input 
+                    placeholder={t('brandPlaceholder', 'e.g. Nike, Apple, Toyota')}
+                    {...register('brand')} 
+                    className="w-full bg-secondary/50 border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium mb-2">{t('location')}</label>
                   <input 
                     placeholder={t('locationPlaceholder')}

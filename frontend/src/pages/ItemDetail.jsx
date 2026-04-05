@@ -214,6 +214,15 @@ export default function ItemDetail() {
                 )}
                 
                 <h1 className="text-4xl font-black mb-2 text-foreground">{displayTitle}</h1>
+                
+                {item.brand && (
+                    <div className="mb-4">
+                         <span className="px-3 py-1 bg-secondary text-secondary-foreground rounded-lg text-xs font-black uppercase tracking-widest border border-white/5">
+                            {item.brand}
+                         </span>
+                    </div>
+                )}
+
                 <div className="flex items-baseline gap-2 mb-6">
                     <span className="text-3xl font-black text-primary">{currencySymbol}{displayValue.toLocaleString()}</span>
                     <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{t('estimatedValue')}</span>

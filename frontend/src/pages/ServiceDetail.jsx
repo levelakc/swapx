@@ -23,12 +23,12 @@ export default function ServiceDetail() {
   const [comment, setComment] = useState('');
 
   const handleShare = async () => {
-    // ... rest of handleShare
+    if (!service) return;
     if (navigator.share) {
       try {
         await navigator.share({
-          title: service.title,
-          text: service.description,
+          title: displayTitle,
+          text: displayDescription,
           url: window.location.href,
         });
       } catch (error) {
@@ -54,7 +54,7 @@ export default function ServiceDetail() {
 
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', id],
-    queryFn: getReviews(id),
+    queryFn: () => getReviews(id),
     enabled: !!service,
   });
 
@@ -122,12 +122,12 @@ export default function ServiceDetail() {
     return <div className="text-center py-20">Service not found</div>;
   }
 
-  const rate = service.hourly_rate || 0;
+  const rate = service?.hourly_rate || 0;
   const displayRate = currency === 'ILS' ? convertCurrency(rate, 'USD', 'ILS') : rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
-  const displayTitle = service.title_translations?.[language] || service.title;
-  const displayDescription = service.description_translations?.[language] || service.description;
+  const displayTitle = service?.title_translations?.[language] || service?.title || 'No Title';
+  const displayDescription = service?.description_translations?.[language] || service?.description || 'No Description';
 
   const jsonLd = service ? {
     "@context": "https://schema.org/",
@@ -139,13 +139,13 @@ export default function ServiceDetail() {
     },
     "description": displayDescription,
     "name": displayTitle,
-    "image": service.images,
+    "image": service.images || [],
     "offers": {
       "@type": "Offer",
       "priceCurrency": currency === 'ILS' ? 'ILS' : 'USD',
       "price": displayRate || 0
     },
-    "aggregateRating": reviews.length > 0 ? {
+    "aggregateRating": reviews?.length > 0 ? {
       "@type": "AggregateRating",
       "ratingValue": reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length,
       "reviewCount": reviews.length
@@ -155,9 +155,9 @@ export default function ServiceDetail() {
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <SEO 
-        title={service.title}
-        description={service.description?.substring(0, 160)}
-        ogImage={service.images?.[0]}
+        title={displayTitle}
+        description={displayDescription?.substring(0, 160)}
+        ogImage={service?.images?.[0]}
         jsonLd={jsonLd}
       />
       {/* Navigation & Back Button */}
@@ -183,7 +183,7 @@ export default function ServiceDetail() {
         <div className="lg:col-span-2 space-y-6">
           {/* Image Gallery Slider */}
           <div className="bg-card rounded-3xl shadow-xl overflow-hidden border border-white/10 aspect-video">
-            <ImageGallery images={service.images} title={displayTitle} />
+            <ImageGallery images={service?.images || []} title={displayTitle} />
           </div>
           
           {/* Description */}
@@ -196,10 +196,10 @@ export default function ServiceDetail() {
             
             {/* Social Links */}
             <div className="mt-8 flex flex-wrap gap-4">
-                {service.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-primary hover:bg-secondary transition-all font-bold text-sm"><Globe size={18}/> {t('website', 'Website')}</a>}
-                {service.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-pink-500 hover:bg-secondary transition-all font-bold text-sm"><Instagram size={18}/> {t('instagram', 'Instagram')}</a>}
-                {service.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-blue-600 hover:bg-secondary transition-all font-bold text-sm"><Facebook size={18}/> {t('facebook', 'Facebook')}</a>}
-                {service.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-green-600 hover:bg-secondary transition-all font-bold text-sm"><Map size={18}/> {t('googleReviews', 'Google Reviews')}</a>}
+                {service?.website && <a href={service.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-primary hover:bg-secondary transition-all font-bold text-sm"><Globe size={18}/> {t('website', 'Website')}</a>}
+                {service?.social_instagram && <a href={`https://instagram.com/${service.social_instagram.replace('@','')}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-pink-500 hover:bg-secondary transition-all font-bold text-sm"><Instagram size={18}/> {t('instagram', 'Instagram')}</a>}
+                {service?.social_facebook && <a href={service.social_facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-blue-600 hover:bg-secondary transition-all font-bold text-sm"><Facebook size={18}/> {t('facebook', 'Facebook')}</a>}
+                {service?.google_reviews_link && <a href={service.google_reviews_link} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 rounded-xl text-green-600 hover:bg-secondary transition-all font-bold text-sm"><Map size={18}/> {t('googleReviews', 'Google Reviews')}</a>}
             </div>
           </div>
 
@@ -207,23 +207,23 @@ export default function ServiceDetail() {
           <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10">
             <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
                 <Star size={24} className="text-yellow-400 fill-current"/> 
-                {t('reviews', 'Reviews')} ({reviews.length})
+                {t('reviews', 'Reviews')} ({reviews?.length || 0})
             </h2>
             
             <div className="space-y-6">
-                {reviews.map(review => (
+                {reviews?.map(review => (
                     <div key={review._id} className="bg-secondary/20 p-6 rounded-2xl border border-white/5">
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 shrink-0">
                                     <ImageWithFallback 
-                                        src={review.reviewer.avatar || `https://avatar.vercel.sh/${review.reviewer.full_name}.svg`} 
+                                        src={review.reviewer?.avatar || `https://avatar.vercel.sh/${review.reviewer?.full_name}.svg`} 
                                         className="w-full h-full rounded-full border-2 border-primary/20 object-cover" 
-                                        alt={review.reviewer.full_name}
+                                        alt={review.reviewer?.full_name}
                                     />
                                 </div>
                                 <div>
-                                    <span className="font-bold block">{review.reviewer.full_name}</span>
+                                    <span className="font-bold block">{review.reviewer?.full_name}</span>
                                     <span className="text-[10px] text-muted-foreground uppercase font-black">{t('verifiedClient', 'Verified Client')}</span>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@ export default function ServiceDetail() {
                         <p className="text-muted-foreground text-sm leading-relaxed italic">"{review.comment}"</p>
                     </div>
                 ))}
-                {reviews.length === 0 && <p className="text-muted-foreground italic">{t('noReviewsYet', 'No reviews yet. Be the first to share your experience!')}</p>}
+                {(!reviews || reviews.length === 0) && <p className="text-muted-foreground italic">{t('noReviewsYet', 'No reviews yet. Be the first to share your experience!')}</p>}
             </div>
 
             {user && (
@@ -278,7 +278,7 @@ export default function ServiceDetail() {
                         <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary">
                             <User size={14} />
                         </div>
-                        <span>{service.provider_name}</span>
+                        <span>{service?.provider_name}</span>
                     </div>
                 </div>
             </div>
@@ -293,14 +293,14 @@ export default function ServiceDetail() {
                     <div className="p-3 bg-secondary/50 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-content transition-all"><MapPin size={20}/></div>
                     <div>
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-0.5">{t('location')}</p>
-                        <p className="font-bold text-foreground">{service.location}</p>
+                        <p className="font-bold text-foreground">{service?.location}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 group">
                     <div className="p-3 bg-secondary/50 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-content transition-all"><Clock size={20}/></div>
                     <div>
                         <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-0.5">{t('availability')}</p>
-                        <p className="font-bold text-foreground">{service.availability || t('flexible')}</p>
+                        <p className="font-bold text-foreground">{service?.availability || t('flexible')}</p>
                     </div>
                 </div>
             </div>

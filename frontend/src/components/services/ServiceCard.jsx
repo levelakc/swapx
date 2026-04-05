@@ -9,19 +9,23 @@ export default function ServiceCard({ service }) {
   const { t, language } = useLanguage();
   const { currency, convertCurrency } = useCurrency();
 
+  if (!service || !service._id) return null;
+
   const rate = service.hourly_rate || 0;
   const displayRate = currency === 'ILS' ? convertCurrency(rate, 'USD', 'ILS') : rate;
   const currencySymbol = currency === 'ILS' ? '₪' : '$';
 
-  const displayTitle = service.title_translations?.[language] || service.title;
+  const displayTitle = service?.title_translations?.[language] || service?.title || 'No Title';
+  const providerName = service?.provider_name || service?.provider?.full_name || 'Provider';
+  const providerAvatar = service?.provider_avatar || service?.provider?.avatar;
 
   return (
-    <Link to={`/service/${service._id}`} className="block h-full">
+    <Link to={`/service/${service?._id}`} className="block h-full">
       <FuturisticCard className="h-full">
         <div className="flex flex-col h-full">
           <div className="relative w-full h-48">
             <ImageWithFallback
-              src={service.images?.[0]}
+              src={service?.images?.[0]}
               alt={displayTitle}
               className="w-full h-full object-cover rounded-t-lg"
             />
@@ -33,13 +37,13 @@ export default function ServiceCard({ service }) {
           <div className="p-4 flex-1 flex flex-col">
             <div className="flex items-center gap-2 mb-2">
                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary overflow-hidden border border-primary/20">
-                  {service.provider_avatar ? (
-                    <ImageWithFallback src={service.provider_avatar} alt="P" className="w-full h-full object-cover"/>
+                  {providerAvatar ? (
+                    <ImageWithFallback src={providerAvatar} alt="P" className="w-full h-full object-cover"/>
                   ) : (
-                    service.provider_name?.[0] || 'P'
+                    providerName?.[0] || 'P'
                   )}
                </div>
-               <span className="text-[11px] font-bold text-muted-foreground truncate">{service.provider_name}</span>
+               <span className="text-[11px] font-bold text-muted-foreground truncate">{providerName}</span>
             </div>
             
             <h3 className="text-lg font-bold truncate text-foreground mb-3">{displayTitle}</h3>
@@ -47,11 +51,11 @@ export default function ServiceCard({ service }) {
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto mb-4">
               <div className="flex items-center text-[11px] text-muted-foreground">
                 <MapPin className="w-3 h-3 mr-1 flex-shrink-0 text-primary" />
-                <span className="truncate">{service.location}</span>
+                <span className="truncate">{service?.location || t('notSpecified')}</span>
               </div>
               <div className="flex items-center text-[11px] text-muted-foreground">
                 <Clock className="w-3 h-3 mr-1 flex-shrink-0 text-primary" />
-                <span className="truncate">{service.availability || t('flexible')}</span>
+                <span className="truncate">{service?.availability || t('flexible')}</span>
               </div>
             </div>
 
