@@ -392,7 +392,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">{t('brand', 'Brand')}</label>
+                  <label className="block text-sm font-medium mb-2">{t('brandLabel', 'Brand')}</label>
                   <input 
                     placeholder={t('brandPlaceholder', 'e.g. Nike, Apple, Toyota')}
                     {...register('brand')} 

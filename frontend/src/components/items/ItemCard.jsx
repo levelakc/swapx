@@ -76,7 +76,7 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
               {item.brand && (
                 <div className="flex items-center text-[11px] text-amber-400 font-bold col-span-2 mb-1">
                   <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">{t('brand')}: {item.brand}</span>
+                  <span className="truncate">{t('brandLabel', 'Brand')}: {item.brand}</span>
                 </div>
               )}
               <div className="flex items-center text-[11px] text-muted-foreground">
