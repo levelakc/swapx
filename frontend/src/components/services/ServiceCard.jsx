@@ -35,7 +35,9 @@ export default function ServiceCard({ service }) {
           </div>
           
           <div className="p-4 flex-1 flex flex-col">
-            <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-lg font-bold truncate text-foreground mb-2">{displayTitle}</h3>
+            
+            <div className="flex items-center gap-2 mb-3">
                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary overflow-hidden border border-primary/20">
                   {providerAvatar ? (
                     <ImageWithFallback src={providerAvatar} alt="P" className="w-full h-full object-cover"/>
@@ -45,8 +47,6 @@ export default function ServiceCard({ service }) {
                </div>
                <span className="text-[11px] font-bold text-muted-foreground truncate">{providerName}</span>
             </div>
-            
-            <h3 className="text-lg font-bold truncate text-foreground mb-3">{displayTitle}</h3>
             
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto mb-4">
               <div className="flex items-center text-[11px] text-muted-foreground">

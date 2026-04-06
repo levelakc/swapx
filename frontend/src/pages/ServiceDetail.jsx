@@ -179,6 +179,20 @@ export default function ServiceDetail() {
         </button>
       </div>
 
+      <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-3">{displayTitle}</h1>
+          <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+                  <User size={16} className="text-primary" />
+                  <span className="text-sm font-bold text-foreground">{service?.provider_name || service?.provider?.full_name}</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-full border border-white/5">
+                  <Briefcase size={16} className="text-muted-foreground" />
+                  <span className="text-sm font-bold capitalize">{service?.category}</span>
+              </div>
+          </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Image Gallery Slider */}
@@ -271,18 +285,6 @@ export default function ServiceDetail() {
         <div className="space-y-6">
           {/* Info Card */}
           <div className="bg-card rounded-3xl shadow-xl p-8 border border-white/10 sticky top-24">
-            <div className="flex items-start justify-between mb-6">
-                <div>
-                    <h1 className="text-3xl font-black text-foreground mb-2">{displayTitle}</h1>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
-                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary">
-                            <User size={14} />
-                        </div>
-                        <span>{service?.provider_name}</span>
-                    </div>
-                </div>
-            </div>
-
             <div className="bg-primary/5 rounded-2xl p-6 mb-8 border border-primary/10">
                 <p className="text-4xl font-black text-primary mb-1">{currencySymbol}{(displayRate || 0).toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">{t('hourlyRate')}</p>
