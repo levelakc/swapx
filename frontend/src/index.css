@@ -97,3 +97,43 @@ input, textarea, select {
 .notification.error {
   background-color: #f44336;
 }
+
+/* Accessibility Helpers */
+.high-contrast {
+  --background: 0 0% 0% !important;
+  --foreground: 0 0% 100% !important;
+  --primary: 60 100% 50% !important;
+  --primary-foreground: 0 0% 0% !important;
+  --card: 0 0% 5% !important;
+  --border: 0 0% 100% !important;
+  --muted-foreground: 0 0% 90% !important;
+}
+
+.large-text {
+  font-size: 1.2rem !important;
+}
+
+.large-text h1 { font-size: 3rem !important; }
+.large-text h2 { font-size: 2.5rem !important; }
+.large-text h3 { font-size: 2rem !important; }
+.large-text p, .large-text span, .large-text div { font-size: 1.1rem !important; }
+
+.dyslexic-font {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+.big-cursor, .big-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='white' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z'%3E%3C/path%3E%3C/svg%3E"), auto !important;
+}
+
+.highlight-links a {
+  background-color: yellow !important;
+  color: black !important;
+  text-decoration: underline !important;
+  font-weight: bold !important;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://antijingoist.github.io/opendyslexic/OpenDyslexic-Regular.otf');
+}

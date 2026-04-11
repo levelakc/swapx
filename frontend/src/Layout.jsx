@@ -4,6 +4,8 @@ import NavBar from './components/navigation/NavBar';
 import Footer from './components/common/Footer';
 import WelcomeTour from './components/common/WelcomeTour';
 import ScrollToTop from './components/common/ScrollToTop';
+import AccessibilityWidget from './components/common/AccessibilityWidget';
+import FloatingChatSupport from './components/common/FloatingChatSupport';
 import { Info, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 export const GlassyToast = ({ message, type = 'info', description }) => {
@@ -45,6 +47,8 @@ function AppContent({ children }) {
       />
       <WelcomeTour />
       <NavBar />
+      <AccessibilityWidget />
+      <FloatingChatSupport />
       <ScrollToTop />
       <main className="pt-28 flex-grow flex flex-col overflow-x-hidden">
         <div className={`flex-1 ${window.location.pathname.startsWith('/messages') ? '' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
