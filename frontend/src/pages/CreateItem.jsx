@@ -50,6 +50,8 @@ export default function CreateItem({ id: propsId, onSuccess }) {
             looking_for: itemToEdit.looking_for || [],
             cash_flexibility: itemToEdit.cash_flexibility,
             open_to_other_offers: itemToEdit.open_to_other_offers,
+            is_visible: itemToEdit.is_visible !== undefined ? itemToEdit.is_visible : true,
+            is_available: itemToEdit.is_available !== undefined ? itemToEdit.is_available : true,
             website: itemToEdit.website,
             social_instagram: itemToEdit.social_instagram,
             social_facebook: itemToEdit.social_facebook,
@@ -654,24 +656,56 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                                 <span className="block text-sm font-bold group-hover:text-primary transition-colors">{t('openToOtherOffers')}</span>
                                 <span className="block text-xs text-muted-foreground">{t('openToOtherOffersDesc')}</span>
                             </div>
-                        </label>
-                    </div>
-                </div>
+                            </label>
+
+                            {/* Item Visibility & Availability */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            <label className="group flex items-start gap-4 p-4 bg-secondary/20 rounded-2xl border border-white/5 hover:border-primary/20 hover:bg-secondary/30 transition-all cursor-pointer">
+                               <input 
+                                   type="checkbox" 
+                                   {...register('is_visible')}
+                                   className="mt-1 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary transition-all cursor-pointer"
+                               />
+                               <div className="flex-1">
+                                   <span className="block text-sm font-bold group-hover:text-primary transition-colors">{t('isVisible', 'Show on Profile')}</span>
+                                   <span className="block text-xs text-muted-foreground">{t('isVisibleDesc', 'Decide if this item is visible on your public profile.')}</span>
+                               </div>
+                            </label>
+
+                            <label className="group flex items-start gap-4 p-4 bg-secondary/20 rounded-2xl border border-white/5 hover:border-primary/20 hover:bg-secondary/30 transition-all cursor-pointer">
+                               <input 
+                                   type="checkbox" 
+                                   {...register('is_available')}
+                                   className="mt-1 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary transition-all cursor-pointer"
+                               />
+                               <div className="flex-1">
+                                   <span className="block text-sm font-bold group-hover:text-primary transition-colors">{t('isAvailable', 'Available for Trade')}</span>
+                                   <span className="block text-xs text-muted-foreground">{t('isAvailableDesc', 'Mark this item as currently available for swap offers.')}</span>
+                               </div>
+                            </label>
+                            </div>
+                            </div>                </div>
             </div>
             
             <div className="pt-4">
               <button 
                 type="submit" 
-                disabled={saveMutation.isLoading || (isEdit && !hasChanges)} 
+                disabled={saveMutation.isLoading || (isEdit && !hasChanges)}
                 className={`w-full flex justify-center items-center gap-2 py-4 px-6 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white transition-all active:scale-[0.98] ${
                   (saveMutation.isLoading || (isEdit && !hasChanges))
-                    ? 'bg-gray-500 cursor-not-allowed opacity-50 shadow-none' 
+                    ? 'bg-gray-500 cursor-not-allowed opacity-50 shadow-none'
                     : 'bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 shadow-primary/25'
                 }`}
               >
-                {saveMutation.isLoading ? <Loader2 className="animate-spin" /> : (isEdit ? t('saveChanges', 'Save Changes') : t('listMyItem'))}
-              </button>
-            </div>
+                {saveMutation.isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    {isEdit ? t('saving', 'Saving...') : t('listing', 'Listing...')}
+                  </>
+                ) : (
+                  isEdit ? t('saveChanges', 'Save Changes') : t('listMyItem')
+                )}
+              </button>            </div>
           </form>
         </div>
       </div>

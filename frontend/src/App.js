@@ -14,6 +14,7 @@ import CreateItem from './pages/CreateItem';
 import MyItems from './pages/MyItems';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
 import Admin from './pages/Admin';
 import CoinPanel from './pages/CoinPanel'; // Import CoinPanel
 import MessageScreen from './pages/MessageScreen';
@@ -65,6 +66,7 @@ function App() {
                         <Route path="/my-items" element={<MyItems />} />
                         <Route path="/messages" element={<Messages />} />
                         <Route path="/profile" element={<Profile />} />
+                        <Route path="/profile/:id" element={<PublicProfile />} />
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/coins" element={<CoinPanel />} />
                         <Route path="/messages/:id" element={<MessageScreen />} />

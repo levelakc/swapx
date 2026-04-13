@@ -6,7 +6,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 import ImageWithFallback from '../common/ImageWithFallback';
 
-export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemName }) {
+export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemName, isSubmitting = false }) {
   const { t } = useLanguage();
   const [selectedItems, setSelectedItems] = useState([]);
   const [cashAmount, setCashAmount] = useState(0);
@@ -145,8 +145,10 @@ export default function MakeOfferModal({ isOpen, onClose, onSubmit, targetItemNa
         <div className="p-4 border-t bg-muted/50">
           <button 
             onClick={handleSubmit}
-            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-transform active:scale-95 shadow-md"
+            disabled={isSubmitting}
+            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-all active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
+            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
             {t('sendOffer')}
           </button>
         </div>

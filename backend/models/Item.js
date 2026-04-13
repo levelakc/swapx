@@ -104,6 +104,14 @@ const itemSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    is_available: {
+      type: Boolean,
+      default: true,
+    },
+    is_visible: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

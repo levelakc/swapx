@@ -52,6 +52,8 @@ export const getMe = () => {
     return request('/auth/me');
 };
 
+export const getUserProfile = (id) => request(`/auth/profile/${id}`);
+
 export const claimDailyReward = () => request('/auth/claim-daily', {
     method: 'POST',
 });
@@ -88,6 +90,8 @@ export const getServices = (filters = {}) => {
 };
 
 export const getItem = (id) => request(`/items/${id}`);
+
+export const getUserItems = (userId) => request(`/items/user/${userId}`);
 
 export const getService = (id) => request(`/services/${id}`);
 

@@ -7,6 +7,7 @@ const {
   updateItem,
   deleteItem,
   getMyItems,
+  getUserItems,
   featureItem,
   getPopularItems,
   getSuggestedItems,
@@ -21,6 +22,7 @@ router.route('/')
   .post(protect, upload.array('images', 5), createItem); // Max 5 images per item
 
 router.get('/my', protect, getMyItems);
+router.get('/user/:id', getUserItems);
 router.get('/popular', getPopularItems); // New route for popular items
 router.get('/suggested', optionalProtect, getSuggestedItems);
 router.get('/matches', protect, getMutualMatches);

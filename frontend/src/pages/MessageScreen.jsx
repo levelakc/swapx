@@ -372,14 +372,13 @@ export default function MessageScreen() {
             {/* Audio & Send */}
             <div className="flex items-center gap-1">
                 {message.trim() ? (
-                    <button 
-                        onClick={handleSendMessage} 
-                        disabled={messageMutation.isLoading}
+                    <button
+                        onClick={handleSendMessage}
+                        disabled={messageMutation.isLoading || mediaMutation.isLoading}
                         className="p-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md active:scale-95 disabled:opacity-50"
                     >
-                        {messageMutation.isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                    </button>
-                ) : (
+                        {(messageMutation.isLoading || mediaMutation.isLoading) ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                    </button>                ) : (
                     <AudioRecorder onRecordingComplete={handleAudioRecorded} isUploading={mediaMutation.isLoading} />
                 )}
             </div>
@@ -387,12 +386,12 @@ export default function MessageScreen() {
         </div>
       </div>
 
-      <MakeOfferModal 
-        isOpen={isOfferModalOpen} 
-        onClose={() => setIsOfferModalOpen(false)} 
+      <MakeOfferModal
+        isOpen={isOfferModalOpen}
+        onClose={() => setIsOfferModalOpen(false)}
         onSubmit={handleSendOffer}
+        isSubmitting={tradeMutation.isLoading}
       />
-
       {selectedTradeId && (
         <TradeNegotiationModal
           isOpen={isTradeDetailsOpen}

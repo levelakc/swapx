@@ -98,6 +98,8 @@ const getItems = asyncHandler(async (req, res) => {
     ...condition,
     ...attributeQuery,
     status: 'active', // Only show active items
+    is_visible: true,
+    is_available: true,
   };
 
   if (req.query.location) {
@@ -243,6 +245,8 @@ const createItem = asyncHandler(async (req, res) => {
     seller_avatar: req.user.avatar || `https://placehold.co/100x100/6366f1/white?text=${encodeURIComponent(req.user.full_name || 'U')}`,
     seller_bio: req.user.bio || 'Professional trader on Ahlafot',
     seller_location: req.user.location || location || 'Israel',
+    is_available: req.body.is_available !== undefined ? req.body.is_available === 'true' || req.body.is_available === true : true,
+    is_visible: req.body.is_visible !== undefined ? req.body.is_visible === 'true' || req.body.is_visible === true : true,
   });
 
   const createdItem = await item.save();
@@ -338,6 +342,13 @@ const updateItem = asyncHandler(async (req, res) => {
     item.cash_flexibility = cash_flexibility || item.cash_flexibility;
     item.status = status || item.status;
     item.images = images || item.images;
+
+    if (req.body.is_available !== undefined) {
+      item.is_available = req.body.is_available === 'true' || req.body.is_available === true;
+    }
+    if (req.body.is_visible !== undefined) {
+      item.is_visible = req.body.is_visible === 'true' || req.body.is_visible === true;
+    }
 
     const updatedItem = await item.save();
     res.json(updatedItem);
@@ -544,6 +555,18 @@ const getMutualMatches = asyncHandler(async (req, res) => {
 });
 
 
+// @desc    Get items by user ID (for public profile)
+// @route   GET /api/items/user/:id
+// @access  Public
+const getUserItems = asyncHandler(async (req, res) => {
+  const items = await Item.find({ 
+    created_by: req.params.id, 
+    status: 'active',
+    is_visible: true 
+  }).sort({ createdAt: -1 });
+  res.json({ items });
+});
+
 module.exports = {
   getItems,
   getItemById,
@@ -551,6 +574,7 @@ module.exports = {
   updateItem,
   deleteItem,
   getMyItems,
+  getUserItems,
   featureItem,
   getPopularItems,
   getSuggestedItems,

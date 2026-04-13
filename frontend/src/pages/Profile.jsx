@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMe, updateMe, getMyItems, deleteItem, startSupportChat } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus, MessageCircle } from 'lucide-react';
+import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus, MessageCircle, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import ItemCard from '../components/items/ItemCard';
@@ -61,6 +61,12 @@ export default function Profile() {
   const handleLogout = () => {
     localStorage.removeItem('swapx_user');
     window.location.href = '/';
+  };
+
+  const handleShareProfile = () => {
+    const profileUrl = `${window.location.origin}/profile/${user._id}`;
+    navigator.clipboard.writeText(profileUrl);
+    toast.success(t('profileLinkCopied', 'Profile link copied to clipboard!'));
   };
 
   const handleEditItem = (id) => {
@@ -143,6 +149,15 @@ export default function Profile() {
                       className="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2"
                   >
                       {supportMutation.isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : <><MessageCircle className="w-4 h-4"/> {t('contactSupport')}</>}
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={handleShareProfile} 
+                    className="bg-secondary/50 text-foreground border border-white/10 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-secondary transition-all active:scale-95 flex items-center gap-2"
+                  >
+                      <Share2 size={16}/>
+                      {t('shareProfile', 'Share Profile')}
                   </button>
                   
                   {/* Logout Button - Small and Curvy */}

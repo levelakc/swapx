@@ -60,6 +60,18 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
                   <Sparkles size={10} /> {t('openToOtherOffers')}
                </div>
             )}
+            <div className="absolute top-2 left-2 flex flex-col gap-1">
+              {!item.is_visible && (
+                <div className="bg-red-500/90 text-white px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-lg">
+                  {t('hidden', 'Hidden')}
+                </div>
+              )}
+              {!item.is_available && (
+                <div className="bg-amber-500/90 text-white px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-lg">
+                  {t('unavailable', 'Unavailable')}
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="p-4 flex-1 flex flex-col">

@@ -88,16 +88,6 @@ const createTrade = asyncHandler(async (req, res) => {
     status: 'pending',
   });
 
-  // Set offered items status to pending (if not already pending)
-  if (offeredValidation.items.length > 0) {
-    await Item.updateMany({ _id: { $in: offered_items }, status: 'active' }, { status: 'pending' });
-  }
-
-  // Set requested items status to pending (if not already pending)
-  if (requestedValidation && requestedValidation.items && requestedValidation.items.length > 0) {
-    await Item.updateMany({ _id: { $in: requested_items }, status: 'active' }, { status: 'pending' });
-  }
-
   // ALWAYS create a NEW Conversation for this specific trade
   const conversation = await Conversation.create({
       participants: [initiator_email, receiver_email],
@@ -296,10 +286,6 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
     trade.status = 'rejected';
     trade.messages.push({ sender: userEmail, content: message || 'Trade rejected.', type: 'reject' });
 
-    // Revert item statuses from pending to active
-    const itemIdsToRevert = [...trade.offered_items, ...trade.requested_items];
-    await Item.updateMany({ _id: { $in: itemIdsToRevert } }, { status: 'active' });
-
     const conversation = await Conversation.findOne({ related_trade_id: trade._id });
     if (conversation) {
         const otherParticipant = conversation.participants.find(p => p !== userEmail);
@@ -338,10 +324,6 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
 
     trade.status = 'cancelled';
     trade.messages.push({ sender: userEmail, content: message || 'Trade cancelled.', type: 'text' });
-
-    // Revert item statuses from pending to active
-    const itemIdsToRevert = [...trade.offered_items, ...trade.requested_items];
-    await Item.updateMany({ _id: { $in: itemIdsToRevert } }, { status: 'active' });
 
     // Find the related conversation and update the last 'offer' message to say "Offer removed"
     const conversation = await Conversation.findOne({ related_trade_id: trade._id });
