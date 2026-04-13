@@ -390,7 +390,7 @@ export default function MessageScreen() {
         isOpen={isOfferModalOpen}
         onClose={() => setIsOfferModalOpen(false)}
         onSubmit={handleSendOffer}
-        isSubmitting={tradeMutation.isLoading}
+        isSubmitting={createTradeMutation.isLoading}
       />
       {selectedTradeId && (
         <TradeNegotiationModal

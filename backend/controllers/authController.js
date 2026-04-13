@@ -145,6 +145,26 @@ const facebookCallback = asyncHandler(async (req, res) => {
   res.redirect(`${frontendUrl}/login?token=${token}`);
 });
 
+// @desc    Claim daily reward manually
+// @route   POST /api/auth/claim-daily
+// @access  Private
+const claimDailyReward = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const now = new Date();
+  const lastClaimed = user.lastLoginRewardClaimed;
+
+  if (lastClaimed && lastClaimed.toDateString() === now.toDateString()) {
+    res.status(400);
+    throw new Error('Reward already claimed today');
+  }
+
+  user.coins += 5;
+  user.lastLoginRewardClaimed = now;
+  await user.save();
+
+  res.json({ message: 'Daily reward claimed!', coins: user.coins, lastLoginRewardClaimed: now });
+});
+
 // @desc    Get user profile by ID
 // @route   GET /api/auth/profile/:id
 // @access  Public
