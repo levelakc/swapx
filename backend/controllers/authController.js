@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
 const { getChatbotForLanguage } = require('../services/chatbotService');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -36,6 +37,9 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    // Send welcome email (fire and forget to not slow down response)
+    sendWelcomeEmail(user).catch(err => console.error('Welcome email failed:', err.message));
+
     // Create a conversation with the chatbot
     const chatbot = getChatbotForLanguage(user.language);
     const welcomeMessage = {

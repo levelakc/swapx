@@ -4,6 +4,7 @@ const Item = require('../models/Item');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
+const { sendTradeOfferEmail } = require('../services/emailService');
 const { getIO } = require('../socket');
 
 // Helper function to validate items and ownership
@@ -87,6 +88,13 @@ const createTrade = asyncHandler(async (req, res) => {
     messages: message ? [{ sender: initiator_email, content: message, type: 'text' }] : [],
     status: 'pending',
   });
+
+  // Send Email Notification
+  const receiver = await User.findOne({ email: receiver_email });
+  if (receiver) {
+      sendTradeOfferEmail(receiver, req.user.full_name || initiator_email)
+        .catch(err => console.error('Trade offer email failed:', err.message));
+  }
 
   // ALWAYS create a NEW Conversation for this specific trade
   const conversation = await Conversation.create({
