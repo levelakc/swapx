@@ -273,6 +273,11 @@ export const resolveSupportRequest = (conversationId) => request(`/admin/support
     method: 'PUT',
 });
 
+export const sendAdminEmail = (emailData) => request('/admin/send-email', {
+    method: 'POST',
+    body: JSON.stringify(emailData),
+});
+
 export const featureItem = (itemId) => request(`/items/${itemId}/feature`, {
     method: 'POST',
 });

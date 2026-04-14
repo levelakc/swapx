@@ -10,6 +10,7 @@ const {
   updateUserRole,
   getSupportConversations,
   resolveSupportRequest,
+  sendAdminEmail,
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -18,6 +19,7 @@ router.route('/stats').get(protect, authorize('admin'), getPlatformStats);
 router.route('/users').get(protect, authorize('admin'), getAllUsers);
 router.route('/users/:id/coins').put(protect, authorize('admin'), updateUserCoins);
 router.route('/users/:id/role').put(protect, authorize('admin'), updateUserRole);
+router.route('/send-email').post(protect, authorize('admin'), sendAdminEmail);
 
 // Admin and Moderator routes
 router.route('/items').get(protect, authorize('admin', 'moderator'), getAllItems);

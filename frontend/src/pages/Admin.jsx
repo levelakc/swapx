@@ -9,6 +9,7 @@ import CategoryManager from '../components/admin/CategoryManager';
 import ItemsTable from '../components/admin/ItemsTable';
 import OnlineUsersTable from '../components/admin/OnlineUsersTable';
 import TradesTable from '../components/admin/TradesTable';
+import EmailManager from '../components/admin/EmailManager';
 import PageInfo from '../components/common/PageInfo';
 
 const StatCard = ({ title, value }) => (
@@ -197,6 +198,7 @@ export default function Admin() {
     dashboard: { component: <AdminDashboard />, adminOnly: true },
     support: { component: <SupportTable />, adminOnly: false },
     users: { component: <UsersTable />, adminOnly: true },
+    email: { component: <EmailManager />, adminOnly: true },
     categories: { component: <CategoryManager />, adminOnly: true },
     items: { component: <ItemsTable />, adminOnly: false },
     trades: { component: <TradesTable />, adminOnly: false },

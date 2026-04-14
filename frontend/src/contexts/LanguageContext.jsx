@@ -925,6 +925,15 @@ const translations = {
     counterOffer: 'הצעה נגדית',
     items: 'פריטים',
     item: 'פריט',
+    sendEmailToUser: 'שלח אימייל למשתמש',
+    recipient: 'נמען',
+    selectUser: 'בחר משתמש...',
+    emailSubjectPlaceholder: 'הזן נושא להודעה...',
+    emailMessagePlaceholder: 'כתוב את ההודעה שלך כאן...',
+    emailNotice: 'האימייל יישלח מתמיכת AHLAFOT. המשתמש יראה זאת בתיבת הדואר שלו.',
+    emailSentSuccess: 'האימייל נשלח בהצלחה!',
+    emailSentError: 'שליחת האימייל נכשלה',
+    fillAllFields: 'נא למלא את כל השדות',
   },
 };
 

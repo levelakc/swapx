@@ -166,6 +166,39 @@ const resolveSupportRequest = asyncHandler(async (req, res) => {
   res.json({ message: 'Support request resolved' });
 });
 
+const { sendEmail } = require('../services/emailService');
+
+// @desc    Send custom email to a user
+// @route   POST /api/admin/send-email
+// @access  Private/Admin
+const sendAdminEmail = asyncHandler(async (req, res) => {
+  const { to, subject, message } = req.body;
+
+  if (!to || !subject || !message) {
+    res.status(400);
+    throw new Error('Please provide all fields: to, subject, message');
+  }
+
+  await sendEmail({
+    to,
+    subject,
+    text: message,
+    html: `<div style="font-family: sans-serif; line-height: 1.6; color: #333;">
+            <div style="background: #6366f1; padding: 20px; color: white; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1>AHLAFOT Admin Support</h1>
+            </div>
+            <div style="padding: 20px; border: 1px solid #eee; border-top: none; border-radius: 0 0 10px 10px;">
+                ${message.replace(/\n/g, '<br>')}
+            </div>
+            <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #999;">
+                &copy; ${new Date().getFullYear()} AHLAFOT. All rights reserved.
+            </div>
+          </div>`,
+  });
+
+  res.json({ message: 'Email sent successfully' });
+});
+
 module.exports = {
   getPlatformStats,
   getAllUsers,
@@ -176,4 +209,5 @@ module.exports = {
   updateUserRole,
   getSupportConversations,
   resolveSupportRequest,
+  sendAdminEmail,
 };
