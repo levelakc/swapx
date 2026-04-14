@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getItem, getCategories, getMe, getItems, createConversation } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
