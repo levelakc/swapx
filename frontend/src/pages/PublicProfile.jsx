@@ -93,27 +93,27 @@ export default function PublicProfile() {
             </div>
           </div>
 
-          <div className="mt-12 pt-10 border-t border-white/5 grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div className="text-center group/stat">
+          <div className="mt-12 pt-10 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="text-center group/stat px-2">
               <div className="inline-flex p-3 bg-purple-500/10 rounded-2xl text-purple-500 mb-3">
                 <Repeat className="w-6 h-6" />
               </div>
-              <h4 className="font-black text-3xl text-foreground block">{user.total_trades || 0}</h4>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('totalTrades', 'Total Trades')}</p>
+              <h4 className="font-black text-2xl md:text-3xl text-foreground block truncate">{user.total_trades || 0}</h4>
+              <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-muted-foreground mt-1 truncate">{t('totalTrades', 'Total Trades')}</p>
             </div>
-            <div className="text-center group/stat">
+            <div className="text-center group/stat px-2">
               <div className="inline-flex p-3 bg-yellow-500/10 rounded-2xl text-yellow-500 mb-3">
                 <Star className="w-6 h-6 fill-current" />
               </div>
-              <h4 className="font-black text-3xl text-foreground block">{user.rating || 0}</h4>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('rating', 'Rating')}</p>
+              <h4 className="font-black text-2xl md:text-3xl text-foreground block truncate">{user.rating || 0}</h4>
+              <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-muted-foreground mt-1 truncate">{t('rating', 'Rating')}</p>
             </div>
-            <div className="text-center group/stat">
+            <div className="text-center group/stat px-2">
               <div className="inline-flex p-3 bg-blue-500/10 rounded-2xl text-blue-500 mb-3">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h4 className="font-black text-3xl text-foreground block uppercase">{t(user.verification_status || 'unverified')}</h4>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-1">{t('status', 'Status')}</p>
+              <h4 className="font-black text-2xl md:text-3xl text-foreground block uppercase truncate">{t(user.verification_status || 'unverified')}</h4>
+              <p className="text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-muted-foreground mt-1 truncate">{t('status', 'Status')}</p>
             </div>
           </div>
         </div>
