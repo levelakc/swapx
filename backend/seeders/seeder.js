@@ -268,12 +268,32 @@ const CATEGORY_IMAGES = {
 };
 
 
+
+const CATEGORY_BRANDS = {
+  electronics: ["Apple", "Samsung", "Sony", "Dell", "HP", "LG", "Logitech", "Asus", "Xiaomi"],
+  vehicles: ["Toyota", "Tesla", "Honda", "BMW", "Mercedes", "Yamaha", "Ford", "Mazda"],
+  fashion_main: ["Nike", "Adidas", "Zara", "Gucci", "Prada", "Levi's", "H&M", "Puma", "Uniqlo"],
+  watches: ["Rolex", "Casio", "Seiko", "Omega", "Tag Heuer", "Tissot", "Apple Watch", "Garmin"],
+  gaming: ["Nintendo", "Sony PlayStation", "Microsoft Xbox", "Razer", "MSI", "Alienware", "Logitech G"],
+  cameras: ["Canon", "Nikon", "Sony", "Fujifilm", "GoPro", "Panasonic", "DJI"],
+  jewelry: ["Pandora", "Tiffany & Co.", "Cartier", "Swarovski", "Bvlgari"],
+  phones: ["Apple iPhone", "Samsung Galaxy", "Google Pixel", "OnePlus", "Xiaomi", "Nothing"],
+  computers: ["Apple MacBook", "Dell XPS", "Lenovo ThinkPad", "HP Spectre", "ASUS ROG"],
+};
+
 async function generateRandomItem(category, user, itemIndex, allCategories) {
   const conditions = ['new', 'like_new', 'excellent', 'good', 'fair'];
   const cashFlexibilities = ['can_add', 'can_receive', 'can_add_or_receive', 'prefer_exchange'];
   
   const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
   const randomCashFlexibility = cashFlexibilities[Math.floor(Math.random() * cashFlexibilities.length)];
+
+  const brandList = CATEGORY_BRANDS[category.name] || [];
+  // 70% chance to have a brand, 30% unbranded
+  const randomBrand = Math.random() > 0.3 && brandList.length > 0 
+    ? brandList[Math.floor(Math.random() * brandList.length)] 
+    : "";
+
 
   // We are guaranteed to have categoryAssets because of the check in the main loop
   const categoryAssets = CATEGORY_IMAGES[category.name]; 
@@ -342,6 +362,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     description_translations: { en: description_en, he: description },
     category: category.name, 
     subcategory: category.name,
+    brand: randomBrand,
     
     estimated_value: estimated_value,
     condition: randomCondition,
