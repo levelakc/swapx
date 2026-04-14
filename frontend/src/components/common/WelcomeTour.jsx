@@ -48,8 +48,8 @@ export default function WelcomeTour() {
     {
       title: language === 'he' ? 'היי! ברוכים הבאים ל-AHLAFOT 👋' : 'Hey! Welcome to AHLAFOT 👋',
       description: language === 'he' 
-        ? 'אנחנו כאן כדי לעזור לכם להחליף את מה שיש לכם במה שאתם באמת רוצים. בלי כסף (או עם קצת, אם בא לכם!), רק החלפות פשוטות וכיפיות.' 
-        : "We're here to help you swap what you have for what you actually want. No cash (or just a bit!), just simple and fun trading.",
+        ? 'אנחנו כאן כדי לעזור לכם להחליף את מה שיש לכם במה שאתם רוצים, ולגלות עולם של שירותים מקצועיים. הכל במקום אחד!' 
+        : "We're here to help you swap what you have for what you want and discover a world of professional services. All in one place!",
       emoji: "✨",
       position: "center"
     },
@@ -64,8 +64,8 @@ export default function WelcomeTour() {
     {
       title: language === 'he' ? 'צריכים עזרה מקצועית? 🛠️' : 'Need Professional Help? 🛠️',
       description: language === 'he'
-        ? 'תחת כפתור ה-Services תמצאו מומחים שיעזרו לכם - מעיצוב גרפי ועד תיקונים. הכל בשיטת הטרייד!'
-        : "Under the Services button, you'll find experts to help you - from graphic design to repairs. All via trade!",
+        ? 'תחת כפתור ה-Services תמצאו לוח מומחים שיעזרו לכם בכל תחום - מעיצוב גרפי ועד תיקונים. צרו קשר ישירות עם נותני השירות בקהילה!'
+        : "Under the Services button, you'll find a billboard of experts to help you with anything - from graphic design to repairs. Connect directly with service providers in the community!",
       icon: <Briefcase className="w-8 h-8 text-blue-500" />,
       target: "tour-services"
     },

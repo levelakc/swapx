@@ -17,8 +17,8 @@ export default function HowItWorks() {
     },
     {
       icon: <Repeat className="w-12 h-12 text-primary" />,
-      title: t('howItWorks.step3.title', '3. Make a Trade'),
-      description: t('howItWorks.step3.description', 'Propose a trade by offering your items, with optional cash to balance the deal. Negotiate and complete the swap!'),
+      title: t('howItWorks.step3.title', '3. Trade or Connect'),
+      description: t('howItWorks.step3.description', 'Swap items with others using our trade system, or connect directly with professional service providers from the community billboard.'),
     },
   ];
   

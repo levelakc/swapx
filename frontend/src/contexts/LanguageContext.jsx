@@ -10,7 +10,7 @@ const translations = {
     brand: "AHLAFOT",
     tagline: "Connect. Trade. Swap.",
     heroTitle: "The Modern Way to Trade and Swap",
-    heroSubtitle: "Join our community to trade items, services, and discover new opportunities every day.",
+    heroSubtitle: "Join our community to trade items and discover top-tier professional services.",
     explore: "Explore the Marketplace",
     listItem: "List an Item",
     listYourItem: 'List Your Item',
@@ -351,8 +351,8 @@ const translations = {
         description: "Explore all items available for trade. Use filters to narrow down by category, price, or location. Click an item to see more details and make an offer."
     },
     servicesInfo: {
-        title: "Browse Services",
-        description: "Find professionals offering their services in exchange for items or other services. You can book a service by proposing a trade."
+        title: "Professional Services",
+        description: "Find experts for your needs. Browse our professional billboard, view portfolios, and book services directly from the community."
     },
     myItemsInfo: {
         title: "My Items",
@@ -457,7 +457,7 @@ const translations = {
     google: "Google",
     brand: "AHLAFOT",
     tagline: "שדרג את העולם שלך. החלפות.",
-    heroSubtitle: "מרכבי אספנות ועד טכנולוגיה עילית—גלה עולם של ערך שמחכה רק לך.",
+    heroSubtitle: "הצטרפו לקהילה שלנו כדי להחליף פריטים ולגלות שירותים מקצועיים מהשורה הראשונה.",
     explore: "חקור עסקאות",
     listItem: "הוסף פריט",
     listYourItem: "הוסף את הפריט שלך",
@@ -803,8 +803,8 @@ const translations = {
         description: "חקרו את כל הפריטים הזמינים להחלפה. השתמשו במסננים כדי לצמצם לפי קטגוריה, מחיר או מיקום. לחצו על פריט כדי לראות פרטים נוספים ולהציע הצעה."
     },
     servicesInfo: {
-        title: "עיון בשירותים",
-        description: "מצאו אנשי מקצוע המציעים את שירותיהם בתמורה לפריטים או שירותים אחרים. ניתן להזמין שירות על ידי הצעה לטרייד."
+        title: "שירותים מקצועיים",
+        description: "מצאו מומחים לכל צורך. דפדפו בלוח השירותים המקצועי שלנו, צפו בתיקי עבודות וצרו קשר עם נותני שירות ישירות מהקהילה."
     },
     myItemsInfo: {
         title: "הפריטים שלי",
