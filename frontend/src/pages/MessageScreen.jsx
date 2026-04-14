@@ -198,7 +198,7 @@ export default function MessageScreen() {
     const requestedItem = conversation.related_item_id?._id || conversation.related_item_id;
 
     if (!requestedItem) {
-        toast.error("No item linked to this conversation to trade for");
+        toast.error(t('noItemLinked', 'No item linked to this conversation to trade for'));
         return;
     }
 
