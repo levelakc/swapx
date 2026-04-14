@@ -17,6 +17,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
   const isEdit = !!id;
   const isModal = !!propsId;
   const { register, handleSubmit, control, setValue, reset, watch, formState: { errors, isDirty } } = useForm();
+  const [showBrandInput, setShowBrandInput] = useState(false);
   const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { currency } = useCurrency();
@@ -37,6 +38,12 @@ export default function CreateItem({ id: propsId, onSuccess }) {
     enabled: isEdit,
   });
 
+  useEffect(() => {
+    if (isEdit && itemToEdit) {
+        setShowBrandInput(!!itemToEdit.brand);
+    }
+  }, [isEdit, itemToEdit]);
+
   // Correctly populate form data when item is loaded
   useEffect(() => {
     if (isEdit && itemToEdit) {
@@ -50,6 +57,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
             looking_for: itemToEdit.looking_for || [],
             cash_flexibility: itemToEdit.cash_flexibility,
             open_to_other_offers: itemToEdit.open_to_other_offers,
+            brand: itemToEdit.brand || '',
             is_visible: itemToEdit.is_visible !== undefined ? itemToEdit.is_visible : true,
             is_available: itemToEdit.is_available !== undefined ? itemToEdit.is_available : true,
             website: itemToEdit.website,
@@ -203,6 +211,7 @@ export default function CreateItem({ id: propsId, onSuccess }) {
 
     const itemData = {
       ...data,
+      brand: showBrandInput ? data.brand : '', // Explicitly clear brand if toggle is off
       estimated_value: Number(data.estimated_value),
       images: sortedImages,
       listing_type: listingType,
@@ -393,13 +402,37 @@ export default function CreateItem({ id: propsId, onSuccess }) {
                     {errors.condition && <p className="text-red-500 text-xs mt-1">{errors.condition.message}</p>}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('brandLabel', 'Brand')}</label>
-                  <input 
-                    placeholder={t('brandPlaceholder', 'e.g. Nike, Apple, Toyota')}
-                    {...register('brand')} 
-                    className="w-full bg-secondary/50 border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4"
-                  />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-secondary/20 rounded-2xl border border-white/5">
+                    <div>
+                      <p className="font-bold text-sm">{t('hasBrand', 'Specify Brand?')}</p>
+                      <p className="text-xs text-muted-foreground">{t('brandToggleDesc', 'Toggle to add a brand name, otherwise it shows as unbranded.')}</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={showBrandInput}
+                        onChange={() => setShowBrandInput(!showBrandInput)}
+                      />
+                      <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+
+                  {showBrandInput && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="space-y-2"
+                    >
+                      <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">{t('brandLabel', 'Brand')}</label>
+                      <input 
+                        placeholder={t('brandPlaceholder', 'e.g. Nike, Apple, Toyota')}
+                        {...register('brand')} 
+                        className="w-full bg-secondary/50 border-transparent focus:border-primary focus:ring-primary rounded-xl py-3 px-4 transition-all"
+                      />
+                    </motion.div>
+                  )}
                 </div>
 
                 <div>

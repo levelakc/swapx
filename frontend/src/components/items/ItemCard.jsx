@@ -77,23 +77,28 @@ export default function ItemCard({ item, showActions = false, onEdit, onDelete, 
           <div className="p-4 flex-1 flex flex-col">
             <div className="flex justify-between items-start mb-1 min-w-0">
                <h3 className="text-lg font-bold truncate text-foreground flex-1">{displayTitle}</h3>
-               {item.brand && (
-                 <span className="text-[9px] font-black bg-primary/10 text-primary px-1.5 py-0.5 rounded-md uppercase tracking-wider border border-primary/20 ml-2 shrink-0">
-                    {item.brand}
-                 </span>
-               )}
+            </div>
+            
+            <div className="flex items-center gap-2 mb-3">
+                <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider border ${
+                    item.brand 
+                    ? 'bg-primary/10 text-primary border-primary/20' 
+                    : 'bg-muted text-muted-foreground border-border'
+                }`}>
+                    {item.brand || t('unbranded', 'Unbranded')}
+                </span>
+                {item.brand && (
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                )}
+                <span className="text-[10px] font-bold text-muted-foreground truncate capitalize">
+                    {t(item.condition)}
+                </span>
             </div>
             
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-auto">
-              {item.brand && (
-                <div className="flex items-center text-[11px] text-amber-400 font-bold col-span-2 mb-1">
-                  <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">{t('brandLabel', 'Brand')}: {item.brand}</span>
-                </div>
-              )}
               <div className="flex items-center text-[11px] text-muted-foreground">
-                <Tag className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate capitalize">{t(item.condition)}</span>
+                <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{item.location}</span>
               </div>
               <div className="flex items-center text-[11px] text-muted-foreground">
                 <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
