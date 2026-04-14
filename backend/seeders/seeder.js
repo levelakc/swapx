@@ -453,7 +453,7 @@ const seedData = async () => {
       {
         full_name: 'Admin User',
         email: 'admin@ahlafot.com',
-        password: 'password', 
+        password: 'AhlaX_Admin_99!_Safe_#2026', 
         role: 'admin',
         bio: 'מנהל המערכת הראשי של Ahlafot.',
         avatar: 'https://i.pravatar.cc/150?u=admin',

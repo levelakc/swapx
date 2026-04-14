@@ -120,11 +120,72 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get current user profile
-// @route   GET /api/auth/me
+// @desc    Update user profile
+// @route   PUT /api/auth/me
 // @access  Private
-const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user);
+const updateMe = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const { full_name, bio, phone, location, language, email, password, avatar } = req.body;
+    const now = new Date();
+
+    // Check if email is being changed
+    if (email && email !== user.email) {
+        const lastUpdate = user.lastEmailUpdate || new Date(0);
+        const hoursDiff = (now - lastUpdate) / (1000 * 60 * 60);
+        
+        if (hoursDiff < 24 && user.role !== 'admin') {
+            res.status(400);
+            throw new Error('Email can only be changed once every 24 hours');
+        }
+        
+        // Check if new email is already taken
+        const emailExists = await User.findOne({ email });
+        if (emailExists) {
+            res.status(400);
+            throw new Error('Email already in use');
+        }
+        
+        user.email = email;
+        user.lastEmailUpdate = now;
+    }
+
+    // Check if password is being changed
+    if (password) {
+        const lastUpdate = user.lastPasswordUpdate || new Date(0);
+        const hoursDiff = (now - lastUpdate) / (1000 * 60 * 60);
+        
+        if (hoursDiff < 24 && user.role !== 'admin') {
+            res.status(400);
+            throw new Error('Password can only be changed once every 24 hours');
+        }
+        
+        user.password = password; // Model middleware will hash it
+        user.lastPasswordUpdate = now;
+    }
+
+    user.full_name = full_name || user.full_name;
+    user.bio = bio || user.bio;
+    user.phone = phone || user.phone;
+    user.location = location || user.location;
+    user.language = language || user.language;
+    user.avatar = avatar || user.avatar;
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      full_name: updatedUser.full_name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      language: updatedUser.language,
+      token: updatedUser.getSignedJwtToken(), // Issue new token in case email changed
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
 });
 
 // @desc    Handle Google OAuth callback
@@ -182,6 +243,7 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  updateMe,
   getUserProfile,
   googleCallback,
   facebookCallback,

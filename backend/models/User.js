@@ -59,6 +59,14 @@ const userSchema = mongoose.Schema(
       type: String,
       default: 'en',
     },
+    lastEmailUpdate: {
+      type: Date,
+      default: () => new Date(Date.now() - 24 * 60 * 60 * 1000)
+    },
+    lastPasswordUpdate: {
+      type: Date,
+      default: () => new Date(Date.now() - 24 * 60 * 60 * 1000)
+    },
   },
   {
     timestamps: true, // This adds created_at and updated_at fields
