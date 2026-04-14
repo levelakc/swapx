@@ -98,8 +98,8 @@ const getItems = asyncHandler(async (req, res) => {
     ...condition,
     ...attributeQuery,
     status: 'active', // Only show active items
-    is_visible: true,
-    is_available: true,
+    is_visible: { $ne: false },
+    is_available: { $ne: false },
   };
 
   if (req.query.location) {
@@ -433,7 +433,11 @@ const getPopularItems = asyncHandler(async (req, res) => {
   const limit = Number(req.query.limit) || 8;
   const poolSize = limit * 3;
 
-  const popularItems = await Item.find({ status: 'active' })
+  const popularItems = await Item.find({ 
+    status: 'active',
+    is_visible: { $ne: false },
+    is_available: { $ne: false }
+  })
     .sort({ viewsCount: -1, createdAt: -1 })
     .limit(poolSize);
 
@@ -472,7 +476,11 @@ const getSuggestedItems = asyncHandler(async (req, res) => {
     preferredCategories.push(req.query.lastCategory);
   }
 
-  let query = { status: 'active' };
+  let query = { 
+    status: 'active',
+    is_visible: { $ne: false },
+    is_available: { $ne: false }
+  };
   if (preferredCategories.length > 0) {
     query.category = { $in: preferredCategories };
   }
@@ -530,6 +538,8 @@ const getMutualMatches = asyncHandler(async (req, res) => {
 
     const matches = await Item.find({
       status: 'active',
+      is_visible: { $ne: false },
+      is_available: { $ne: false },
       created_by: { $ne: req.user._id },
       category: { $in: myItem.looking_for },
       looking_for: myItem.category,
@@ -562,7 +572,7 @@ const getUserItems = asyncHandler(async (req, res) => {
   const items = await Item.find({ 
     created_by: req.params.id, 
     status: 'active',
-    is_visible: true 
+    is_visible: { $ne: false } 
   }).sort({ createdAt: -1 });
   res.json({ items });
 });
