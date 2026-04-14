@@ -90,7 +90,6 @@ const createTrade = asyncHandler(async (req, res) => {
   });
 
   // Send Email Notification
-  const receiver = await User.findOne({ email: receiver_email });
   if (receiver) {
       sendTradeOfferEmail(receiver, req.user.full_name || initiator_email)
         .catch(err => console.error('Trade offer email failed:', err.message));
