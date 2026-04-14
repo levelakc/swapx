@@ -270,15 +270,15 @@ const CATEGORY_IMAGES = {
 
 
 const CATEGORY_BRANDS = {
-  electronics: ["Apple", "Samsung", "Sony", "Dell", "HP", "LG", "Logitech", "Asus", "Xiaomi"],
-  vehicles: ["Toyota", "Tesla", "Honda", "BMW", "Mercedes", "Yamaha", "Ford", "Mazda"],
-  fashion_main: ["Nike", "Adidas", "Zara", "Gucci", "Prada", "Levi's", "H&M", "Puma", "Uniqlo"],
-  watches: ["Rolex", "Casio", "Seiko", "Omega", "Tag Heuer", "Tissot", "Apple Watch", "Garmin"],
-  gaming: ["Nintendo", "Sony PlayStation", "Microsoft Xbox", "Razer", "MSI", "Alienware", "Logitech G"],
-  cameras: ["Canon", "Nikon", "Sony", "Fujifilm", "GoPro", "Panasonic", "DJI"],
-  jewelry: ["Pandora", "Tiffany & Co.", "Cartier", "Swarovski", "Bvlgari"],
-  phones: ["Apple iPhone", "Samsung Galaxy", "Google Pixel", "OnePlus", "Xiaomi", "Nothing"],
-  computers: ["Apple MacBook", "Dell XPS", "Lenovo ThinkPad", "HP Spectre", "ASUS ROG"],
+  electronics: ["Apple", "Samsung", "Sony", "Dell", "HP", "LG", "Logitech", "Asus", "Xiaomi", "Bose", "Sennheiser", "Microsoft", "Intel", "NVIDIA"],
+  vehicles: ["Toyota", "Tesla", "Honda", "BMW", "Mercedes", "Yamaha", "Ford", "Mazda", "Audi", "Volkswagen", "Hyundai", "Kia", "Kawasaki", "Ducati"],
+  fashion_main: ["Nike", "Adidas", "Zara", "Gucci", "Prada", "Levis", "H&M", "Puma", "Uniqlo", "Channel", "Louis Vuitton", "Hermes", "Burberry", "Ralph Lauren"],
+  watches: ["Rolex", "Casio", "Seiko", "Omega", "Tag Heuer", "Tissot", "Apple Watch", "Garmin", "Patek Philippe", "Audemars Piguet", "Hublot", "IWC"],
+  gaming: ["Nintendo", "Sony PlayStation", "Microsoft Xbox", "Razer", "MSI", "Alienware", "Logitech G", "SteelSeries", "Corsair", "HyperX", "ASUS ROG"],
+  cameras: ["Canon", "Nikon", "Sony", "Fujifilm", "GoPro", "Panasonic", "DJI", "Leica", "Olympus", "Sigma", "Tamron"],
+  jewelry: ["Pandora", "Tiffany & Co.", "Cartier", "Swarovski", "Bvlgari", "Graff", "Harry Winston", "Chopard", "Van Cleef & Arpels"],
+  phones: ["Apple iPhone", "Samsung Galaxy", "Google Pixel", "OnePlus", "Xiaomi", "Nothing", "Motorola", "Sony Xperia", "Huawei", "Oppo"],
+  computers: ["Apple MacBook", "Dell XPS", "Lenovo ThinkPad", "HP Spectre", "ASUS ROG", "Microsoft Surface", "Razer Blade", "Acer Predator"],
 };
 
 async function generateRandomItem(category, user, itemIndex, allCategories) {
@@ -290,7 +290,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
 
   const brandList = CATEGORY_BRANDS[category.name] || [];
   // 70% chance to have a brand, 30% unbranded
-  const randomBrand = Math.random() > 0.3 && brandList.length > 0 
+  const randomBrand = Math.random() > 0.1 && brandList.length > 0 
     ? brandList[Math.floor(Math.random() * brandList.length)] 
     : "";
 
@@ -299,6 +299,14 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
   const categoryAssets = CATEGORY_IMAGES[category.name]; 
   const assetIndex = itemIndex % categoryAssets.length;
   const randomAsset = categoryAssets[assetIndex];
+  
+  // Pick 1-3 images from the category pool for more variety
+  const numImages = Math.floor(Math.random() * 3) + 1;
+  const itemImages = [];
+  for(let j=0; j < numImages; j++) {
+      const imgIdx = (assetIndex + j) % categoryAssets.length;
+      itemImages.push(categoryAssets[imgIdx].url);
+  }
 
   let title = randomAsset.title_he || randomAsset.title;
 
@@ -366,7 +374,7 @@ async function generateRandomItem(category, user, itemIndex, allCategories) {
     
     estimated_value: estimated_value,
     condition: randomCondition,
-    images: [randomAsset.url],
+    images: itemImages,
     location: user.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],
     attributes: {}, 
     looking_for: lookingFor, 
@@ -584,54 +592,33 @@ const seedData = async () => {
     console.log('Chatbot conversations created.');
 
     // --- ITEMS ---
+    // --- ITEMS ---
     const allItems = [];
     const allServices = [];
     
     for (const category of createdCategories) {
       const categoryAssets = CATEGORY_IMAGES[category.name];
       
-      // If there are no images for this category, skip it so we don't create duplicates or empty items
-      if (!categoryAssets || categoryAssets.length === 0) {
-        continue;
-      }
+      if (!categoryAssets || categoryAssets.length === 0) continue;
 
-      if (category.name === 'services') {
-          // Loop EXACTLY the amount of unique images we have for services
+      if (category.name === "services") {
           for (let i = 0; i < categoryAssets.length; i++) {
             const randomUserIndex = Math.floor(Math.random() * (createdUsers.length - 1)) + 1;
             const owner = createdUsers[randomUserIndex];
             const asset = categoryAssets[i];
-            
             const hourly_rate = Math.floor(Math.random() * (asset.max_price - asset.min_price + 1)) + asset.min_price;
-
-                                      const serviceDescriptionsHe = [
-                `שירות ${asset.title_he || asset.title} מקצועי ואיכותי ברמה הגבוהה ביותר. מעל 10 שנות ניסיון בתחום, הקפדה על לוחות זמנים ותוצאה מושלמת.`,
-                `זקוקים ל${asset.title_he || asset.title}? אני כאן בשבילכם! שירות אמין, יחס אישי ומחירים הוגנים. התחייבות לשביעות רצון מלאה.`,
-                `מומחה ל${asset.title_he || asset.title} עם מאות לקוחות מרוצים. מספק פתרונות מתקדמים ומקצועיים לכל צורך. זמין באזור ${owner.location || "המרכז"}.`,
-                `הכירו את שירות ה${asset.title_he || asset.title} המוביל שלנו. שירות מהיר, יעיל ויסודי עם שימוש בציוד וחומרים מהשורה הראשונה.`,
-                `פתרונות ${asset.title_he || asset.title} מקיפים לעסקים ולקוחות פרטיים. ניסיון עשיר, מקצועיות ללא פשרות וזמינות גבוהה לכל פרויקט.`
-            ];
-                                      const serviceDescriptionsEn = [
-                `Top-tier ${asset.title} services provided by a certified professional with extensive experience. Committed to excellence and 100% customer satisfaction.`,
-                `Looking for a reliable ${asset.title} expert? You found one! Fast, efficient, and high-quality service tailored specifically to your project requirements.`,
-                `Specialized in ${asset.title} with a proven track record of successful projects. Serving the ${owner.location || "central"} area with dedication and skill.`,
-                `Professional ${asset.title} solutions for commercial and residential needs. We bring the right tools and expertise to get the job done perfectly.`,
-                `Quality ${asset.title} you can trust. Over a decade of experience, attention to detail, and a commitment to delivering results that exceed expectations.`
-            ];
-
-            const descIndex = i % serviceDescriptionsHe.length;
 
             allServices.push({
                 title: asset.title_he || asset.title,
-                description: serviceDescriptionsHe[descIndex],
+                description: `שירות ${asset.title_he || asset.title} מקצועי ואיכותי ברמה הגבוהה ביותר. מעל 10 שנות ניסיון בתחום, הקפדה על לוחות זמנים ותוצאה מושלמת.`,
                 description_translations: {
-                    en: serviceDescriptionsEn[descIndex],
-                    he: serviceDescriptionsHe[descIndex]
+                    en: `Top-tier ${asset.title} services provided by a certified professional with extensive experience.`,
+                    he: `שירות ${asset.title_he || asset.title} מקצועי ואיכותי ברמה הגבוהה ביותר.`
                 },
                 category: category.name,
                 hourly_rate: hourly_rate,
-                availability: '09:00 - 17:00',
-                location: owner.location || ISRAELI_CITIES[Math.floor(Math.random() * ISRAELI_CITIES.length)],
+                availability: "09:00 - 17:00",
+                location: owner.location || "Tel Aviv",
                 images: [asset.url],
                 provider: owner._id,
                 provider_name: owner.full_name,
@@ -639,26 +626,27 @@ const seedData = async () => {
                 provider_email: owner.email
             });
           }
-          continue; 
-      }
-
-      // Loop EXACTLY the amount of unique images we have for regular items
-      for (let i = 0; i < categoryAssets.length; i++) {
-        const randomUserIndex = Math.floor(Math.random() * (createdUsers.length - 1)) + 1;
-        const owner = createdUsers[randomUserIndex];
-        const newItem = await generateRandomItem(category, owner, i, createdCategories);
-
-        allItems.push(newItem);
+      } else {
+          // Multiply items per category (run loop 3 times for ~250 items total)
+          for (let k = 0; k < 3; k++) {
+            for (let i = 0; i < categoryAssets.length; i++) {
+              const randomUserIndex = Math.floor(Math.random() * (createdUsers.length - 1)) + 1;
+              const owner = createdUsers[randomUserIndex];
+              const newItem = await generateRandomItem(category, owner, i + (k * 100), createdCategories);
+              allItems.push(newItem);
+            }
+          }
       }
     }
+
     const createdItems = await Item.insertMany(allItems);
     const createdServices = await Service.insertMany(allServices);
     console.log(`Seeded ${createdItems.length} items and ${createdServices.length} services.`);
 
-    console.log('Database seeding completed successfully!');
+    console.log("Database seeding completed successfully!");
     process.exit();
   } catch (error) {
-    console.error('Error seeding database:', error);
+    console.error("Error seeding database:", error);
     process.exit(1);
   }
 };
