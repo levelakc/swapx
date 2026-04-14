@@ -28,7 +28,8 @@ export default function PublicProfile() {
     queryFn: getMe,
   });
 
-  const items = itemsData?.items || [];
+  // Filter items to show only visible ones (backend already does this but double check for available as well)
+  const items = (itemsData?.items || []).filter(item => item.is_available !== false);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);

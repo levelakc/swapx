@@ -300,16 +300,25 @@ export default function ItemDetail() {
             </div>
           </div>
           
-          {/* User Info Placeholder/Preview */}
-          <div className="bg-card rounded-3xl shadow-xl p-6 border border-white/10 flex items-center gap-4">
-             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-black">
-                {(item.seller_full_name?.[0] || item.user?.name?.[0] || 'U')}
+          {/* User Info / Owner Card */}
+          <Link 
+            to={`/profile/${item.created_by?._id || item.user?._id || item.user}`}
+            className="bg-card rounded-3xl shadow-xl p-6 border border-white/10 flex items-center gap-4 hover:border-primary/30 transition-all group"
+          >
+             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-black group-hover:scale-105 transition-transform">
+                {item.created_by?.avatar ? (
+                    <ImageWithFallback src={item.created_by.avatar} alt="A" className="w-full h-full object-cover rounded-2xl" />
+                ) : (
+                    (item.seller_full_name?.[0] || item.user?.name?.[0] || 'U')
+                )}
              </div>
-             <div>
+             <div className="flex-1 min-w-0">
                 <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">{t('owner', 'Owner')}</p>
-                <h3 className="text-xl font-black text-foreground">{item.seller_full_name || item.user?.name || 'User'}</h3>
+                <h3 className="text-xl font-black text-foreground truncate group-hover:text-primary transition-colors">{item.seller_full_name || item.created_by?.full_name || item.user?.name || 'User'}</h3>
+                <p className="text-[10px] font-bold text-primary uppercase tracking-tight">{t('viewProfile', 'View Profile')}</p>
              </div>
-          </div>
+             <ArrowRight size={20} className="text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all" />
+          </Link>
 
         </div>
       </div>
