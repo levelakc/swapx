@@ -4,8 +4,8 @@ import { login } from '../api/api';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { showToast } from '../Layout';
-import { Facebook, Globe } from 'lucide-react';
-import { useEffect } from 'react';
+import { Facebook, Globe, Eye, EyeOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import logoWithSlogan from '../imgs/3.jpg';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import SEO from '../components/common/SEO';
@@ -23,6 +23,8 @@ export default function Login() {
       rememberMe: !!savedEmail
     }
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -115,19 +117,26 @@ export default function Login() {
                 {...register('email', { required: t('emailRequired', 'Email is required') })}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-            </div>
-            <div>
+            <div className="relative">
               <label htmlFor="password" className="sr-only">{t('password', 'Password')}</label>
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm pr-10"
                 placeholder={t('password', 'Password')}
                 {...register('password', { required: t('passwordRequired', 'Password is required') })}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-primary transition-colors z-20"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
             </div>
           </div>

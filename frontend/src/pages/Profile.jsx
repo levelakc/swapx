@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMe, updateMe, getMyItems, deleteItem, startSupportChat } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus, MessageCircle, Share2 } from 'lucide-react';
+import { Loader2, Mail, LogOut, Star, Repeat, Edit, Plus, MessageCircle, Share2, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import ItemCard from '../components/items/ItemCard';
@@ -14,6 +15,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
   
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['user', 'me'],
@@ -133,6 +135,22 @@ export default function Profile() {
                     className="w-full text-lg text-muted-foreground bg-muted/20 border border-white/5 focus:border-primary/30 focus:bg-muted/30 rounded-2xl p-4 transition-all resize-none outline-none" 
                     placeholder={t('writeSomethingAboutYourself', 'Write something about yourself...')}
                 />
+
+                <div className="relative group/pass">
+                    <input 
+                        type={showPassword ? "text" : "password"}
+                        {...register('password')} 
+                        className="w-full text-sm text-muted-foreground bg-muted/20 border border-white/5 focus:border-primary/30 focus:bg-muted/30 rounded-2xl p-4 transition-all outline-none" 
+                        placeholder={t('updatePassword', 'Update Password (leave blank to keep current)')}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
 
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                   <button 

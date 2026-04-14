@@ -4,7 +4,8 @@ import { register as registerUser } from '../api/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { showToast } from '../Layout';
-import { Facebook, Globe } from 'lucide-react';
+import { Facebook, Globe, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 import logoWithSlogan from '../imgs/3.jpg';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import SEO from '../components/common/SEO';
@@ -13,6 +14,8 @@ export default function Register() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const password = watch('password');
 
@@ -99,37 +102,44 @@ export default function Register() {
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">{t('password', 'Password')}</label>
+            <div className="relative">
+              <label htmlFor="password" title={t('password', 'Password')} className="sr-only">{t('password', 'Password')}</label>
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm pr-10"
                 placeholder={t('passwordPlaceholder', 'Password')}
                 {...register('password', { required: t('passwordRequired', 'Password is required'), minLength: { value: 6, message: t('passwordMinLength', 'Password must be at least 6 characters') } })}
               />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-primary transition-colors z-20"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">{t('confirmPassword', 'Confirm Password')}</label>
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            <div className="relative">
+              <label htmlFor="confirm-password" title={t('confirmPassword', 'Confirm Password')} className="sr-only">{t('confirmPassword', 'Confirm Password')}</label>
               <input
                 id="confirm-password"
                 name="confirm_password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm pr-10"
                 placeholder={t('confirmPasswordPlaceholder', 'Confirm Password')}
                 {...register('confirm_password', {
                   required: t('confirmPasswordRequired', 'Confirm Password is required'),
                   validate: value => value === password || t('passwordsMismatch', 'Passwords do not match')
                 })}
               />
-              {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password.message}</p>}
             </div>
+            {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password.message}</p>}
           </div>
 
           <div>
