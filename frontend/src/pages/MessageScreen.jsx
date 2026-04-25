@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, createTrade } from '../api/api';
+import { getMessages, sendMessage, getMe, uploadMessageMedia, getConversation, createTrade, SOCKET_URL } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Loader2, Send, Image, HeartHandshake, Package } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,8 +13,6 @@ import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import io from 'socket.io-client';
 import ImageWithFallback from '../components/common/ImageWithFallback';
-
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
 export default function MessageScreen() {
   const { id: conversationId } = useParams();

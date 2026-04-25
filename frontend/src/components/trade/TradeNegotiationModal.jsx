@@ -9,7 +9,8 @@ import {
     getMessages, 
     sendMessage, 
     uploadMessageMedia,
-    getMyItems
+    getMyItems,
+    SOCKET_URL
 } from '../../api/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
@@ -26,8 +27,6 @@ import AudioRecorder from '../common/AudioRecorder';
 import { motion, AnimatePresence } from 'framer-motion';
 import ItemDetailsModal from './ItemDetailsModal';
 import ImageWithFallback from '../common/ImageWithFallback';
-
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
 export default function TradeNegotiationModal({ isOpen, onClose, tradeId, conversationId }) {
   const { t, language } = useLanguage();

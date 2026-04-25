@@ -1,12 +1,20 @@
 const getApiUrl = () => {
   if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
-  if (window.location.hostname === 'ahlafot.co.il' || window.location.hostname.endsWith('.ahlafot.co.il')) {
-    return 'https://ahlafot.co.il/api';
+  
+  const isLocalhost = window.location.hostname === 'localhost' || 
+                     window.location.hostname === '127.0.0.1' || 
+                     window.location.hostname.startsWith('192.168.');
+
+  if (isLocalhost) {
+    return 'http://localhost:8000/api';
   }
-  return 'http://localhost:8000/api';
+
+  // Default to production URL for any other domain (Render subdomains, custom domains, etc.)
+  return 'https://ahlafot.co.il/api';
 };
 
-const API_URL = getApiUrl();
+export const API_URL = getApiUrl();
+export const SOCKET_URL = API_URL.replace('/api', '');
 
 const getToken = () => {
   const user = JSON.parse(localStorage.getItem('swapx_user'));

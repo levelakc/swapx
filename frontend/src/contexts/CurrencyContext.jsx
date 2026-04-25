@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { API_URL } from '../api/api';
 
 const CurrencyContext = createContext();
 
@@ -9,11 +10,10 @@ export function CurrencyProvider({ children }) {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       // Use the backend proxy for exchange rates
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-      const API_URL = `${API_BASE_URL}/exchange-rate/latest/USD`; 
+      const exchangeRateUrl = `${API_URL}/exchange-rate/latest/USD`; 
 
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(exchangeRateUrl);
         const data = await response.json();
 
         if (data.result === 'success' && data.conversion_rates && data.conversion_rates.ILS) {

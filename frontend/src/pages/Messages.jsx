@@ -10,7 +10,8 @@ import {
     getItem,
     getMessages,
     sendMessage,
-    updateTradeStatus
+    updateTradeStatus,
+    SOCKET_URL
 } from '../api/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -26,8 +27,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TradeNegotiationModal from '../components/trade/TradeNegotiationModal';
 import ImageWithFallback from '../components/common/ImageWithFallback';
 import PageInfo from '../components/common/PageInfo';
-
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
 function OfferSummaryCard({ tradeId, onOpen }) {
     const { t, language } = useLanguage();

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import { register as registerUser } from '../api/api';
+import { register as registerUser, API_URL } from '../api/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { showToast } from '../Layout';
@@ -37,13 +37,11 @@ export default function Register() {
   };
 
   const handleGoogleLogin = () => {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-      window.location.href = `${apiUrl}/auth/google`;
+      window.location.href = `${API_URL}/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-      window.location.href = `${apiUrl}/auth/facebook`;
+      window.location.href = `${API_URL}/auth/facebook`;
   };
 
   return (
