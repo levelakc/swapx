@@ -4,6 +4,7 @@ const Item = require('../models/Item');
 const Trade = require('../models/Trade');
 const Category = require('../models/Category');
 const Conversation = require('../models/Conversation');
+const ActivityLog = require('../models/ActivityLog');
 const { getOnlineUsersList } = require('../socket'); // Import the new function
 
 // @desc    Get platform statistics
@@ -166,6 +167,14 @@ const resolveSupportRequest = asyncHandler(async (req, res) => {
   res.json({ message: 'Support request resolved' });
 });
 
+// @desc    Get user activity logs
+// @route   GET /api/admin/users/:id/logs
+// @access  Private/Admin
+const getUserLogs = asyncHandler(async (req, res) => {
+  const logs = await ActivityLog.find({ user: req.params.id }).sort({ createdAt: -1 }).limit(100);
+  res.json(logs);
+});
+
 const { sendEmail } = require('../services/emailService');
 
 // @desc    Send custom email to a user
@@ -209,5 +218,6 @@ module.exports = {
   updateUserRole,
   getSupportConversations,
   resolveSupportRequest,
+  getUserLogs,
   sendAdminEmail,
 };

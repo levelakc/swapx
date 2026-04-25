@@ -225,7 +225,7 @@ function OfferMessageContent({ msg, me, t, onOpenNegotiation }) {
 
 function ChatMessage({ msg, me, onOpenNegotiation, t, language }) {
     const isMe = msg.sender_email === me?.email;
-    const isSystem = msg.sender_email === 'system@ahlafot.com' || msg.sender_email === 'system';
+    const isSystem = msg.sender_email === 'system@ahlafot.co.il' || msg.sender_email === 'system';
 
     const translateSystemMessage = (content) => {
         if (!content) return content;

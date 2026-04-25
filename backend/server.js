@@ -16,6 +16,7 @@ connectDB().then(() => {
 
 const app = express();
 app.use(cors()); // Enable CORS for all routes
+const { trackActivity } = require('./middleware/activityMiddleware');
 
 const http = require('http');
 const server = http.createServer(app);
@@ -24,6 +25,7 @@ const server = http.createServer(app);
 const io = initSocket(server);
 
 app.use(express.json()); // Body parser
+app.use(trackActivity);
 
 // Mount routers
 app.use('/api/auth', require('./routes/authRoutes'));

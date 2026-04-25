@@ -42,6 +42,8 @@ function initSocket(server) {
 
       if (!onlineUsers.has(userId)) {
         onlineUsers.set(userId, { user: user, sockets: new Set() });
+        // Update database
+        User.findByIdAndUpdate(userId, { isOnline: true, lastActive: Date.now() }).exec();
       }
       onlineUsers.get(userId).sockets.add(socket.id);
 
@@ -62,6 +64,8 @@ function initSocket(server) {
           onlineUsers.get(userId).sockets.delete(socket.id);
           if (onlineUsers.get(userId).sockets.size === 0) {
             onlineUsers.delete(userId);
+            // Update database
+            User.findByIdAndUpdate(userId, { isOnline: false, lastActive: Date.now() }).exec();
             io.emit('onlineUsers', getOnlineUsersList());
             // io.emit('userOnlineStatus', { userId: userId, status: 'offline' });
           }

@@ -1,4 +1,12 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const getApiUrl = () => {
+  if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
+  if (window.location.hostname === 'ahlafot.co.il' || window.location.hostname.endsWith('.ahlafot.co.il')) {
+    return 'https://ahlafot.co.il/api';
+  }
+  return 'http://localhost:8000/api';
+};
+
+const API_URL = getApiUrl();
 
 const getToken = () => {
   const user = JSON.parse(localStorage.getItem('swapx_user'));
@@ -267,6 +275,8 @@ export const updateUserRole = (userId, role) => request(`/admin/users/${userId}/
     method: 'PUT',
     body: JSON.stringify({ role }),
 });
+
+export const getUserLogs = (userId) => request(`/admin/users/${userId}/logs`);
 
 export const getSupportConversations = () => request('/admin/support');
 export const resolveSupportRequest = (conversationId) => request(`/admin/support/${conversationId}/resolve`, {

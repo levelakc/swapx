@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ahlafot.com/</loc>
+    <loc>https://ahlafot.co.il/</loc>
     <lastmod>2026-03-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/browse</loc>
+    <loc>https://ahlafot.co.il/browse</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/services</loc>
+    <loc>https://ahlafot.co.il/services</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/about</loc>
+    <loc>https://ahlafot.co.il/about</loc>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/careers</loc>
+    <loc>https://ahlafot.co.il/careers</loc>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/press</loc>
+    <loc>https://ahlafot.co.il/press</loc>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/terms</loc>
+    <loc>https://ahlafot.co.il/terms</loc>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://ahlafot.com/privacy</loc>
+    <loc>https://ahlafot.co.il/privacy</loc>
     <priority>0.3</priority>
   </url>
 </urlset>

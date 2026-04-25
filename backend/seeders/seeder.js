@@ -481,7 +481,7 @@ const seedData = async () => {
     const usersToCreate = [
       {
         full_name: 'Admin User',
-        email: 'admin@ahlafot.com',
+        email: 'admin@ahlafot.co.il',
         password: 'AhlaX_Admin_99!_Safe_#2026', 
         role: 'admin',
         bio: 'מנהל המערכת הראשי של Ahlafot.',

@@ -67,6 +67,14 @@ const userSchema = mongoose.Schema(
       type: Date,
       default: () => new Date(Date.now() - 24 * 60 * 60 * 1000)
     },
+    lastActive: {
+      type: Date,
+      default: Date.now
+    },
+    isOnline: {
+      type: Boolean,
+      default: false
+    },
   },
   {
     timestamps: true, // This adds created_at and updated_at fields

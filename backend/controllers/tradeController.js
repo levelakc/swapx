@@ -232,7 +232,7 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
         // Increment unread for participants of overlapping trades
         const newUC = { ...otherConversation.unread_count };
         otherConversation.participants.forEach(p => {
-            if (p !== 'system@ahlafot.com') {
+            if (p !== 'system@ahlafot.co.il') {
                 newUC[p] = (newUC[p] || 0) + 1;
             }
         });
@@ -243,7 +243,7 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
 
         await Message.create({
           conversation_id: otherConversation._id.toString(),
-          sender_email: 'system@ahlafot.com',
+          sender_email: 'system@ahlafot.co.il',
           content: 'This trade was cancelled because one of the items was traded in another offer.',
           type: 'system'
         });
@@ -353,7 +353,7 @@ const updateTradeStatus = asyncHandler(async (req, res) => {
         // Add a system message for cancellation
         await Message.create({
             conversation_id: conversation._id.toString(),
-            sender_email: 'system@ahlafot.com',
+            sender_email: 'system@ahlafot.co.il',
             content: 'The offer was removed by one of the parties.',
             type: 'system'
         });

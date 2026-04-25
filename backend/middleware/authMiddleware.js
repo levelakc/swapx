@@ -19,6 +19,12 @@ const protect = asyncHandler(async (req, res, next) => {
       // Get user from the token
       req.user = await User.findById(decoded.id).select('-password');
 
+      if (req.user) {
+        req.user.lastActive = Date.now();
+        req.user.isOnline = true;
+        await req.user.save();
+      }
+
       next();
     } catch (error) {
       console.error(error);
@@ -44,6 +50,12 @@ const optionalProtect = asyncHandler(async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
+      
+      if (req.user) {
+        req.user.lastActive = Date.now();
+        req.user.isOnline = true;
+        await req.user.save();
+      }
     } catch (error) {
       console.error('Optional auth failed:', error.message);
     }

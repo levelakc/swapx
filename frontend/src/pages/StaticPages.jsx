@@ -10,11 +10,11 @@ const content = {
     },
     careers: { 
         title: "Build the Future with Us", 
-        text: "At Ahlafot, we're looking for visionaries, problem-solvers, and builders who are passionate about transforming the global economy. We believe that everyone has something of value to offer, and we're building the tools to prove it.\n\nJoin a remote-first team of innovators dedicated to sustainability and economic empowerment. Whether you're an engineer, a designer, or a growth specialist, your work at Ahlafot will directly impact how millions of people trade and connect. \n\nExplore our open roles or reach out to us at careers@ahlafot.com." 
+        text: "At Ahlafot, we're looking for visionaries, problem-solvers, and builders who are passionate about transforming the global economy. We believe that everyone has something of value to offer, and we're building the tools to prove it.\n\nJoin a remote-first team of innovators dedicated to sustainability and economic empowerment. Whether you're an engineer, a designer, or a growth specialist, your work at Ahlafot will directly impact how millions of people trade and connect. \n\nExplore our open roles or reach out to us at careers@ahlafot.co.il." 
     },
     press: { 
         title: "Press & Media", 
-        text: "Ahlafot is consistently making headlines for its innovative approach to modern commerce and the circular economy. From being featured in top tech journals to leading discussions on sustainable trading, we are at the forefront of the new barter era.\n\nFor media assets, interview requests, or data-driven stories about the future of trading, please contact our communications team at press@ahlafot.com." 
+        text: "Ahlafot is consistently making headlines for its innovative approach to modern commerce and the circular economy. From being featured in top tech journals to leading discussions on sustainable trading, we are at the forefront of the new barter era.\n\nFor media assets, interview requests, or data-driven stories about the future of trading, please contact our communications team at press@ahlafot.co.il." 
     },
     terms: { 
         title: "Terms of Service", 
@@ -36,11 +36,11 @@ const content = {
     },
     careers: { 
         title: "בנו איתנו את העתיד", 
-        text: "ב-Ahlafot, אנו מחפשים חזונאים, פותרי בעיות ובונים שמרגישים תשוקה לשינוי הכלכלה העולמית. אנו מאמינים שלכל אחד יש משהו בעל ערך להציע, ואנחנו בונים את הכלים להוכיח זאת.\n\nהצטרפו לצוות גלובלי של חדשנים המוקדשים לקיימות והעצמה כלכלית. בין אם אתם מהנדסים, מעצבים או מומחי צמיחה, לעבודה שלכם ב-Ahlafot תהיה השפעה ישירה על הדרך שבה מיליוני אנשים סוחרים ומתחברים.\n\nבדקו את המשרות הפתוחות שלנו או צרו קשר בכתובת careers@ahlafot.com." 
+        text: "ב-Ahlafot, אנו מחפשים חזונאים, פותרי בעיות ובונים שמרגישים תשוקה לשינוי הכלכלה העולמית. אנו מאמינים שלכל אחד יש משהו בעל ערך להציע, ואנחנו בונים את הכלים להוכיח זאת.\n\nהצטרפו לצוות גלובלי של חדשנים המוקדשים לקיימות והעצמה כלכלית. בין אם אתם מהנדסים, מעצבים או מומחי צמיחה, לעבודה שלכם ב-Ahlafot תהיה השפעה ישירה על הדרך שבה מיליוני אנשים סוחרים ומתחברים.\n\nבדקו את המשרות הפתוחות שלנו או צרו קשר בכתובת careers@ahlafot.co.il." 
     },
     press: { 
         title: "עיתונות ומדיה", 
-        text: "Ahlafot עולה לכותרות באופן עקבי בזכות הגישה החדשנית שלה למסחר מודרני וכלכלה מעגלית. החל מכתבות בכתבי עת טכנולוגיים מובילים ועד להובלת דיונים על מסחר בר-קיימא, אנו נמצאים בחזית של עידן הבארטר החדש.\n\nלקבלת חומרי מדיה, בקשות לראיונות או סיפורים מבוססי נתונים על עתיד המסחר, אנא צרו קשר עם צוות התקשורת שלנו ב-press@ahlafot.com." 
+        text: "Ahlafot עולה לכותרות באופן עקבי בזכות הגישה החדשנית שלה למסחר מודרני וכלכלה מעגלית. החל מכתבות בכתבי עת טכנולוגיים מובילים ועד להובלת דיונים על מסחר בר-קיימא, אנו נמצאים בחזית של עידן הבארטר החדש.\n\nלקבלת חומרי מדיה, בקשות לראיונות או סיפורים מבוססי נתונים על עתיד המסחר, אנא צרו קשר עם צוות התקשורת שלנו ב-press@ahlafot.co.il." 
     },
     terms: { 
         title: "תנאי שימוש", 

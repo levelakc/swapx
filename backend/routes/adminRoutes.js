@@ -19,6 +19,7 @@ router.route('/stats').get(protect, authorize('admin'), getPlatformStats);
 router.route('/users').get(protect, authorize('admin'), getAllUsers);
 router.route('/users/:id/coins').put(protect, authorize('admin'), updateUserCoins);
 router.route('/users/:id/role').put(protect, authorize('admin'), updateUserRole);
+router.route('/users/:id/logs').get(protect, authorize('admin'), getUserLogs);
 router.route('/send-email').post(protect, authorize('admin'), sendAdminEmail);
 
 // Admin and Moderator routes

@@ -6,10 +6,10 @@ const Trade = require('../models/Trade');
 const { getIO } = require('../socket');
 
 const CHATBOTS = {
-  en: { name: 'Sona', email: 'sona_en@ahlafot.com', greeting: "Hello! I'm Sona, your Ahlafot assistant. I'm here to help you trade safely and efficiently." },
-  he: { name: 'Rona', email: 'rona_he@ahlafot.com', greeting: "שלום! אני רונה, העוזרת האישית שלך ב-Ahlafot. אני כאן כדי לעזור לך לסחור בצורה בטובה ויעילה." },
-  ar: { name: 'Sona', email: 'sona_ar@ahlafot.com', greeting: "מرحباً! أنا سونا، مساعدتك في Ahlafot. أنا هنا למסאעדתך פי אלתדאול באמאן וכפאעה." },
-  ru: { name: 'Sona', email: 'sona_ru@ahlafot.com', greeting: "Привет! Я Сона, ваш помощник в Ahlafot. Я здесь, чтобы помочь вам торговать безопасно и эффективно." },
+  en: { name: 'Sona', email: 'sona_en@ahlafot.co.il', greeting: "Hello! I'm Sona, your Ahlafot assistant. I'm here to help you trade safely and efficiently." },
+  he: { name: 'Rona', email: 'rona_he@ahlafot.co.il', greeting: "שלום! אני רונה, העוזרת האישית שלך ב-Ahlafot. אני כאן כדי לעזור לך לסחור בצורה בטובה ויעילה." },
+  ar: { name: 'Sona', email: 'sona_ar@ahlafot.co.il', greeting: "מرحباً! أنا سونا، مساعدتك في Ahlafot. أنا هنا למסאעדתך פי אלתדאול באמאן וכפאעה." },
+  ru: { name: 'Sona', email: 'sona_ru@ahlafot.co.il', greeting: "Привет! Я Сона, ваш помощник в Ahlafot. Я здесь, чтобы помочь вам торговать безопасно и эффективно." },
 };
 
 const CHATBOT_USERS = Object.values(CHATBOTS).map(bot => bot.email);
