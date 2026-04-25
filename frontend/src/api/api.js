@@ -1,15 +1,19 @@
 const getApiUrl = () => {
   if (process.env.REACT_APP_API_URL) return process.env.REACT_APP_API_URL;
   
-  const isLocalhost = window.location.hostname === 'localhost' || 
-                     window.location.hostname === '127.0.0.1' || 
-                     window.location.hostname.startsWith('192.168.');
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost' || 
+                     hostname === '127.0.0.1' || 
+                     hostname.startsWith('192.168.') ||
+                     hostname.startsWith('10.') ||
+                     hostname.startsWith('172.');
 
   if (isLocalhost) {
-    return 'http://localhost:8000/api';
+    // Point to the same hostname/IP but on the backend port (8000)
+    return `http://${hostname}:8000/api`;
   }
 
-  // Default to production URL for any other domain (Render subdomains, custom domains, etc.)
+  // Default to production URL for any other domain
   return 'https://ahlafot.co.il/api';
 };
 
