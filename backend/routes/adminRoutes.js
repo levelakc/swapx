@@ -10,6 +10,7 @@ const {
   updateUserRole,
   getSupportConversations,
   resolveSupportRequest,
+  getUserLogs,
   sendAdminEmail,
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
