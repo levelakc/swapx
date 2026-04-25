@@ -116,11 +116,6 @@ export default function WelcomeTour() {
           
           let rotation = isOnRight ? 45 : -45;
           
-          // User requested: rotate 90 degrees to the right except the last one
-          if (currentStep < steps.length - 1) {
-              rotation += 90;
-          }
-          
           const leftOffset = isOnRight ? -60 : -40; // Adjust SVG position relative to its own center/tip
           
           setArrowStyles({
